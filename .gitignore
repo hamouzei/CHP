@@ -1,0 +1,59 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Build output
+dist/
+.next/
+out/
+**/dist/
+**/.next/
+
+# Environment files
+.env
+.env.local
+.env.production
+.env.staging
+.env.development
+**/.env
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-*
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Prisma migrations (generated on each dev machine)
+backend/prisma/migrations/
+
+# Uploads (local evidence storage)
+backend/uploads/
+uploads/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Test coverage
+coverage/
+
+# Generated Prisma client cache
+**/.prisma/
+
+# Package lock (optional — keep if you want deterministic installs)
+# package-lock.json
+
+# Next.js build & cache
+frontend/.next/
+frontend/out/
+
+# Misc generated
+*.tsbuildinfo
+AGENTS.md
+CLAUDE.md
