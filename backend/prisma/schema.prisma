@@ -48,6 +48,7 @@ model User {
   reports             Report[]
   auditLogs           AuditLog[]
 
+  @@index([organizationId])
   @@map("users")
 }
 
@@ -152,6 +153,9 @@ model Assessment {
   reports           Report[]
   auditLogs         AuditLog[]
 
+  @@index([organizationId])
+  @@index([status])
+  @@index([createdAt])
   @@map("assessments")
 }
 
@@ -172,6 +176,8 @@ model Response {
   evidenceFiles  EvidenceFile[]
 
   @@unique([assessmentId, criteriaId])
+  @@index([assessmentId])
+  @@index([criteriaId])
   @@map("responses")
 }
 
@@ -188,6 +194,7 @@ model ComputedScore {
   updatedAt      DateTime   @default(now()) @map("updated_at")
 
   @@unique([assessmentId, componentId])
+  @@index([assessmentId])
   @@map("computed_scores")
 }
 
@@ -208,6 +215,8 @@ model EvidenceFile {
   storageUrl      String?    @map("storage_url")
   uploadedAt      DateTime   @default(now()) @map("uploaded_at")
 
+  @@index([assessmentId])
+  @@index([responseId])
   @@map("evidence_files")
 }
 
@@ -223,6 +232,7 @@ model ReviewComment {
   commentType  String      @default("review") @map("comment_type") // 'review','revision_request','approval_note'
   createdAt    DateTime    @default(now()) @map("created_at")
 
+  @@index([assessmentId])
   @@map("review_comments")
 }
 
@@ -236,6 +246,7 @@ model Report {
   storageKey   String?    @map("storage_key") @db.VarChar(1000)
   generatedAt  DateTime   @default(now()) @map("generated_at")
 
+  @@index([assessmentId])
   @@map("reports")
 }
 
@@ -256,5 +267,8 @@ model AuditLog {
   userAgent      String?       @map("user_agent")
   createdAt      DateTime      @default(now()) @map("created_at")
 
+  @@index([assessmentId])
+  @@index([userId])
+  @@index([createdAt(sort: Desc)])
   @@map("audit_logs")
 }

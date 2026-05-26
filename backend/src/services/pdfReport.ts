@@ -25,6 +25,7 @@ export async function generateAssessmentPDF(assessmentId: string): Promise<PDFKi
           component: true,
           domain: true,
         },
+        orderBy: { component: { displayOrder: 'asc' } },
       },
     },
   });
@@ -100,17 +101,27 @@ export async function generateAssessmentPDF(assessmentId: string): Promise<PDFKi
 
   let currentY = tableY + 20;
 
-  // Retrieve unique domain scores
-  // Domain scores are represented in computedScores where domainScorePct is not null
-  const domainScores = assessment.computedScores.filter((cs) => cs.domainScorePct !== null);
+  // Retrieve unique domain scores sorted by displayOrder
+  const uniqueDomainsMap = new Map<string, { code: string; name: string; scorePct: number; displayOrder: number }>();
+  for (const cs of assessment.computedScores) {
+    if (cs.domainScorePct !== null && !uniqueDomainsMap.has(cs.domainId)) {
+      uniqueDomainsMap.set(cs.domainId, {
+        code: cs.domain.code,
+        name: cs.domain.name,
+        scorePct: Number(cs.domainScorePct),
+        displayOrder: cs.domain.displayOrder,
+      });
+    }
+  }
+  const domainScores = Array.from(uniqueDomainsMap.values()).sort((a, b) => a.displayOrder - b.displayOrder);
 
   for (const ds of domainScores) {
     // Draw row background for alternating lines
     doc.rect(50, currentY, 495, 24).fill(currentY % 48 === 0 ? lightBg : '#FFFFFF');
     doc.fillColor(primaryColor).fontSize(10).font('Helvetica');
-    doc.text(ds.domain.code, 60, currentY + 7);
-    doc.text(ds.domain.name, 160, currentY + 7);
-    doc.text(`${Number(ds.domainScorePct).toFixed(1)}%`, 460, currentY + 7);
+    doc.text(ds.code, 60, currentY + 7);
+    doc.text(ds.name, 160, currentY + 7);
+    doc.text(`${ds.scorePct.toFixed(1)}%`, 460, currentY + 7);
     
     // Bottom border
     doc.rect(50, currentY + 23, 495, 1).fill('#E2E8F0');

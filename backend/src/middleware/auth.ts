@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import * as jwt from 'jsonwebtoken';
+import { getKeys } from '../config/keys';
 
 export interface AuthenticatedRequest extends Request {
   user?: {
@@ -10,8 +11,6 @@ export interface AuthenticatedRequest extends Request {
     organizationId: string | null;
   };
 }
-
-const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-jwt-key-for-chp-maturity-index-platform-2026';
 
 export function authenticate(req: AuthenticatedRequest, res: Response, next: NextFunction) {
   const authHeader = req.headers.authorization;
@@ -25,7 +24,8 @@ export function authenticate(req: AuthenticatedRequest, res: Response, next: Nex
   const token = authHeader.split(' ')[1];
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as any;
+    const { publicKey } = getKeys();
+    const decoded = jwt.verify(token, publicKey, { algorithms: ['RS256'] }) as any;
     req.user = {
       id: decoded.id,
       email: decoded.email,
@@ -41,3 +41,4 @@ export function authenticate(req: AuthenticatedRequest, res: Response, next: Nex
     });
   }
 }
+

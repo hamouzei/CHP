@@ -1,22 +1,65 @@
-import { Router, Response } from 'express';
+import { Router, Request, Response, NextFunction } from 'express';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 import { z } from 'zod';
 import prisma from '../config/db';
 import { authenticate, AuthenticatedRequest } from '../middleware/auth';
+import { getKeys } from '../config/keys';
 
 const router = Router();
 
-const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-jwt-key-for-chp-maturity-index-platform-2026';
-const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET || 'super-secret-refresh-token-key-for-chp-maturity-index-platform-2026';
+// In-memory rate limiting map
+const authAttempts = new Map<string, { count: number; firstAttempt: number }>();
+
+function authRateLimiter(req: Request, res: Response, next: NextFunction) {
+  const ip = req.ip || req.socket.remoteAddress || 'unknown';
+  const now = Date.now();
+  const windowMs = 60 * 1000; // 1 minute window
+  const maxAttempts = 10;
+
+  const attempts = authAttempts.get(ip);
+  if (!attempts) {
+    authAttempts.set(ip, { count: 1, firstAttempt: now });
+    return next();
+  }
+
+  if (now - attempts.firstAttempt > windowMs) {
+    // Reset window
+    authAttempts.set(ip, { count: 1, firstAttempt: now });
+    return next();
+  }
+
+  if (attempts.count >= maxAttempts) {
+    return res.status(429).json({
+      error: 'TOO_MANY_REQUESTS',
+      message: 'Too many authentication attempts. Please try again after a minute.',
+    });
+  }
+
+  attempts.count++;
+  next();
+}
 
 const loginSchema = z.object({
   email: z.string().email(),
   password: z.string(),
 });
 
+const forgotPasswordSchema = z.object({
+  email: z.string().email(),
+});
+
+const resetPasswordSchema = z.object({
+  token: z.string(),
+  newPassword: z.string().min(10, 'Password must be at least 10 characters long')
+    .refine((val) => /[A-Z]/.test(val), { message: 'Password must contain at least one uppercase letter' })
+    .refine((val) => /[a-z]/.test(val), { message: 'Password must contain at least one lowercase letter' })
+    .refine((val) => /[0-9]/.test(val), { message: 'Password must contain at least one number' })
+    .refine((val) => /[^A-Za-z0-9]/.test(val), { message: 'Password must contain at least one special character' }),
+});
+
 // POST /auth/login
-router.post('/login', async (req, res) => {
+router.post('/login', authRateLimiter, async (req, res) => {
   try {
     const body = loginSchema.parse(req.body);
 
@@ -68,7 +111,8 @@ router.post('/login', async (req, res) => {
       },
     });
 
-    // Generate tokens
+    // Generate asymmetric RS256 tokens
+    const { privateKey } = getKeys();
     const accessToken = jwt.sign(
       {
         id: user.id,
@@ -77,14 +121,14 @@ router.post('/login', async (req, res) => {
         role: user.role,
         organizationId: user.organizationId,
       },
-      JWT_SECRET,
-      { expiresIn: '15m' }
+      privateKey,
+      { algorithm: 'RS256', expiresIn: '15m' }
     );
 
     const refreshToken = jwt.sign(
       { id: user.id },
-      REFRESH_TOKEN_SECRET,
-      { expiresIn: '7d' }
+      privateKey,
+      { algorithm: 'RS256', expiresIn: '7d' }
     );
 
     // Save refresh token details in httpOnly cookie
@@ -109,7 +153,7 @@ router.post('/login', async (req, res) => {
 
     return res.json({
       accessToken,
-      refreshToken, // Also return in body for easy client management
+      refreshToken,
       user: {
         id: user.id,
         email: user.email,
@@ -137,7 +181,8 @@ router.post('/refresh', async (req, res) => {
   }
 
   try {
-    const decoded = jwt.verify(refreshToken, REFRESH_TOKEN_SECRET) as any;
+    const { publicKey, privateKey } = getKeys();
+    const decoded = jwt.verify(refreshToken, publicKey, { algorithms: ['RS256'] }) as any;
 
     const user = await prisma.user.findUnique({
       where: { id: decoded.id },
@@ -155,8 +200,8 @@ router.post('/refresh', async (req, res) => {
         role: user.role,
         organizationId: user.organizationId,
       },
-      JWT_SECRET,
-      { expiresIn: '15m' }
+      privateKey,
+      { algorithm: 'RS256', expiresIn: '15m' }
     );
 
     return res.json({ accessToken });
@@ -214,6 +259,121 @@ router.get('/me', authenticate, async (req: AuthenticatedRequest, res) => {
     });
   } catch (error) {
     return res.status(500).json({ error: 'INTERNAL_ERROR', message: 'An error occurred fetching profile' });
+  }
+});
+
+// POST /auth/forgot-password
+router.post('/forgot-password', authRateLimiter, async (req, res) => {
+  try {
+    const body = forgotPasswordSchema.parse(req.body);
+
+    const user = await prisma.user.findUnique({
+      where: { email: body.email },
+    });
+
+    if (!user) {
+      // Return 200 to prevent user enumeration
+      return res.json({ message: 'If the email exists, a password reset link has been sent.' });
+    }
+
+    // Generate a reset token valid for 1 hour
+    const { privateKey } = getKeys();
+    const resetToken = jwt.sign(
+      { id: user.id, purpose: 'password_reset' },
+      privateKey,
+      { algorithm: 'RS256', expiresIn: '1h' }
+    );
+
+    // In a real application, we would email this token. 
+    // Here we log it to console/stub for development.
+    console.log(`✉️ [SMTP Mock] Password reset requested for ${user.email}.`);
+    console.log(`Reset Token: ${resetToken}`);
+    console.log(`Reset Link: http://localhost:3000/reset-password?token=${resetToken}`);
+
+    // Log the audit event
+    await prisma.auditLog.create({
+      data: {
+        userId: user.id,
+        organizationId: user.organizationId,
+        action: 'PASSWORD_RESET_REQUEST',
+        entityType: 'user',
+        entityId: user.id,
+      },
+    });
+
+    return res.json({ message: 'If the email exists, a password reset link has been sent.' });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({ error: 'VALIDATION_ERROR', message: 'Invalid inputs provided', fields: error.errors });
+    }
+    console.error('Forgot password error:', error);
+    return res.status(500).json({ error: 'INTERNAL_ERROR', message: 'An error occurred processing request' });
+  }
+});
+
+// POST /auth/reset-password
+router.post('/reset-password', authRateLimiter, async (req, res) => {
+  try {
+    const body = resetPasswordSchema.parse(req.body);
+    const { publicKey } = getKeys();
+
+    let decoded: any;
+    try {
+      decoded = jwt.verify(body.token, publicKey, { algorithms: ['RS256'] });
+    } catch (err) {
+      return res.status(400).json({ error: 'INVALID_TOKEN', message: 'Password reset token is invalid or expired' });
+    }
+
+    if (decoded.purpose !== 'password_reset') {
+      return res.status(400).json({ error: 'INVALID_TOKEN', message: 'Invalid token purpose' });
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { id: decoded.id },
+    });
+
+    if (!user || !user.isActive) {
+      return res.status(404).json({ error: 'NOT_FOUND', message: 'User not found or inactive' });
+    }
+
+    // Check if new password is same as current password (history constraint length of 1)
+    const isSamePassword = await bcrypt.compare(body.newPassword, user.passwordHash);
+    if (isSamePassword) {
+      return res.status(400).json({
+        error: 'PASSWORD_REUSE',
+        message: 'New password cannot be the same as your current password.',
+      });
+    }
+
+    const passwordHash = await bcrypt.hash(body.newPassword, 12);
+
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        passwordHash,
+        failedLoginAttempts: 0,
+        lockedUntil: null,
+      },
+    });
+
+    // Audit log
+    await prisma.auditLog.create({
+      data: {
+        userId: user.id,
+        organizationId: user.organizationId,
+        action: 'PASSWORD_RESET_COMPLETE',
+        entityType: 'user',
+        entityId: user.id,
+      },
+    });
+
+    return res.json({ message: 'Password has been reset successfully' });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({ error: 'VALIDATION_ERROR', message: 'Invalid inputs provided', fields: error.errors });
+    }
+    console.error('Reset password error:', error);
+    return res.status(500).json({ error: 'INTERNAL_ERROR', message: 'An error occurred resetting password' });
   }
 });
 

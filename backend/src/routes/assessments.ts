@@ -8,29 +8,19 @@ import { authenticate, AuthenticatedRequest } from '../middleware/auth';
 import { requireRole } from '../middleware/rbac';
 import { recalculateAssessment } from '../services/scoringEngine';
 import { logAction } from '../services/audit';
+import { uploadFile, deleteFile, getDownloadUrl } from '../services/storage';
+import { sniffMimeType } from '../utils/mimeSniffer';
+import { scanBuffer } from '../services/antivirus';
 
 const router = Router();
 
-// Configure multer for evidence uploads
-const uploadDir = process.env.UPLOAD_DIR || './uploads';
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, uploadDir);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-    cb(null, uniqueSuffix + path.extname(file.originalname));
-  },
-});
+// Configure multer for memory storage to parse file buffers
+const storage = multer.memoryStorage();
 
 const upload = multer({
   storage,
   limits: {
-    fileSize: 20 * 1024 * 1024, // 20MB limit
+    fileSize: 50 * 1024 * 1024, // 50MB limit per individual upload
   },
 });
 
@@ -46,7 +36,15 @@ const createAssessmentSchema = z.object({
 const saveResponseSchema = z.object({
   criteriaId: z.string().uuid(),
   score: z.number().int().min(0).max(4),
-  justification: z.string().min(1, 'Justification is required'),
+  justification: z.string().min(20, 'Justification must be at least 20 characters long').max(5000),
+});
+
+const updateAssessmentSchema = z.object({
+  cycleName: z.string().min(3).optional(),
+  assessmentPeriod: z.string().optional(),
+  assessmentType: z.string().optional(),
+  assignedAssessorId: z.string().uuid().nullable().optional(),
+  assignedReviewerId: z.string().uuid().nullable().optional(),
 });
 
 // GET /assessments - List assessments (org-scoped unless super_admin)
@@ -572,6 +570,38 @@ router.post('/:id/responses/:criteriaId/evidence', authenticate, upload.single('
       return res.status(400).json({ error: 'BAD_REQUEST', message: 'Approved or archived assessments cannot accept new evidence' });
     }
 
+    // 1. Sniff MIME type from file header
+    const sniffResult = sniffMimeType(file.buffer, file.originalname);
+    if (!sniffResult.isAllowed) {
+      return res.status(400).json({
+        error: 'INVALID_FILE_TYPE',
+        message: `File type not allowed. Sniffed type: ${sniffResult.mimeType}`,
+      });
+    }
+
+    // 2. Scan file for viruses (ClamAV)
+    const scanResult = await scanBuffer(file.buffer);
+    if (!scanResult.clean) {
+      return res.status(400).json({
+        error: 'SECURITY_THREAT',
+        message: `Malware detected in uploaded file: ${scanResult.message}`,
+      });
+    }
+
+    // 3. Aggregate size check per assessment (limit to 200MB cumulative)
+    const aggregate = await prisma.evidenceFile.aggregate({
+      where: { assessmentId: id },
+      _sum: { fileSizeBytes: true },
+    });
+    const currentSum = aggregate._sum.fileSizeBytes ? Number(aggregate._sum.fileSizeBytes) : 0;
+    const newFileSize = file.size;
+    if (currentSum + newFileSize > 200 * 1024 * 1024) {
+      return res.status(400).json({
+        error: 'LIMIT_EXCEEDED',
+        message: `Aggregate file size limit of 200MB exceeded for this assessment. Currently uploaded: ${(currentSum / (1024 * 1024)).toFixed(2)}MB.`,
+      });
+    }
+
     // Find the response corresponding to this assessment and criteria
     const response = await prisma.response.findUnique({
       where: {
@@ -586,7 +616,16 @@ router.post('/:id/responses/:criteriaId/evidence', authenticate, upload.single('
       return res.status(404).json({ error: 'NOT_FOUND', message: 'Response record not initialized for this criterion' });
     }
 
-    // Save evidence file details
+    // 4. Upload to storage provider
+    const pathPrefix = `evidence/org-${assessment.organizationId}/assess-${id}/crit-${criteriaId}`;
+    const { storageKey, storageUrl } = await uploadFile(
+      file.buffer,
+      file.originalname,
+      sniffResult.mimeType,
+      pathPrefix
+    );
+
+    // Save evidence file details in DB
     const evidence = await prisma.evidenceFile.create({
       data: {
         assessmentId: id,
@@ -595,10 +634,10 @@ router.post('/:id/responses/:criteriaId/evidence', authenticate, upload.single('
         fileName: file.originalname,
         fileTitle: req.body.title || file.originalname,
         fileDescription: req.body.description || '',
-        fileType: file.mimetype,
+        fileType: sniffResult.mimeType,
         fileSizeBytes: BigInt(file.size),
-        storageKey: file.filename,
-        storageUrl: `/api/v1/assessments/evidence/${file.filename}/download`,
+        storageKey,
+        storageUrl,
       },
     });
 
@@ -610,7 +649,7 @@ router.post('/:id/responses/:criteriaId/evidence', authenticate, upload.single('
       action: 'EVIDENCE_UPLOAD',
       entityType: 'evidence_file',
       entityId: evidence.id,
-      newValue: { fileName: file.originalname, size: file.size },
+      newValue: { fileName: file.originalname, size: file.size, storageKey },
     });
 
     return res.status(201).json({
@@ -634,9 +673,15 @@ router.get('/evidence/:filename/download', authenticate, async (req: Authenticat
     const user = req.user!;
     const { filename } = req.params;
 
-    // Fetch the evidence file by its filename key
+    // Fetch the evidence file by its filename key or UUID
     const evidence = await prisma.evidenceFile.findFirst({
-      where: { storageKey: filename },
+      where: {
+        OR: [
+          { id: filename },
+          { storageKey: filename },
+          { storageKey: { endsWith: filename } },
+        ],
+      },
       include: { assessment: true },
     });
 
@@ -649,15 +694,21 @@ router.get('/evidence/:filename/download', authenticate, async (req: Authenticat
       return res.status(403).json({ error: 'FORBIDDEN', message: 'Access denied' });
     }
 
-    const filePath = path.join(uploadDir, filename);
-    if (!fs.existsSync(filePath)) {
-      return res.status(404).json({ error: 'NOT_FOUND', message: 'Physical file not found on disk' });
-    }
+    const STORAGE_PROVIDER = process.env.STORAGE_PROVIDER || 'local';
+    if (STORAGE_PROVIDER === 's3') {
+      const signedUrl = await getDownloadUrl(evidence.storageKey, evidence.fileName);
+      return res.redirect(signedUrl);
+    } else {
+      const uploadDir = process.env.UPLOAD_DIR || './uploads';
+      const filePath = path.join(uploadDir, evidence.storageKey);
+      if (!fs.existsSync(filePath)) {
+        return res.status(404).json({ error: 'NOT_FOUND', message: 'Physical file not found on disk' });
+      }
 
-    res.setHeader('Content-Disposition', `attachment; filename="${evidence.fileName}"`);
-    res.setHeader('Content-Type', evidence.fileType || 'application/octet-stream');
-    
-    return res.sendFile(filePath);
+      res.setHeader('Content-Disposition', `attachment; filename="${evidence.fileName}"`);
+      res.setHeader('Content-Type', evidence.fileType || 'application/octet-stream');
+      return res.sendFile(path.resolve(filePath));
+    }
   } catch (error) {
     console.error('Download evidence error:', error);
     return res.status(500).json({ error: 'INTERNAL_ERROR', message: 'Failed to download evidence file' });
@@ -687,16 +738,13 @@ router.delete('/evidence/:fileId', authenticate, async (req: AuthenticatedReques
       return res.status(400).json({ error: 'BAD_REQUEST', message: 'Evidence cannot be deleted from finalized assessments' });
     }
 
+    // Delete file from physical storage (S3 or local)
+    await deleteFile(evidence.storageKey);
+
     // Delete record from database
     await prisma.evidenceFile.delete({
       where: { id: fileId },
     });
-
-    // Delete file from disk
-    const filePath = path.join(uploadDir, evidence.storageKey);
-    if (fs.existsSync(filePath)) {
-      fs.unlinkSync(filePath);
-    }
 
     // Audit log
     await logAction({
@@ -713,6 +761,362 @@ router.delete('/evidence/:fileId', authenticate, async (req: AuthenticatedReques
   } catch (error) {
     console.error('Delete evidence error:', error);
     return res.status(500).json({ error: 'INTERNAL_ERROR', message: 'Failed to delete evidence file' });
+  }
+});
+
+// PATCH /assessments/:id - Update assessment metadata
+router.patch('/:id', authenticate, requireRole('admin', 'super_admin'), async (req: AuthenticatedRequest, res) => {
+  try {
+    const user = req.user!;
+    const { id } = req.params;
+    const body = updateAssessmentSchema.parse(req.body);
+
+    const assessment = await prisma.assessment.findUnique({
+      where: { id },
+    });
+
+    if (!assessment) {
+      return res.status(404).json({ error: 'NOT_FOUND', message: 'Assessment not found' });
+    }
+
+    if (user.role !== 'super_admin' && assessment.organizationId !== user.organizationId) {
+      return res.status(403).json({ error: 'FORBIDDEN', message: 'Access denied' });
+    }
+
+    if (assessment.status === 'approved' || assessment.status === 'archived') {
+      return res.status(400).json({ error: 'BAD_REQUEST', message: 'Cannot update metadata of finalized assessments' });
+    }
+
+    const updateData: any = {};
+    if (body.cycleName !== undefined) updateData.cycleName = body.cycleName;
+    if (body.assessmentPeriod !== undefined) updateData.assessmentPeriod = body.assessmentPeriod;
+    if (body.assessmentType !== undefined) updateData.assessmentType = body.assessmentType;
+    if (body.assignedAssessorId !== undefined) updateData.assignedAssessorId = body.assignedAssessorId;
+    if (body.assignedReviewerId !== undefined) updateData.assignedReviewerId = body.assignedReviewerId;
+
+    const updated = await prisma.assessment.update({
+      where: { id },
+      data: updateData,
+      include: { maturityBand: true },
+    });
+
+    await logAction({
+      userId: user.id,
+      organizationId: assessment.organizationId,
+      assessmentId: id,
+      action: 'ASSESSMENT_UPDATE',
+      entityType: 'assessment',
+      entityId: id,
+      previousValue: assessment,
+      newValue: updated,
+    });
+
+    return res.json(updated);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({ error: 'VALIDATION_ERROR', message: 'Validation failed', fields: error.errors });
+    }
+    console.error('Update assessment error:', error);
+    return res.status(500).json({ error: 'INTERNAL_ERROR', message: 'Failed to update assessment' });
+  }
+});
+
+// DELETE /assessments/:id - Delete draft/in-progress assessment
+router.delete('/:id', authenticate, requireRole('admin', 'super_admin'), async (req: AuthenticatedRequest, res) => {
+  try {
+    const user = req.user!;
+    const { id } = req.params;
+
+    const assessment = await prisma.assessment.findUnique({
+      where: { id },
+    });
+
+    if (!assessment) {
+      return res.status(404).json({ error: 'NOT_FOUND', message: 'Assessment not found' });
+    }
+
+    if (user.role !== 'super_admin' && assessment.organizationId !== user.organizationId) {
+      return res.status(403).json({ error: 'FORBIDDEN', message: 'Access denied' });
+    }
+
+    if (assessment.status !== 'draft' && assessment.status !== 'in_progress') {
+      return res.status(400).json({ error: 'BAD_REQUEST', message: 'Only draft or in-progress assessments can be deleted' });
+    }
+
+    await prisma.assessment.delete({
+      where: { id },
+    });
+
+    await logAction({
+      userId: user.id,
+      organizationId: assessment.organizationId,
+      action: 'ASSESSMENT_DELETE',
+      entityType: 'assessment',
+      entityId: id,
+      previousValue: assessment,
+    });
+
+    return res.json({ message: 'Assessment deleted successfully' });
+  } catch (error) {
+    console.error('Delete assessment error:', error);
+    return res.status(500).json({ error: 'INTERNAL_ERROR', message: 'Failed to delete assessment' });
+  }
+});
+
+// POST /assessments/:id/recalculate - Force recalculate scores
+router.post('/:id/recalculate', authenticate, async (req: AuthenticatedRequest, res) => {
+  try {
+    const user = req.user!;
+    const { id } = req.params;
+
+    const assessment = await prisma.assessment.findUnique({
+      where: { id },
+    });
+
+    if (!assessment) {
+      return res.status(404).json({ error: 'NOT_FOUND', message: 'Assessment not found' });
+    }
+
+    if (user.role !== 'super_admin' && assessment.organizationId !== user.organizationId) {
+      return res.status(403).json({ error: 'FORBIDDEN', message: 'Access denied' });
+    }
+
+    const result = await recalculateAssessment(id);
+
+    await logAction({
+      userId: user.id,
+      organizationId: assessment.organizationId,
+      assessmentId: id,
+      action: 'ASSESSMENT_RECALCULATE',
+      entityType: 'assessment',
+      entityId: id,
+    });
+
+    return res.json(result);
+  } catch (error) {
+    console.error('Recalculate assessment error:', error);
+    return res.status(500).json({ error: 'INTERNAL_ERROR', message: 'Failed to recalculate assessment scores' });
+  }
+});
+
+// GET /assessments/:id/scores - Get computed scores
+router.get('/:id/scores', authenticate, async (req: AuthenticatedRequest, res) => {
+  try {
+    const user = req.user!;
+    const { id } = req.params;
+
+    const assessment = await prisma.assessment.findUnique({
+      where: { id },
+      include: {
+        computedScores: {
+          include: { component: true, domain: true },
+          orderBy: { component: { displayOrder: 'asc' } },
+        },
+        maturityBand: true,
+      },
+    });
+
+    if (!assessment) {
+      return res.status(404).json({ error: 'NOT_FOUND', message: 'Assessment not found' });
+    }
+
+    if (user.role !== 'super_admin' && assessment.organizationId !== user.organizationId) {
+      return res.status(403).json({ error: 'FORBIDDEN', message: 'Access denied' });
+    }
+
+    return res.json({
+      chpmiScore: assessment.chpmiScore ? Number(assessment.chpmiScore) : 0,
+      maturityBand: assessment.maturityBand?.label || 'Non-Existent',
+      computedScores: assessment.computedScores.map(cs => ({
+        componentId: cs.componentId,
+        componentCode: cs.component.code,
+        componentName: cs.component.name,
+        domainId: cs.domainId,
+        domainCode: cs.component.domain.code,
+        domainName: cs.component.domain.name,
+        componentScore: cs.componentScore ? Number(cs.componentScore) : null,
+        domainScorePct: cs.domainScorePct ? Number(cs.domainScorePct) : null,
+      })),
+    });
+  } catch (error) {
+    console.error('Get assessment scores error:', error);
+    return res.status(500).json({ error: 'INTERNAL_ERROR', message: 'Failed to fetch scores' });
+  }
+});
+
+// GET /assessments/:id/responses - Get all responses
+router.get('/:id/responses', authenticate, async (req: AuthenticatedRequest, res) => {
+  try {
+    const user = req.user!;
+    const { id } = req.params;
+
+    const assessment = await prisma.assessment.findUnique({
+      where: { id },
+      include: {
+        responses: {
+          include: {
+            criterion: {
+              include: { component: true },
+            },
+            evidenceFiles: true,
+          },
+          orderBy: { criterion: { displayOrder: 'asc' } },
+        },
+      },
+    });
+
+    if (!assessment) {
+      return res.status(404).json({ error: 'NOT_FOUND', message: 'Assessment not found' });
+    }
+
+    if (user.role !== 'super_admin' && assessment.organizationId !== user.organizationId) {
+      return res.status(403).json({ error: 'FORBIDDEN', message: 'Access denied' });
+    }
+
+    return res.json(assessment.responses);
+  } catch (error) {
+    console.error('Get responses error:', error);
+    return res.status(500).json({ error: 'INTERNAL_ERROR', message: 'Failed to fetch responses' });
+  }
+});
+
+// GET /assessments/:id/responses/:criteriaId - Get single response
+router.get('/:id/responses/:criteriaId', authenticate, async (req: AuthenticatedRequest, res) => {
+  try {
+    const user = req.user!;
+    const { id, criteriaId } = req.params;
+
+    const assessment = await prisma.assessment.findUnique({
+      where: { id },
+    });
+
+    if (!assessment) {
+      return res.status(404).json({ error: 'NOT_FOUND', message: 'Assessment not found' });
+    }
+
+    if (user.role !== 'super_admin' && assessment.organizationId !== user.organizationId) {
+      return res.status(403).json({ error: 'FORBIDDEN', message: 'Access denied' });
+    }
+
+    const response = await prisma.response.findUnique({
+      where: {
+        assessmentId_criteriaId: {
+          assessmentId: id,
+          criteriaId,
+        },
+      },
+      include: {
+        criterion: {
+          include: {
+            component: true,
+            levels: { orderBy: { level: 'asc' } },
+          },
+        },
+        evidenceFiles: true,
+      },
+    });
+
+    if (!response) {
+      return res.status(404).json({ error: 'NOT_FOUND', message: 'Response not found' });
+    }
+
+    return res.json(response);
+  } catch (error) {
+    console.error('Get single response error:', error);
+    return res.status(500).json({ error: 'INTERNAL_ERROR', message: 'Failed to fetch response' });
+  }
+});
+
+// GET /assessments/:id/responses/:criteriaId/evidence - Get evidence list
+router.get('/:id/responses/:criteriaId/evidence', authenticate, async (req: AuthenticatedRequest, res) => {
+  try {
+    const user = req.user!;
+    const { id, criteriaId } = req.params;
+
+    const assessment = await prisma.assessment.findUnique({
+      where: { id },
+    });
+
+    if (!assessment) {
+      return res.status(404).json({ error: 'NOT_FOUND', message: 'Assessment not found' });
+    }
+
+    if (user.role !== 'super_admin' && assessment.organizationId !== user.organizationId) {
+      return res.status(403).json({ error: 'FORBIDDEN', message: 'Access denied' });
+    }
+
+    const response = await prisma.response.findUnique({
+      where: {
+        assessmentId_criteriaId: {
+          assessmentId: id,
+          criteriaId,
+        },
+      },
+      include: {
+        evidenceFiles: true,
+      },
+    });
+
+    if (!response) {
+      return res.status(404).json({ error: 'NOT_FOUND', message: 'Response not found' });
+    }
+
+    return res.json(response.evidenceFiles);
+  } catch (error) {
+    console.error('Get evidence list error:', error);
+    return res.status(500).json({ error: 'INTERNAL_ERROR', message: 'Failed to fetch evidence list' });
+  }
+});
+
+// GET /assessments/:id/audit-log/export - Export audit log as CSV
+router.get('/:id/audit-log/export', authenticate, requireRole('admin', 'super_admin'), async (req: AuthenticatedRequest, res) => {
+  try {
+    const user = req.user!;
+    const { id } = req.params;
+
+    const assessment = await prisma.assessment.findUnique({
+      where: { id },
+    });
+
+    if (!assessment) {
+      return res.status(404).json({ error: 'NOT_FOUND', message: 'Assessment not found' });
+    }
+
+    if (user.role !== 'super_admin' && assessment.organizationId !== user.organizationId) {
+      return res.status(403).json({ error: 'FORBIDDEN', message: 'Access denied' });
+    }
+
+    const logs = await prisma.auditLog.findMany({
+      where: { assessmentId: id },
+      include: {
+        user: { select: { fullName: true, email: true } },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    const headers = ['Timestamp', 'User Name', 'User Email', 'Action', 'Entity Type', 'Entity ID', 'Previous Value', 'New Value'];
+    const rows = logs.map(log => [
+      log.createdAt.toISOString(),
+      log.user?.fullName || 'System',
+      log.user?.email || 'N/A',
+      log.action,
+      log.entityType || '',
+      log.entityId || '',
+      log.previousValue ? JSON.stringify(log.previousValue).replace(/"/g, '""') : '',
+      log.newValue ? JSON.stringify(log.newValue).replace(/"/g, '""') : '',
+    ]);
+
+    const csvContent = [
+      headers.join(','),
+      ...rows.map(row => row.map(cell => `"${cell}"`).join(',')),
+    ].join('\n');
+
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader('Content-Disposition', `attachment; filename="assessment_${id}_audit_log.csv"`);
+    return res.send(csvContent);
+  } catch (error) {
+    console.error('Export audit log error:', error);
+    return res.status(500).json({ error: 'INTERNAL_ERROR', message: 'Failed to export audit log' });
   }
 });
 

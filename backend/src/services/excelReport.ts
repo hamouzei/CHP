@@ -54,7 +54,14 @@ export async function generateAssessmentExcel(assessmentId: string): Promise<Exc
   summarySheet.addRow({ metric: 'Assessment Cycle', value: assessment.cycleName });
   summarySheet.addRow({ metric: 'Assessment Period', value: assessment.assessmentPeriod || 'N/A' });
   summarySheet.addRow({ metric: 'Status', value: assessment.status.toUpperCase() });
-  summarySheet.addRow({ metric: 'Overall CHPMI Score', value: `${assessment.chpmiScore ? Number(assessment.chpmiScore).toFixed(2) : '0.00'}%` });
+  
+  // Overall CHPMI Score formula: `=AVERAGE('Component Scores'!D2:D${1 + assessment.computedScores.length})/4`
+  const overallCellRow = summarySheet.addRow({ 
+    metric: 'Overall CHPMI Score', 
+    value: { formula: `=AVERAGE('Component Scores'!D2:D${1 + assessment.computedScores.length})/4` } 
+  });
+  overallCellRow.getCell(2).numFmt = '0.00%';
+
   summarySheet.addRow({ metric: 'Maturity Band', value: assessment.maturityBand?.label || 'Non-Existent' });
   summarySheet.addRow({ metric: 'System Attributes', value: assessment.maturityBand?.systemAttributes || '' });
 
@@ -90,10 +97,40 @@ export async function generateAssessmentExcel(assessmentId: string): Promise<Exc
     };
   });
 
-  // Unique domain scores
-  const domainScores = assessment.computedScores.filter((cs) => cs.domainScorePct !== null);
-  for (const ds of domainScores) {
-    summarySheet.addRow([ds.domain.name, `${Number(ds.domainScorePct).toFixed(2)}%`]);
+  // Calculate dynamic rows mapping for Domain scores
+  const domainToComponentRows: { [domainCode: string]: number[] } = {};
+  for (let i = 0; i < assessment.computedScores.length; i++) {
+    const cs = assessment.computedScores[i];
+    const domCode = cs.domain.code;
+    if (!domainToComponentRows[domCode]) {
+      domainToComponentRows[domCode] = [];
+    }
+    domainToComponentRows[domCode].push(2 + i); // row index (1-based, header is 1)
+  }
+
+  // Add Dynamic Domain Score Formulas
+  const uniqueDomains: { id: string; code: string; name: string; displayOrder: number }[] = [];
+  const domainCodesAdded = new Set<string>();
+  for (const cs of assessment.computedScores) {
+    if (!domainCodesAdded.has(cs.domain.code)) {
+      domainCodesAdded.add(cs.domain.code);
+      uniqueDomains.push({
+        id: cs.domainId,
+        code: cs.domain.code,
+        name: cs.domain.name,
+        displayOrder: cs.domain.displayOrder,
+      });
+    }
+  }
+  uniqueDomains.sort((a, b) => a.displayOrder - b.displayOrder);
+
+  for (const d of uniqueDomains) {
+    const componentRows = domainToComponentRows[d.code] || [];
+    const minRow = Math.min(...componentRows);
+    const maxRow = Math.max(...componentRows);
+    const formulaStr = `=AVERAGE('Component Scores'!D${minRow}:D${maxRow})/4`;
+    const row = summarySheet.addRow([d.name, { formula: formulaStr }]);
+    row.getCell(2).numFmt = '0.00%';
   }
 
   // ----------------------------------------------------
@@ -159,15 +196,23 @@ export async function generateAssessmentExcel(assessmentId: string): Promise<Exc
     };
   });
 
-  for (const cs of assessment.computedScores) {
-    const rawVal = cs.componentScore ? Number(cs.componentScore) : 0;
-    compSheet.addRow({
+  let compRowIndex = 2; // header is row 1
+  for (let c = 0; c < assessment.computedScores.length; c++) {
+    const cs = assessment.computedScores[c];
+    const row1 = 2 + c * 3;
+    const row3 = 4 + c * 3;
+
+    const row = compSheet.addRow({
       code: cs.component.code,
       name: cs.component.name,
       domain: cs.domain.name,
-      score: cs.componentScore !== null ? Number(cs.componentScore).toFixed(4) : 'N/A',
-      pct: `${((rawVal / 4.0) * 100.0).toFixed(2)}%`,
+      score: { formula: `=AVERAGE('Scoring Matrix'!C${row1}:C${row3})` },
+      pct: { formula: `=D${compRowIndex}/4` },
     });
+
+    row.getCell(4).numFmt = '0.0000';
+    row.getCell(5).numFmt = '0.00%';
+    compRowIndex++;
   }
 
   compSheet.eachRow((row, rowNumber) => {

@@ -13,10 +13,12 @@ export interface User {
 interface AuthState {
   user: User | null;
   accessToken: string | null;
+  refreshToken: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  setAuth: (user: User, accessToken: string) => void;
+  setAuth: (user: User, accessToken: string, refreshToken: string) => void;
   clearAuth: () => void;
+  setAccessToken: (accessToken: string) => void;
   setLoading: (isLoading: boolean) => void;
 }
 
@@ -25,12 +27,14 @@ export const useAuthStore = create<AuthState>()(
     (set) => ({
       user: null,
       accessToken: null,
+      refreshToken: null,
       isAuthenticated: false,
       isLoading: true,
-      setAuth: (user, accessToken) =>
+      setAuth: (user, accessToken, refreshToken) =>
         set({
           user,
           accessToken,
+          refreshToken,
           isAuthenticated: true,
           isLoading: false,
         }),
@@ -38,17 +42,23 @@ export const useAuthStore = create<AuthState>()(
         set({
           user: null,
           accessToken: null,
+          refreshToken: null,
           isAuthenticated: false,
           isLoading: false,
         }),
+      setAccessToken: (accessToken) => set({ accessToken }),
       setLoading: (isLoading) => set({ isLoading }),
     }),
     {
       name: 'chpmi-auth-storage',
       storage: createJSONStorage(() => (typeof window !== 'undefined' ? localStorage : sessionStorage)),
+      onRehydrateStorage: () => (state) => {
+        state?.setLoading(false);
+      },
       partialize: (state) => ({
         user: state.user,
         accessToken: state.accessToken,
+        refreshToken: state.refreshToken,
         isAuthenticated: state.isAuthenticated,
       }),
     }

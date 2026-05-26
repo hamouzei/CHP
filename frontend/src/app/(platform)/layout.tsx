@@ -34,11 +34,10 @@ export default function PlatformLayout({ children }: { children: React.ReactNode
   // Auth Guard
   useEffect(() => {
     // Wait until hydration finishes (isLoading is false)
-    const stored = useAuthStore.getState();
-    if (!stored.isAuthenticated) {
+    if (!isLoading && !isAuthenticated) {
       router.push('/login');
     }
-  }, [isAuthenticated, router]);
+  }, [isLoading, isAuthenticated, router]);
 
   // Check backend health
   useEffect(() => {

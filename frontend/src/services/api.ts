@@ -1,4 +1,4 @@
-import { useAuthStore, User } from '../store/authStore';
+import { useAuthStore } from '../store/authStore';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api/v1';
 
@@ -26,20 +26,24 @@ function subscribeTokenRefresh(cb: (token: string) => void) {
 }
 
 function onRefreshed(token: string) {
-  refreshSubscribers.map((cb) => cb(token));
+  refreshSubscribers.forEach((cb) => cb(token));
   refreshSubscribers = [];
 }
 
 async function performRefresh(): Promise<string> {
   const store = useAuthStore.getState();
-  const token = store.accessToken;
-  
+  const refreshToken = store.refreshToken;
+
+  if (!refreshToken) {
+    store.clearAuth();
+    throw new Error('No refresh token available');
+  }
+
   const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ refreshToken: token }), // fallback if cookie is not sent
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify({ refreshToken }),
   });
 
   if (!response.ok) {
@@ -49,16 +53,16 @@ async function performRefresh(): Promise<string> {
 
   const data = await response.json();
   if (data.accessToken) {
-    store.setAuth(store.user as User, data.accessToken);
+    store.setAccessToken(data.accessToken);
     return data.accessToken;
   }
-  
+
   throw new Error('Invalid refresh response');
 }
 
 export async function request(path: string, options: RequestOptions = {}): Promise<any> {
   const { params, headers, ...restOptions } = options;
-  
+
   // Construct URL with query parameters
   let url = `${API_BASE_URL}${path}`;
   if (params) {
@@ -76,12 +80,13 @@ export async function request(path: string, options: RequestOptions = {}): Promi
 
   // Get current access token
   const { accessToken, clearAuth } = useAuthStore.getState();
-  
+
   const defaultHeaders: Record<string, string> = {};
+  // Don't set Content-Type for FormData — the browser sets multipart boundary automatically
   if (!(options.body instanceof FormData)) {
     defaultHeaders['Content-Type'] = 'application/json';
   }
-  
+
   if (accessToken) {
     defaultHeaders['Authorization'] = `Bearer ${accessToken}`;
   }
@@ -91,9 +96,15 @@ export async function request(path: string, options: RequestOptions = {}): Promi
     ...headers,
   };
 
+  // Remove Content-Type header if FormData (browser sets it with boundary)
+  if (options.body instanceof FormData) {
+    delete (mergedHeaders as any)['Content-Type'];
+  }
+
   const config: RequestInit = {
     ...restOptions,
     headers: mergedHeaders,
+    credentials: 'include',
   };
 
   try {
@@ -127,7 +138,12 @@ export async function request(path: string, options: RequestOptions = {}): Promi
               const errData = await retryResponse.json().catch(() => ({}));
               reject(new ApiError(errData.message || 'API request failed after refresh', retryResponse.status, errData));
             } else {
-              resolve(await retryResponse.json());
+              const contentType = retryResponse.headers.get('content-type');
+              if (contentType && contentType.includes('application/json')) {
+                resolve(await retryResponse.json());
+              } else {
+                resolve(retryResponse);
+              }
             }
           } catch (err) {
             reject(err);
@@ -146,7 +162,7 @@ export async function request(path: string, options: RequestOptions = {}): Promi
     if (contentType && contentType.includes('application/json')) {
       return await response.json();
     }
-    
+
     // For downloads like PDF/Excel
     return response;
   } catch (err) {
@@ -158,12 +174,12 @@ export async function request(path: string, options: RequestOptions = {}): Promi
 }
 
 export const api = {
-  get: (path: string, params?: Record<string, any>, options?: RequestOptions) => 
+  get: (path: string, params?: Record<string, any>, options?: RequestOptions) =>
     request(path, { ...options, method: 'GET', params }),
-  post: (path: string, body?: any, options?: RequestOptions) => 
+  post: (path: string, body?: any, options?: RequestOptions) =>
     request(path, { ...options, method: 'POST', body: body instanceof FormData ? body : JSON.stringify(body) }),
-  put: (path: string, body?: any, options?: RequestOptions) => 
+  put: (path: string, body?: any, options?: RequestOptions) =>
     request(path, { ...options, method: 'PUT', body: body instanceof FormData ? body : JSON.stringify(body) }),
-  delete: (path: string, options?: RequestOptions) => 
+  delete: (path: string, options?: RequestOptions) =>
     request(path, { ...options, method: 'DELETE' }),
 };

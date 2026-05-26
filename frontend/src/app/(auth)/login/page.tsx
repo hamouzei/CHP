@@ -60,7 +60,7 @@ export default function LoginPage() {
       const data = await api.post('/auth/login', { email, password });
       
       // Store in Zustand
-      setAuth(data.user, data.accessToken);
+      setAuth(data.user, data.accessToken, data.refreshToken);
       
       // Redirect
       router.push('/dashboard');
