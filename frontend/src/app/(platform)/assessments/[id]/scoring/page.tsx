@@ -71,9 +71,9 @@ interface ResponseData {
 
 interface ComputedScore {
   id: string;
-  domainId: string | null;
-  componentId: string | null;
-  domainScore: string | null;
+  domainId: string;
+  componentId: string;
+  domainScorePct: string | null;
   componentScore: string | null;
   domain?: {
     id: string;
@@ -215,9 +215,15 @@ export default function AssessmentScoringWizard() {
     });
   });
 
-  const handleScoreChange = (criteriaId: string, score: number) => {
+  const handleScoreChange = (criteriaId: string, score: number, levelDescription?: string) => {
     if (isReadOnly) return;
-    const currentJustification = justifications[criteriaId] || '';
+    let currentJustification = justifications[criteriaId] || '';
+    
+    // Auto-populate justification with the selected level descriptor if empty or too short
+    if (levelDescription && currentJustification.trim().length < 20) {
+      currentJustification = levelDescription;
+      setJustifications((prev) => ({ ...prev, [criteriaId]: currentJustification }));
+    }
     
     // Optimistic status update
     setSaveStatus((prev) => ({ ...prev, [criteriaId]: 'saving' }));
@@ -226,7 +232,7 @@ export default function AssessmentScoringWizard() {
     saveResponseMutation.mutate({
       criteriaId,
       score,
-      justification: currentJustification || 'Scored initially',
+      justification: currentJustification,
     });
   };
 
@@ -287,10 +293,11 @@ export default function AssessmentScoringWizard() {
 
   // Retrieve computed domain scores for display in the summary
   const getDomainScore = (domainCode: string) => {
+    // domainScorePct is stored on the first component's ComputedScore row for each domain
     const scoreObj = assessment.computedScores.find(
-      (s) => s.domain?.code === domainCode && s.componentId === null
+      (s) => s.domain?.code === domainCode && s.domainScorePct !== null
     );
-    return scoreObj?.domainScore ? Number(scoreObj.domainScore) : 0;
+    return scoreObj?.domainScorePct ? Number(scoreObj.domainScorePct) : 0;
   };
 
   return (
@@ -447,7 +454,7 @@ export default function AssessmentScoringWizard() {
                                   key={levelObj.level}
                                   type="button"
                                   disabled={isReadOnly}
-                                  onClick={() => handleScoreChange(cId, levelObj.level)}
+                                  onClick={() => handleScoreChange(cId, levelObj.level, levelObj.description)}
                                   className={`p-3.5 rounded-2xl text-left border transition-all duration-300 flex flex-col justify-between h-full cursor-pointer min-h-[120px] ${
                                     isSelected
                                       ? 'bg-gradient-to-br from-violet-600/30 to-indigo-600/20 border-violet-500/50 shadow-md shadow-violet-500/5 ring-1 ring-violet-500/20'
@@ -650,7 +657,7 @@ export default function AssessmentScoringWizard() {
                         <span className="text-slate-400 font-medium truncate">{dom.name}</span>
                       </div>
                       <span className="font-extrabold text-slate-200 text-right shrink-0">
-                        {score.toFixed(2)} / 4.0
+                        {score.toFixed(1)}%
                       </span>
                     </div>
                   );
