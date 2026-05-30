@@ -33,11 +33,11 @@ export default function NotFoundPage() {
         {/* Action Triggers */}
         <div className="pt-4 flex justify-center">
           <Link
-            href="/dashboard"
+            href="/assessments"
             className="inline-flex items-center justify-center gap-2 py-3 px-6 rounded-2xl text-xs font-bold text-white bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 shadow-md shadow-violet-500/15 transition-all active:scale-[0.98]"
           >
             <Home className="h-4 w-4" />
-            Back to Dashboard
+            Back to Assessments
             <ChevronRight className="h-3.5 w-3.5" />
           </Link>
         </div>

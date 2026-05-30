@@ -323,6 +323,39 @@ router.patch('/users/profile', authenticate, async (req: AuthenticatedRequest, r
   }
 });
 
+// DELETE /users/:id - Delete user (super_admin only)
+router.delete('/users/:id', authenticate, requireRole('super_admin'), async (req: AuthenticatedRequest, res) => {
+  try {
+    const user = req.user!;
+    const { id } = req.params;
+
+    if (id === user.id) {
+      return res.status(400).json({ error: 'BAD_REQUEST', message: 'You cannot delete your own account' });
+    }
+
+    const targetUser = await prisma.user.findUnique({ where: { id } });
+    if (!targetUser) {
+      return res.status(404).json({ error: 'NOT_FOUND', message: 'User not found' });
+    }
+
+    await prisma.user.delete({ where: { id } });
+
+    await logAction({
+      userId: user.id,
+      organizationId: user.organizationId,
+      action: 'USER_DELETE',
+      entityType: 'user',
+      entityId: id,
+      previousValue: { email: targetUser.email, fullName: targetUser.fullName, role: targetUser.role },
+    });
+
+    return res.json({ message: 'User deleted successfully' });
+  } catch (error) {
+    console.error('Delete user error:', error);
+    return res.status(500).json({ error: 'INTERNAL_ERROR', message: 'Failed to delete user' });
+  }
+});
+
 // PATCH /users/:id/role - Promote/demote role
 router.patch('/users/:id/role', authenticate, requireRole('super_admin'), async (req: AuthenticatedRequest, res) => {
   try {

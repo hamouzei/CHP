@@ -7,17 +7,22 @@ import { Loader2 } from 'lucide-react';
 
 export default function Home() {
   const router = useRouter();
-  const { isAuthenticated, isLoading } = useAuthStore();
+  const { isAuthenticated, isLoading, user } = useAuthStore();
 
   useEffect(() => {
     if (!isLoading) {
       if (isAuthenticated) {
-        router.push('/dashboard');
+        // Only super_admin can access the dashboard
+        if (user?.role === 'super_admin') {
+          router.push('/dashboard');
+        } else {
+          router.push('/assessments');
+        }
       } else {
         router.push('/login');
       }
     }
-  }, [isLoading, isAuthenticated, router]);
+  }, [isLoading, isAuthenticated, user, router]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-950 text-slate-100">

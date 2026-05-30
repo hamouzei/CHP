@@ -1,11 +1,12 @@
 import { Router } from 'express';
 import prisma from '../config/db';
 import { authenticate, AuthenticatedRequest } from '../middleware/auth';
+import { requireRole } from '../middleware/rbac';
 
 const router = Router();
 
 // GET /dashboard/organization/:orgId - Organization-level dashboard data
-router.get('/organization/:orgId', authenticate, async (req: AuthenticatedRequest, res) => {
+router.get('/organization/:orgId', authenticate, requireRole('super_admin'), async (req: AuthenticatedRequest, res) => {
   try {
     const { orgId } = req.params;
     const user = req.user!;
@@ -129,6 +130,106 @@ router.get('/organization/:orgId', authenticate, async (req: AuthenticatedReques
   } catch (error) {
     console.error('Fetch dashboard details error:', error);
     return res.status(500).json({ error: 'INTERNAL_ERROR', message: 'Failed to fetch dashboard metrics' });
+  }
+});
+
+// GET /dashboard/platform - Platform-wide dashboard for super_admin (all orgs aggregated)
+router.get('/platform', authenticate, requireRole('super_admin'), async (req: AuthenticatedRequest, res) => {
+  try {
+    const organizations = await prisma.organization.findMany({
+      where: { isActive: true },
+      orderBy: { name: 'asc' },
+    });
+
+    const allAssessments = await prisma.assessment.findMany({
+      include: { maturityBand: true, organization: true },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    if (allAssessments.length === 0) {
+      return res.json({
+        latestAssessment: null,
+        trends: [],
+        priorityGaps: [],
+        componentScores: [],
+        domainScores: [],
+        allAssessments: [],
+        organizationCount: organizations.length,
+      });
+    }
+
+    const latest = allAssessments[0];
+
+    const computedScores = await prisma.computedScore.findMany({
+      where: { assessmentId: latest.id },
+      include: { component: { include: { domain: true } } },
+    });
+
+    const componentScoresFormatted = computedScores.map((cs) => {
+      const rawScore = cs.componentScore ? Number(cs.componentScore) : 0;
+      return {
+        componentId: cs.componentId,
+        componentCode: cs.component.code,
+        componentName: cs.component.name,
+        domainId: cs.domainId,
+        domainCode: cs.component.domain.code,
+        domainName: cs.component.domain.name,
+        rawScore,
+        scorePct: Math.round((rawScore / 4.0) * 100 * 100) / 100,
+      };
+    });
+
+    const domains = await prisma.domain.findMany({ orderBy: { displayOrder: 'asc' } });
+    const domainScoresFormatted = domains.map((d) => {
+      const compScores = componentScoresFormatted.filter((c) => c.domainId === d.id);
+      const active = compScores.filter((c) => c.rawScore > 0);
+      const domainScorePct = active.length > 0
+        ? Math.round(((active.reduce((s, c) => s + c.rawScore, 0) / active.length) / 4.0) * 100 * 100) / 100
+        : 0;
+      return { domainId: d.id, domainCode: d.code, domainName: d.name, scorePct: domainScorePct };
+    });
+
+    const trends = allAssessments
+      .filter((a) => a.status === 'approved' || a.status === 'under_review' || a.status === 'in_progress')
+      .reverse()
+      .map((a) => ({
+        assessmentId: a.id,
+        cycleName: `${a.organization.name} \u2014 ${a.cycleName}`,
+        chpmiScore: a.chpmiScore ? Number(a.chpmiScore) : 0,
+        maturityBand: a.maturityBand?.label || 'Non-Existent',
+        date: a.submittedAt || a.approvedAt || a.createdAt,
+      }));
+
+    const priorityGaps = [...componentScoresFormatted]
+      .sort((a, b) => a.rawScore - b.rawScore)
+      .slice(0, 3);
+
+    return res.json({
+      latestAssessment: {
+        id: latest.id,
+        cycleName: `${latest.organization.name} \u2014 ${latest.cycleName}`,
+        status: latest.status,
+        chpmiScore: latest.chpmiScore ? Number(latest.chpmiScore) : 0,
+        maturityBand: latest.maturityBand?.label || 'Non-Existent',
+        updatedAt: latest.updatedAt,
+      },
+      trends,
+      priorityGaps,
+      componentScores: componentScoresFormatted,
+      domainScores: domainScoresFormatted,
+      organizationCount: organizations.length,
+      allAssessments: allAssessments.map((a) => ({
+        id: a.id,
+        cycleName: `${a.organization.name} \u2014 ${a.cycleName}`,
+        status: a.status,
+        chpmiScore: a.chpmiScore ? Number(a.chpmiScore) : 0,
+        maturityBand: a.maturityBand?.label || 'Non-Existent',
+        createdAt: a.createdAt,
+      })),
+    });
+  } catch (error) {
+    console.error('Fetch platform dashboard error:', error);
+    return res.status(500).json({ error: 'INTERNAL_ERROR', message: 'Failed to fetch platform dashboard' });
   }
 });
 

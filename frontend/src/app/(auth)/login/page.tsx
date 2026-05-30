@@ -8,7 +8,7 @@ import { Shield, Mail, Lock, Eye, EyeOff, Loader2, AlertCircle } from 'lucide-re
 
 export default function LoginPage() {
   const router = useRouter();
-  const { setAuth, isAuthenticated, isLoading: authLoading } = useAuthStore();
+  const { setAuth, isAuthenticated, isLoading: authLoading, user: authUser } = useAuthStore();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -18,12 +18,16 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
 
-  // If already authenticated, redirect to dashboard
+  // If already authenticated, redirect based on role
   useEffect(() => {
-    if (isAuthenticated) {
-      router.push('/dashboard');
+    if (isAuthenticated && authUser) {
+      if (authUser.role === 'super_admin') {
+        router.push('/dashboard');
+      } else {
+        router.push('/assessments');
+      }
     }
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, authUser, router]);
 
   const validateForm = () => {
     const errors: Record<string, string> = {};
@@ -62,8 +66,12 @@ export default function LoginPage() {
       // Store in Zustand
       setAuth(data.user, data.accessToken, data.refreshToken);
       
-      // Redirect
-      router.push('/dashboard');
+      // Redirect based on role
+      if (data.user.role === 'super_admin') {
+        router.push('/dashboard');
+      } else {
+        router.push('/assessments');
+      }
     } catch (err: any) {
       console.error('Login error:', err);
       if (err.status === 403 && err.data?.error === 'LOCKED') {
@@ -192,24 +200,6 @@ export default function LoginPage() {
             </div>
           </form>
 
-          {/* Quick seeded users references for user testing */}
-          <div className="mt-8 pt-6 border-t border-slate-800">
-            <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Seed Accounts for Testing:</h4>
-            <div className="grid grid-cols-2 gap-2 text-[10px] text-slate-400">
-              <div className="p-2 rounded-xl bg-slate-900/60 border border-slate-800/80">
-                <span className="font-bold text-violet-300 block">Assessor:</span>
-                <span>assessor@chpmi.org</span>
-              </div>
-              <div className="p-2 rounded-xl bg-slate-900/60 border border-slate-800/80">
-                <span className="font-bold text-cyan-300 block">Reviewer:</span>
-                <span>reviewer@chpmi.org</span>
-              </div>
-              <div className="p-2 rounded-xl bg-slate-900/60 border border-slate-800/80 mt-1 col-span-2">
-                <span className="font-bold text-emerald-300 block">Super Admin:</span>
-                <span>superadmin@chpmi.org</span>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </main>

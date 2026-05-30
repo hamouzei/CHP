@@ -55,7 +55,7 @@ export default function GlobalErrorPage({
           </button>
           
           <Link
-            href="/dashboard"
+            href="/assessments"
             className="inline-flex items-center justify-center gap-2 py-3 px-5 rounded-xl text-xs font-bold text-slate-300 hover:text-slate-200 bg-slate-900/60 hover:bg-slate-900 border border-slate-800 transition-all active:scale-[0.98]"
           >
             <Home className="h-3.5 w-3.5" />

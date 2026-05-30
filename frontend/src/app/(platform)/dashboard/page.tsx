@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { useAuthStore } from '../../../store/authStore';
+import { useRouter } from 'next/navigation';
 import { api } from '../../../services/api';
 import Link from 'next/link';
 import {
@@ -97,6 +98,7 @@ interface DashboardData {
   componentScores: ComponentScore[];
   domainScores: DomainScore[];
   allAssessments: AssessmentSummary[];
+  organizationCount?: number;
 }
 
 /* ─── Helpers ─── */
@@ -186,21 +188,26 @@ function CustomTooltip({ active, payload, label }: any) {
 /* ─── Main Page ─── */
 export default function DashboardPage() {
   const { user } = useAuthStore();
+  const router = useRouter();
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [exportingPdf, setExportingPdf] = useState(false);
   const [exportingExcel, setExportingExcel] = useState(false);
 
-  const fetchDashboard = async () => {
-    if (!user?.organizationId) {
-      setLoading(false);
-      return;
+  // Access guard: only super_admin can view the dashboard
+  useEffect(() => {
+    if (user && user.role !== 'super_admin') {
+      router.replace('/assessments');
     }
+  }, [user, router]);
+
+  const fetchDashboard = async () => {
     try {
       setLoading(true);
       setError(null);
-      const result = await api.get(`/dashboard/organization/${user.organizationId}`);
+      // super_admin uses the platform-wide endpoint (no orgId needed)
+      const result = await api.get('/dashboard/platform');
       setData(result);
     } catch (err: any) {
       console.error('Dashboard fetch error:', err);
@@ -211,9 +218,11 @@ export default function DashboardPage() {
   };
 
   useEffect(() => {
-    fetchDashboard();
+    if (user?.role === 'super_admin') {
+      fetchDashboard();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.organizationId]);
+  }, [user?.role]);
 
   /* ─── Radar data ─── */
   const radarData = useMemo(() => {
@@ -341,7 +350,9 @@ export default function DashboardPage() {
               Welcome, {user.fullName}
             </h1>
             <p className="mt-2 text-slate-400 text-sm leading-relaxed">
-              {user.organizationName || 'Your Organization'} — CHP Maturity Index analytics, domain radar, trend lines, and report exports.
+              {data?.organizationCount !== undefined
+                ? `Platform-wide analytics across ${data.organizationCount} active organization${data.organizationCount !== 1 ? 's' : ''} — CHPMI scores, domain radar, trend lines, and report exports.`
+                : 'CHP Maturity Index analytics, domain radar, trend lines, and report exports.'}
             </p>
           </div>
 

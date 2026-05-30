@@ -165,11 +165,32 @@ export default function UserDirectoryPage() {
     onSuccess: (data) => {
       if (data.accessToken && data.user) {
         startImpersonation(data.user, data.accessToken);
-        router.push('/dashboard');
+        router.push('/assessments');
       }
     },
     onError: (err: any) => {
       alert(err.message || 'Impersonation failed');
+    },
+  });
+
+  const deleteUserMutation = useMutation({
+    mutationFn: (userId: string) => api.delete(`/users/${userId}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['users'] });
+    },
+    onError: (err: any) => {
+      alert(err.message || 'Failed to delete user');
+    },
+  });
+
+  const deleteOrgMutation = useMutation({
+    mutationFn: (orgId: string) => api.delete(`/organizations/${orgId}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['organizations'] });
+      queryClient.invalidateQueries({ queryKey: ['users'] });
+    },
+    onError: (err: any) => {
+      alert(err.message || 'Failed to delete organization');
     },
   });
 
@@ -481,6 +502,22 @@ export default function UserDirectoryPage() {
                                 <option value="viewer">Viewer</option>
                               </select>
                             ) : null}
+
+                            {/* Delete User */}
+                            {u.id !== currentUser?.id ? (
+                              <button
+                                onClick={() => {
+                                  if (confirm(`Are you sure you want to permanently delete user ${u.fullName} (${u.email})? This action cannot be undone.`)) {
+                                    deleteUserMutation.mutate(u.id);
+                                  }
+                                }}
+                                className="inline-flex items-center gap-1 py-1.5 px-3 rounded-lg text-[10px] font-extrabold uppercase tracking-wide text-red-400 hover:text-red-300 bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 transition-all active:scale-[0.98]"
+                                title="Delete User"
+                              >
+                                <Trash2 className="h-3 w-3" />
+                                Delete
+                              </button>
+                            ) : null}
                           </div>
                         </td>
                       )}
@@ -598,6 +635,20 @@ export default function UserDirectoryPage() {
                           >
                             <Power className="h-3 w-3" />
                             {org.isActive ? 'Suspend' : 'Activate'}
+                          </button>
+
+                          {/* Delete Organization */}
+                          <button
+                            onClick={() => {
+                              if (confirm(`Are you sure you want to permanently delete "${org.name}"? This will remove all associated assessments, users' org links, and data. This action cannot be undone.`)) {
+                                deleteOrgMutation.mutate(org.id);
+                              }
+                            }}
+                            className="inline-flex items-center gap-1 py-1.5 px-3 rounded-lg text-[10px] font-extrabold uppercase tracking-wide text-red-400 hover:text-red-300 bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 transition-all active:scale-[0.98]"
+                            title="Delete Organization"
+                          >
+                            <Trash2 className="h-3 w-3" />
+                            Delete
                           </button>
                         </div>
                       </td>

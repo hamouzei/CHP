@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAuthStore } from '../../store/authStore';
-import { api } from '../../services/api';
 import {
   LayoutDashboard,
   ClipboardList,
@@ -14,11 +13,6 @@ import {
   Shield,
   Menu,
   X,
-  Bell,
-  CheckCircle,
-  HelpCircle,
-  Activity,
-  FolderLock
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -29,7 +23,6 @@ export default function PlatformLayout({ children }: { children: React.ReactNode
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [apiStatus, setApiStatus] = useState<'online' | 'offline'>('online');
 
   // Auth Guard
   useEffect(() => {
@@ -39,21 +32,6 @@ export default function PlatformLayout({ children }: { children: React.ReactNode
     }
   }, [isLoading, isAuthenticated, router]);
 
-  // Check backend health
-  useEffect(() => {
-    const checkHealth = async () => {
-      try {
-        await api.get('/health');
-        setApiStatus('online');
-      } catch (err) {
-        setApiStatus('offline');
-      }
-    };
-
-    checkHealth();
-    const interval = setInterval(checkHealth, 30000); // check every 30s
-    return () => clearInterval(interval);
-  }, []);
 
   if (isLoading || !isAuthenticated || !user) {
     return (
@@ -107,10 +85,14 @@ export default function PlatformLayout({ children }: { children: React.ReactNode
     }
   };
 
-  const navigation = [
-    { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-    { name: 'Assessments', href: '/assessments', icon: ClipboardList },
-  ];
+  const navigation: { name: string; href: string; icon: any }[] = [];
+
+  // Dashboard only for super_admin
+  if (user.role === 'super_admin') {
+    navigation.push({ name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard });
+  }
+
+  navigation.push({ name: 'Assessments', href: '/assessments', icon: ClipboardList });
 
   // Add User Directory panel for super admin and admin
   if (user.role === 'super_admin' || user.role === 'admin') {
@@ -263,14 +245,6 @@ export default function PlatformLayout({ children }: { children: React.ReactNode
           </div>
 
           <div className="flex items-center gap-4">
-            {/* API Status Connection Indicator */}
-            <div className="flex items-center gap-2 bg-slate-900/40 border border-slate-800/80 px-3 py-1.5 rounded-full text-[10px] font-bold">
-              <div className={`h-1.5 w-1.5 rounded-full ${apiStatus === 'online' ? 'bg-emerald-500 animate-pulse' : 'bg-red-500'}`}></div>
-              <span className={apiStatus === 'online' ? 'text-emerald-400' : 'text-red-400'}>
-                API: {apiStatus === 'online' ? 'Connected' : 'Offline'}
-              </span>
-            </div>
-
             {/* Role Badge */}
             <div className={`text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-md tracking-wider ${getRoleBadgeStyles(user.role)}`}>
               {getRoleLabel(user.role)}
