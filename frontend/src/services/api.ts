@@ -180,6 +180,8 @@ export const api = {
     request(path, { ...options, method: 'POST', body: body instanceof FormData ? body : JSON.stringify(body) }),
   put: (path: string, body?: any, options?: RequestOptions) =>
     request(path, { ...options, method: 'PUT', body: body instanceof FormData ? body : JSON.stringify(body) }),
+  patch: (path: string, body?: any, options?: RequestOptions) =>
+    request(path, { ...options, method: 'PATCH', body: body instanceof FormData ? body : JSON.stringify(body) }),
   delete: (path: string, options?: RequestOptions) =>
     request(path, { ...options, method: 'DELETE' }),
 };

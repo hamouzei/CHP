@@ -25,7 +25,7 @@ import Link from 'next/link';
 export default function PlatformLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
-  const { user, isAuthenticated, clearAuth, isLoading } = useAuthStore();
+  const { user, isAuthenticated, clearAuth, isLoading, originalUser, stopImpersonation } = useAuthStore();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -81,6 +81,8 @@ export default function PlatformLayout({ children }: { children: React.ReactNode
     switch (role) {
       case 'super_admin':
         return 'bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/30 text-amber-300';
+      case 'admin':
+        return 'bg-gradient-to-r from-emerald-500/20 to-teal-500/20 border border-emerald-500/30 text-emerald-300';
       case 'assessor':
         return 'bg-gradient-to-r from-violet-500/20 to-indigo-500/20 border border-violet-500/30 text-violet-300';
       case 'reviewer':
@@ -94,6 +96,8 @@ export default function PlatformLayout({ children }: { children: React.ReactNode
     switch (role) {
       case 'super_admin':
         return 'Super Admin';
+      case 'admin':
+        return 'Admin';
       case 'assessor':
         return 'Assessor';
       case 'reviewer':
@@ -108,8 +112,8 @@ export default function PlatformLayout({ children }: { children: React.ReactNode
     { name: 'Assessments', href: '/assessments', icon: ClipboardList },
   ];
 
-  // Add Admin Users panel for super admin
-  if (user.role === 'super_admin') {
+  // Add User Directory panel for super admin and admin
+  if (user.role === 'super_admin' || user.role === 'admin') {
     navigation.push({ name: 'User Directory', href: '/users', icon: Users });
   }
 
@@ -223,6 +227,24 @@ export default function PlatformLayout({ children }: { children: React.ReactNode
 
       {/* --- Main Wrapper --- */}
       <div className="flex-1 flex flex-col min-w-0">
+        {originalUser && (
+          <div className="bg-gradient-to-r from-amber-600/90 to-orange-600/90 border-b border-amber-500/30 text-white text-xs font-bold py-3 px-4 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-lg z-30 relative animate-slide-down">
+            <div className="flex items-center gap-2">
+              <span className="h-2 w-2 rounded-full bg-amber-200 animate-ping"></span>
+              <span>Impersonation Active: Viewing platform as <strong className="underline">{user.fullName}</strong> ({getRoleLabel(user.role)})</span>
+            </div>
+            <button
+              onClick={() => {
+                stopImpersonation();
+                router.push('/users');
+              }}
+              className="py-1 px-3 rounded-lg bg-slate-900/60 hover:bg-slate-900 border border-white/25 text-white text-[10px] font-extrabold uppercase tracking-wide transition-all active:scale-[0.98]"
+            >
+              Return to Admin Account
+            </button>
+          </div>
+        )}
+        
         {/* --- Header --- */}
         <header className="h-16 shrink-0 glass-panel border-b border-slate-900 flex items-center justify-between px-4 sm:px-6 relative z-20">
           <div className="flex items-center gap-3">
