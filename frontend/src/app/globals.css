@@ -1,17 +1,17 @@
 @import "tailwindcss";
 
 @theme {
-  --color-brand-50: #f5f3ff;
-  --color-brand-100: #ede9fe;
-  --color-brand-200: #ddd6fe;
-  --color-brand-300: #c084fc;
-  --color-brand-400: #a855f7;
-  --color-brand-500: #8b5cf6;
-  --color-brand-600: #7c3aed;
-  --color-brand-700: #6d28d9;
-  --color-brand-800: #5b21b6;
-  --color-brand-900: #4c1d95;
-  --color-brand-950: #090514;
+  --color-brand-50: #eff6ff;
+  --color-brand-100: #dbeafe;
+  --color-brand-200: #bfdbfe;
+  --color-brand-300: #93c5fd;
+  --color-brand-400: #60a5fa;
+  --color-brand-500: #3b82f6;
+  --color-brand-600: #2563eb;
+  --color-brand-700: #1d4ed8;
+  --color-brand-800: #1e40af;
+  --color-brand-900: #1e3a8a;
+  --color-brand-950: #050d1f;
   
   --color-accent-50: #ecfeff;
   --color-accent-100: #cffafe;
@@ -77,8 +77,8 @@ body {
 }
 
 .glass-card:hover {
-  border-color: rgba(124, 58, 237, 0.3);
-  box-shadow: 0 12px 40px 0 rgba(124, 58, 237, 0.15);
+  border-color: rgba(59, 130, 246, 0.3);
+  box-shadow: 0 12px 40px 0 rgba(59, 130, 246, 0.15);
   transform: translateY(-2px);
 }
 
@@ -90,9 +90,9 @@ body {
 }
 
 .glass-input:focus {
-  border-color: #8b5cf6;
+  border-color: #3b82f6;
   background: rgba(15, 23, 42, 0.7);
-  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.25);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
   outline: none;
 }
 
@@ -107,12 +107,12 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(124, 58, 237, 0.4);
+  background: rgba(59, 130, 246, 0.4);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(124, 58, 237, 0.6);
+  background: rgba(59, 130, 246, 0.6);
 }
 
 /* Dynamic Aurora background effect */
@@ -120,8 +120,8 @@ body {
   background: linear-gradient(
     135deg,
     #090d16 0%,
-    #0d0c22 25%,
-    #150e2c 50%,
+    #0c1426 25%,
+    #0e1a30 50%,
     #020f14 75%,
     #090d16 100%
   );

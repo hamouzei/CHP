@@ -241,7 +241,7 @@ export default function UserDirectoryPage() {
       case 'admin':
         return 'bg-gradient-to-r from-emerald-500/20 to-teal-500/20 border border-emerald-500/30 text-emerald-300';
       case 'assessor':
-        return 'bg-gradient-to-r from-violet-500/20 to-indigo-500/20 border border-violet-500/30 text-violet-300';
+        return 'bg-gradient-to-r from-blue-500/20 to-sky-500/20 border border-blue-500/30 text-blue-300';
       case 'reviewer':
         return 'bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border border-cyan-500/30 text-cyan-300';
       default:
@@ -296,7 +296,7 @@ export default function UserDirectoryPage() {
         <div className="flex flex-wrap gap-3">
           <button
             onClick={() => setIsInviteModalOpen(true)}
-            className="inline-flex items-center justify-center gap-2 py-3 px-5 rounded-2xl text-xs font-bold text-white bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 shadow-lg shadow-violet-500/15 hover:shadow-violet-500/25 transition-all duration-300 active:scale-[0.98]"
+            className="inline-flex items-center justify-center gap-2 py-3 px-5 rounded-2xl text-xs font-bold text-white bg-gradient-to-r from-blue-600 to-sky-600 hover:from-blue-500 hover:to-sky-500 shadow-lg shadow-blue-500/15 hover:shadow-blue-500/25 transition-all duration-300 active:scale-[0.98]"
           >
             <UserPlus className="h-4.5 w-4.5" />
             Invite New User
@@ -325,7 +325,7 @@ export default function UserDirectoryPage() {
             onClick={() => setActiveTab('users')}
             className={`pb-3.5 text-sm font-bold border-b-2 transition-all flex items-center gap-2 ${
               activeTab === 'users'
-                ? 'border-violet-500 text-violet-400'
+                ? 'border-blue-500 text-blue-400'
                 : 'border-transparent text-slate-400 hover:text-slate-200'
             }`}
           >
@@ -336,7 +336,7 @@ export default function UserDirectoryPage() {
             onClick={() => setActiveTab('organizations')}
             className={`pb-3.5 text-sm font-bold border-b-2 transition-all flex items-center gap-2 ${
               activeTab === 'organizations'
-                ? 'border-violet-500 text-violet-400'
+                ? 'border-blue-500 text-blue-400'
                 : 'border-transparent text-slate-400 hover:text-slate-200'
             }`}
           >
@@ -361,7 +361,7 @@ export default function UserDirectoryPage() {
                 placeholder="Search by name, email, or organization..."
                 value={userSearch}
                 onChange={(e) => setUserSearch(e.target.value)}
-                className="glass-input pl-10 pr-4 py-2.5 rounded-2xl text-sm w-full block focus:ring-1 focus:ring-violet-500"
+                className="glass-input pl-10 pr-4 py-2.5 rounded-2xl text-sm w-full block focus:ring-1 focus:ring-blue-500"
               />
             </div>
 
@@ -403,7 +403,7 @@ export default function UserDirectoryPage() {
           {/* User List Panel */}
           {isUsersLoading ? (
             <div className="h-64 flex flex-col items-center justify-center gap-3">
-              <Loader2 className="h-8 w-8 text-violet-500 animate-spin" />
+              <Loader2 className="h-8 w-8 text-blue-500 animate-spin" />
               <span className="text-sm text-slate-400">Fetching users list...</span>
             </div>
           ) : usersError ? (
@@ -436,7 +436,7 @@ export default function UserDirectoryPage() {
                       {/* Name / Email */}
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
-                          <div className="h-9 w-9 rounded-xl bg-violet-600/15 flex items-center justify-center text-violet-400 font-bold border border-violet-500/10 shrink-0">
+                          <div className="h-9 w-9 rounded-xl bg-blue-600/15 flex items-center justify-center text-blue-400 font-bold border border-blue-500/10 shrink-0">
                             {u.fullName.charAt(0)}
                           </div>
                           <div>
@@ -493,7 +493,7 @@ export default function UserDirectoryPage() {
                               <select
                                 value={u.role}
                                 onChange={(e) => changeUserRoleMutation.mutate({ userId: u.id, role: e.target.value })}
-                                className="bg-slate-950 border border-slate-800 rounded-lg text-xs py-1.5 px-2 text-slate-300 cursor-pointer focus:ring-1 focus:ring-violet-500 shrink-0 font-semibold"
+                                className="bg-slate-950 border border-slate-800 rounded-lg text-xs py-1.5 px-2 text-slate-300 cursor-pointer focus:ring-1 focus:ring-blue-500 shrink-0 font-semibold"
                               >
                                 <option value="super_admin">Super Admin</option>
                                 <option value="admin">Admin</option>
@@ -544,7 +544,7 @@ export default function UserDirectoryPage() {
                 placeholder="Search organizations by name, region, country..."
                 value={orgSearch}
                 onChange={(e) => setOrgSearch(e.target.value)}
-                className="glass-input pl-10 pr-4 py-2.5 rounded-2xl text-sm w-full block focus:ring-1 focus:ring-violet-500"
+                className="glass-input pl-10 pr-4 py-2.5 rounded-2xl text-sm w-full block focus:ring-1 focus:ring-blue-500"
               />
             </div>
           </div>
@@ -676,7 +676,7 @@ export default function UserDirectoryPage() {
             </button>
 
             <h3 className="text-xl font-extrabold text-white flex items-center gap-2">
-              <UserPlus className="h-5.5 w-5.5 text-violet-400" />
+              <UserPlus className="h-5.5 w-5.5 text-blue-400" />
               Invite New User
             </h3>
             <p className="text-xs text-slate-400 mt-1.5">
@@ -702,7 +702,7 @@ export default function UserDirectoryPage() {
                     placeholder="Enter full name..."
                     value={inviteForm.fullName}
                     onChange={(e) => setInviteForm({ ...inviteForm, fullName: e.target.value })}
-                    className="glass-input pl-10 pr-4 py-2.5 rounded-2xl text-sm w-full focus:ring-1 focus:ring-violet-500"
+                    className="glass-input pl-10 pr-4 py-2.5 rounded-2xl text-sm w-full focus:ring-1 focus:ring-blue-500"
                   />
                 </div>
               </div>
@@ -718,7 +718,7 @@ export default function UserDirectoryPage() {
                     placeholder="name@organization.org"
                     value={inviteForm.email}
                     onChange={(e) => setInviteForm({ ...inviteForm, email: e.target.value })}
-                    className="glass-input pl-10 pr-4 py-2.5 rounded-2xl text-sm w-full focus:ring-1 focus:ring-violet-500"
+                    className="glass-input pl-10 pr-4 py-2.5 rounded-2xl text-sm w-full focus:ring-1 focus:ring-blue-500"
                   />
                 </div>
               </div>
@@ -734,7 +734,7 @@ export default function UserDirectoryPage() {
                     placeholder="Must meet strength guidelines (10+ chars)"
                     value={inviteForm.password}
                     onChange={(e) => setInviteForm({ ...inviteForm, password: e.target.value })}
-                    className="glass-input pl-10 pr-4 py-2.5 rounded-2xl text-sm w-full focus:ring-1 focus:ring-violet-500"
+                    className="glass-input pl-10 pr-4 py-2.5 rounded-2xl text-sm w-full focus:ring-1 focus:ring-blue-500"
                   />
                 </div>
               </div>
@@ -791,7 +791,7 @@ export default function UserDirectoryPage() {
                 <button
                   type="submit"
                   disabled={inviteUserMutation.isPending}
-                  className="inline-flex items-center gap-1.5 py-2.5 px-5 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 shadow-md shadow-violet-500/10 active:scale-[0.98] transition-all disabled:opacity-50"
+                  className="inline-flex items-center gap-1.5 py-2.5 px-5 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-blue-600 to-sky-600 hover:from-blue-500 hover:to-sky-500 shadow-md shadow-blue-500/10 active:scale-[0.98] transition-all disabled:opacity-50"
                 >
                   {inviteUserMutation.isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
                   Invite User
@@ -844,7 +844,7 @@ export default function UserDirectoryPage() {
                     placeholder="e.g. Kenya Ministry of Health"
                     value={orgForm.name}
                     onChange={(e) => setOrgForm({ ...orgForm, name: e.target.value })}
-                    className="glass-input pl-10 pr-4 py-2.5 rounded-2xl text-sm w-full focus:ring-1 focus:ring-violet-500"
+                    className="glass-input pl-10 pr-4 py-2.5 rounded-2xl text-sm w-full focus:ring-1 focus:ring-blue-500"
                   />
                 </div>
               </div>
@@ -875,7 +875,7 @@ export default function UserDirectoryPage() {
                     maxLength={3}
                     value={orgForm.countryCode}
                     onChange={(e) => setOrgForm({ ...orgForm, countryCode: e.target.value.toUpperCase() })}
-                    className="glass-input pl-10 pr-4 py-2.5 rounded-2xl text-sm w-full focus:ring-1 focus:ring-violet-500"
+                    className="glass-input pl-10 pr-4 py-2.5 rounded-2xl text-sm w-full focus:ring-1 focus:ring-blue-500"
                   />
                 </div>
               </div>
@@ -890,7 +890,7 @@ export default function UserDirectoryPage() {
                     placeholder="e.g. Sub-Saharan Africa, Nairobi"
                     value={orgForm.region}
                     onChange={(e) => setOrgForm({ ...orgForm, region: e.target.value })}
-                    className="glass-input pl-10 pr-4 py-2.5 rounded-2xl text-sm w-full focus:ring-1 focus:ring-violet-500"
+                    className="glass-input pl-10 pr-4 py-2.5 rounded-2xl text-sm w-full focus:ring-1 focus:ring-blue-500"
                   />
                 </div>
               </div>

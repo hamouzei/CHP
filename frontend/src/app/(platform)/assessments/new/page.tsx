@@ -124,7 +124,7 @@ export default function NewAssessmentPage() {
 
       {/* Form Card */}
       <div className="glass-card rounded-3xl p-6 sm:p-8 relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-violet-500/40 to-transparent"></div>
+        <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-blue-500/40 to-transparent"></div>
 
         {error && (
           <div className="mb-6 flex items-start gap-3 p-4 rounded-2xl bg-red-950/40 border border-red-500/20 text-red-300 text-sm animate-shake">
@@ -268,7 +268,7 @@ export default function NewAssessmentPage() {
             <button
               type="submit"
               disabled={createMutation.isPending}
-              className="inline-flex justify-center items-center gap-2 py-3.5 px-6 rounded-2xl text-xs font-bold text-white bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 shadow-lg shadow-violet-500/15 hover:shadow-violet-500/25 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg active:scale-[0.98]"
+              className="inline-flex justify-center items-center gap-2 py-3.5 px-6 rounded-2xl text-xs font-bold text-white bg-gradient-to-r from-blue-600 to-sky-600 hover:from-blue-500 hover:to-sky-500 shadow-lg shadow-blue-500/15 hover:shadow-blue-500/25 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg active:scale-[0.98]"
             >
               {createMutation.isPending ? (
                 <>

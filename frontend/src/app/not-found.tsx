@@ -13,7 +13,7 @@ export default function NotFoundPage() {
 
       <div className="w-full max-w-md glass-card rounded-3xl p-8 border border-slate-900/80 shadow-2xl relative z-10 text-center space-y-6">
         {/* Warning Icon Badge */}
-        <div className="mx-auto w-16 h-16 rounded-2xl bg-violet-600/10 border border-violet-500/20 flex items-center justify-center text-violet-400">
+        <div className="mx-auto w-16 h-16 rounded-2xl bg-blue-600/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
           <HelpCircle className="h-9 w-9" />
         </div>
 
@@ -22,7 +22,7 @@ export default function NotFoundPage() {
           <h1 className="text-4xl font-black tracking-tight text-white">
             404
           </h1>
-          <h2 className="text-xl font-bold bg-gradient-to-r from-violet-200 via-slate-100 to-cyan-200 bg-clip-text text-transparent">
+          <h2 className="text-xl font-bold bg-gradient-to-r from-blue-200 via-slate-100 to-cyan-200 bg-clip-text text-transparent">
             Page Not Found
           </h2>
           <p className="text-xs text-slate-400 max-w-xs mx-auto leading-relaxed pt-1">
@@ -34,7 +34,7 @@ export default function NotFoundPage() {
         <div className="pt-4 flex justify-center">
           <Link
             href="/assessments"
-            className="inline-flex items-center justify-center gap-2 py-3 px-6 rounded-2xl text-xs font-bold text-white bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 shadow-md shadow-violet-500/15 transition-all active:scale-[0.98]"
+            className="inline-flex items-center justify-center gap-2 py-3 px-6 rounded-2xl text-xs font-bold text-white bg-gradient-to-r from-blue-600 to-sky-600 hover:from-blue-500 hover:to-sky-500 shadow-md shadow-blue-500/15 transition-all active:scale-[0.98]"
           >
             <Home className="h-4 w-4" />
             Back to Assessments

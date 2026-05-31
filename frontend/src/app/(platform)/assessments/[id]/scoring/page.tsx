@@ -169,7 +169,7 @@ export default function AssessmentScoringWizard() {
   if (isLoading) {
     return (
       <div className="h-96 flex flex-col items-center justify-center gap-3">
-        <Loader2 className="h-8 w-8 text-violet-500 animate-spin" />
+        <Loader2 className="h-8 w-8 text-blue-500 animate-spin" />
         <span className="text-sm text-slate-400">Loading maturity framework scoring wizard...</span>
       </div>
     );
@@ -181,7 +181,7 @@ export default function AssessmentScoringWizard() {
         <AlertCircle className="h-10 w-10 text-red-500 mx-auto mb-3" />
         <h3 className="font-bold text-slate-200">Failed to Load Framework</h3>
         <p className="text-xs text-slate-400 mt-1">{(error as any)?.message || 'Assessment records not found.'}</p>
-        <Link href="/assessments" className="mt-4 inline-flex items-center gap-1.5 text-xs text-violet-400 hover:underline">
+        <Link href="/assessments" className="mt-4 inline-flex items-center gap-1.5 text-xs text-blue-400 hover:underline">
           <ArrowLeft className="h-3.5 w-3.5" /> Back to List
         </Link>
       </div>
@@ -354,7 +354,7 @@ export default function AssessmentScoringWizard() {
             <button
               onClick={() => submitMutation.mutate()}
               disabled={completedCriteria < 30 || submitMutation.isPending}
-              className="inline-flex items-center justify-center gap-2 py-2.5 px-5 rounded-2xl text-xs font-bold text-white bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 shadow-lg shadow-violet-500/15 hover:shadow-violet-500/25 transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98]"
+              className="inline-flex items-center justify-center gap-2 py-2.5 px-5 rounded-2xl text-xs font-bold text-white bg-gradient-to-r from-blue-600 to-sky-600 hover:from-blue-500 hover:to-sky-500 shadow-lg shadow-blue-500/15 hover:shadow-blue-500/25 transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98]"
             >
               {submitMutation.isPending ? (
                 <Loader2 className="animate-spin h-4 w-4" />
@@ -382,7 +382,7 @@ export default function AssessmentScoringWizard() {
                   onClick={() => setActiveDomain(code)}
                   className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 ${
                     isActive
-                      ? 'bg-gradient-to-r from-violet-600/20 to-indigo-600/20 border border-violet-500/30 text-violet-300 shadow-inner'
+                      ? 'bg-gradient-to-r from-blue-600/20 to-sky-600/20 border border-blue-500/30 text-blue-300 shadow-inner'
                       : 'text-slate-400 hover:text-slate-200'
                   }`}
                 >
@@ -399,13 +399,13 @@ export default function AssessmentScoringWizard() {
               <>
                 {/* Category / Domain Header */}
                 <div className="relative">
-                  <div className="flex items-center gap-4 px-6 py-5 rounded-3xl bg-gradient-to-r from-violet-950/40 via-slate-900/60 to-indigo-950/40 border border-violet-500/15">
-                    <div className="flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-br from-violet-600/20 to-indigo-600/20 border border-violet-500/25 shrink-0">
-                      <Shield className="h-5 w-5 text-violet-400" />
+                  <div className="flex items-center gap-4 px-6 py-5 rounded-3xl bg-gradient-to-r from-blue-950/40 via-slate-900/60 to-sky-950/40 border border-blue-500/15">
+                    <div className="flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-600/20 to-sky-600/20 border border-blue-500/25 shrink-0">
+                      <Shield className="h-5 w-5 text-blue-400" />
                     </div>
                     <div>
-                      <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-violet-400/70 block mb-0.5">Category</span>
-                      <h2 className="text-lg sm:text-xl font-extrabold tracking-tight bg-gradient-to-r from-slate-100 to-violet-200 bg-clip-text text-transparent leading-snug">
+                      <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-blue-400/70 block mb-0.5">Category</span>
+                      <h2 className="text-lg sm:text-xl font-extrabold tracking-tight bg-gradient-to-r from-slate-100 to-blue-200 bg-clip-text text-transparent leading-snug">
                         {domains[activeDomain].name}
                       </h2>
                     </div>
@@ -415,8 +415,8 @@ export default function AssessmentScoringWizard() {
                 {Object.entries(domains[activeDomain].components).map(([compCode, comp]) => (
                 <div key={compCode} className="space-y-4">
                   {/* Component Header Banner */}
-                  <div className="flex items-start gap-3 p-4 rounded-2xl bg-slate-900/50 border-l-[3px] border-l-violet-500/40 border border-slate-900">
-                    <div className="p-2 bg-violet-600/10 rounded-xl border border-violet-500/20 text-violet-400 shrink-0 font-extrabold text-xs tracking-wider">
+                  <div className="flex items-start gap-3 p-4 rounded-2xl bg-slate-900/50 border-l-[3px] border-l-blue-500/40 border border-slate-900">
+                    <div className="p-2 bg-blue-600/10 rounded-xl border border-blue-500/20 text-blue-400 shrink-0 font-extrabold text-xs tracking-wider">
                       {compCode}
                     </div>
                     <div>
@@ -440,7 +440,7 @@ export default function AssessmentScoringWizard() {
                           {/* Top indicator header — Key Criteria */}
                           <div className="flex justify-between items-start gap-4 mb-4">
                             <div className="flex items-start gap-2">
-                              <span className="font-extrabold text-[10px] text-violet-400 bg-violet-600/10 border border-violet-500/20 px-1.5 py-0.5 rounded mt-0.5 shrink-0">{resp.criterion.code}</span>
+                              <span className="font-extrabold text-[10px] text-blue-400 bg-blue-600/10 border border-blue-500/20 px-1.5 py-0.5 rounded mt-0.5 shrink-0">{resp.criterion.code}</span>
                               <div>
                                 <span className="text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-500 block mb-0.5">Key Criteria</span>
                                 <h4 className="text-xs sm:text-[13px] font-semibold text-slate-300 leading-snug">{resp.criterion.name}</h4>
@@ -470,30 +470,50 @@ export default function AssessmentScoringWizard() {
                             {resp.criterion.levels.map((levelObj) => {
                               const isSelected = resp.score === levelObj.level;
                               return (
-                                <button
-                                  key={levelObj.level}
-                                  type="button"
-                                  disabled={isReadOnly}
-                                  onClick={() => handleScoreChange(cId, levelObj.level, levelObj.description)}
-                                  className={`p-3.5 rounded-2xl text-left border transition-all duration-300 flex flex-col justify-between h-full cursor-pointer min-h-[120px] ${
-                                    isSelected
-                                      ? 'bg-gradient-to-br from-violet-600/30 to-indigo-600/20 border-violet-500/50 shadow-md shadow-violet-500/5 ring-1 ring-violet-500/20'
-                                      : 'bg-slate-900/40 border-slate-900 text-slate-400 hover:border-slate-800/80 hover:bg-slate-900/60'
-                                  } disabled:cursor-not-allowed`}
-                                >
-                                  <div className="flex justify-between items-center w-full mb-2">
-                                    <span className={`text-[10px] font-extrabold uppercase px-1.5 py-0.5 rounded tracking-wide ${
-                                      isSelected ? 'bg-violet-500/20 text-violet-300' : 'bg-slate-800 text-slate-400'
+                                <div key={levelObj.level} className="relative group/level">
+                                  <button
+                                    type="button"
+                                    disabled={isReadOnly}
+                                    onClick={() => handleScoreChange(cId, levelObj.level, levelObj.description)}
+                                    className={`p-3.5 rounded-2xl text-left border transition-all duration-300 flex flex-col justify-between h-full cursor-pointer min-h-[120px] w-full ${
+                                      isSelected
+                                        ? 'bg-gradient-to-br from-blue-600/30 to-sky-600/20 border-blue-500/50 shadow-md shadow-blue-500/5 ring-1 ring-blue-500/20'
+                                        : 'bg-slate-900/40 border-slate-900 text-slate-400 hover:border-slate-800/80 hover:bg-slate-900/60'
+                                    } disabled:cursor-not-allowed`}
+                                  >
+                                    <div className="flex justify-between items-center w-full mb-2">
+                                      <span className={`text-[10px] font-extrabold uppercase px-1.5 py-0.5 rounded tracking-wide ${
+                                        isSelected ? 'bg-blue-500/20 text-blue-300' : 'bg-slate-800 text-slate-400'
+                                      }`}>
+                                        Level {levelObj.level}
+                                      </span>
+                                    </div>
+                                    <p className={`text-[11px] leading-relaxed line-clamp-4 ${
+                                      isSelected ? 'text-slate-100 font-medium' : 'text-slate-400'
                                     }`}>
-                                      Level {levelObj.level}
-                                    </span>
+                                      {levelObj.description}
+                                    </p>
+                                  </button>
+                                  {/* Hover tooltip showing full description */}
+                                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-72 max-h-64 overflow-y-auto opacity-0 invisible group-hover/level:opacity-100 group-hover/level:visible transition-all duration-200 z-50 pointer-events-none group-hover/level:pointer-events-auto">
+                                    <div className="bg-slate-900/98 backdrop-blur-xl border border-slate-700/60 rounded-2xl p-4 shadow-2xl shadow-black/40">
+                                      <div className="flex items-center gap-2 mb-2">
+                                        <span className={`text-[10px] font-extrabold uppercase px-1.5 py-0.5 rounded tracking-wide ${
+                                          isSelected ? 'bg-blue-500/20 text-blue-300' : 'bg-slate-800 text-slate-400'
+                                        }`}>
+                                          Level {levelObj.level}
+                                        </span>
+                                        <span className="text-[10px] font-bold text-slate-500">{levelObj.label}</span>
+                                      </div>
+                                      <p className={`text-[11px] leading-relaxed ${
+                                        isSelected ? 'text-slate-100' : 'text-slate-300'
+                                      }`}>
+                                        {levelObj.description}
+                                      </p>
+                                    </div>
+                                    <div className="w-3 h-3 bg-slate-900/98 border-b border-r border-slate-700/60 rotate-45 absolute -bottom-1.5 left-1/2 -translate-x-1/2" />
                                   </div>
-                                  <p className={`text-[11px] leading-relaxed line-clamp-4 ${
-                                    isSelected ? 'text-slate-100 font-medium' : 'text-slate-400'
-                                  }`}>
-                                    {levelObj.description}
-                                  </p>
-                                </button>
+                                </div>
                               );
                             })}
                           </div>
@@ -533,7 +553,7 @@ export default function AssessmentScoringWizard() {
                                         className="flex items-center justify-between p-2 rounded-xl bg-slate-900/60 border border-slate-900/80 text-[10px]"
                                       >
                                         <div className="flex items-center gap-1.5 overflow-hidden pr-2">
-                                          <FileText className="h-3.5 w-3.5 text-violet-400 shrink-0" />
+                                          <FileText className="h-3.5 w-3.5 text-blue-400 shrink-0" />
                                           <span className="text-slate-300 font-medium truncate" title={file.fileName}>
                                             {file.fileTitle || file.fileName}
                                           </span>
@@ -590,7 +610,7 @@ export default function AssessmentScoringWizard() {
                                     />
                                     <label
                                       htmlFor={`file-upload-${cId}`}
-                                      className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl border border-dashed border-slate-800 hover:border-violet-500/50 hover:bg-violet-600/5 text-[10px] font-bold text-violet-300 transition-all cursor-pointer w-full text-center"
+                                      className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl border border-dashed border-slate-800 hover:border-blue-500/50 hover:bg-blue-600/5 text-[10px] font-bold text-blue-300 transition-all cursor-pointer w-full text-center"
                                     >
                                       {uploadingFile[cId] ? (
                                         <>
@@ -627,8 +647,8 @@ export default function AssessmentScoringWizard() {
             <div className="flex justify-between items-center border-b border-slate-900 pb-4 mb-4">
               <div>
                 <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider block">Cycle Status</span>
-                <span className="inline-flex items-center gap-1.5 mt-1 text-xs font-extrabold capitalize text-violet-300">
-                  <Clock className="h-3.5 w-3.5 text-violet-400" />
+                <span className="inline-flex items-center gap-1.5 mt-1 text-xs font-extrabold capitalize text-blue-300">
+                  <Clock className="h-3.5 w-3.5 text-blue-400" />
                   {assessment.status.replace('_', ' ')}
                 </span>
               </div>
@@ -641,10 +661,10 @@ export default function AssessmentScoringWizard() {
             {/* Overall Score Gauge Display */}
             <div className="text-center py-6 bg-slate-900/20 rounded-3xl border border-slate-900/60 mb-6">
               <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">CHPMI Score</span>
-              <div className="text-4xl font-black bg-gradient-to-r from-violet-200 via-slate-100 to-cyan-200 bg-clip-text text-transparent tracking-tight mt-1.5">
+              <div className="text-4xl font-black bg-gradient-to-r from-blue-200 via-slate-100 to-cyan-200 bg-clip-text text-transparent tracking-tight mt-1.5">
                 {Number(assessment.chpmiScore).toFixed(2)}%
               </div>
-              <div className="inline-flex items-center gap-1 mt-2.5 px-3 py-1 rounded-full bg-violet-600/10 border border-violet-500/20 text-xs font-bold text-violet-300">
+              <div className="inline-flex items-center gap-1 mt-2.5 px-3 py-1 rounded-full bg-blue-600/10 border border-blue-500/20 text-xs font-bold text-blue-300">
                 <Sparkles className="h-3.5 w-3.5" />
                 {assessment.maturityBand?.label || 'Calculating...'}
               </div>
@@ -658,7 +678,7 @@ export default function AssessmentScoringWizard() {
               </div>
               <div className="w-full bg-slate-900 rounded-full h-2 overflow-hidden border border-slate-800/50">
                 <div
-                  className="bg-gradient-to-r from-violet-600 to-indigo-500 h-2 rounded-full transition-all duration-500"
+                  className="bg-gradient-to-r from-blue-600 to-sky-500 h-2 rounded-full transition-all duration-500"
                   style={{ width: `${progressPercent}%` }}
                 ></div>
               </div>
@@ -673,7 +693,7 @@ export default function AssessmentScoringWizard() {
                   return (
                     <div key={code} className="flex justify-between items-center text-xs">
                       <div className="flex items-center gap-2 overflow-hidden pr-2">
-                        <span className="text-[10px] font-bold text-violet-400 bg-violet-600/10 border border-violet-500/20 px-1.5 py-0.5 rounded shrink-0">
+                        <span className="text-[10px] font-bold text-blue-400 bg-blue-600/10 border border-blue-500/20 px-1.5 py-0.5 rounded shrink-0">
                           {code}
                         </span>
                         <span className="text-slate-400 font-medium truncate">{dom.name}</span>

@@ -37,7 +37,7 @@ export default function PlatformLayout({ children }: { children: React.ReactNode
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-950 text-slate-100">
         <div className="flex flex-col items-center gap-3">
-          <div className="h-8 w-8 text-violet-500 animate-spin border-2 border-violet-500 border-t-transparent rounded-full"></div>
+          <div className="h-8 w-8 text-blue-500 animate-spin border-2 border-blue-500 border-t-transparent rounded-full"></div>
           <span className="text-sm text-slate-400">Loading session...</span>
         </div>
       </div>
@@ -62,7 +62,7 @@ export default function PlatformLayout({ children }: { children: React.ReactNode
       case 'admin':
         return 'bg-gradient-to-r from-emerald-500/20 to-teal-500/20 border border-emerald-500/30 text-emerald-300';
       case 'assessor':
-        return 'bg-gradient-to-r from-violet-500/20 to-indigo-500/20 border border-violet-500/30 text-violet-300';
+        return 'bg-gradient-to-r from-blue-500/20 to-sky-500/20 border border-blue-500/30 text-blue-300';
       case 'reviewer':
         return 'bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border border-cyan-500/30 text-cyan-300';
       default:
@@ -87,8 +87,8 @@ export default function PlatformLayout({ children }: { children: React.ReactNode
 
   const navigation: { name: string; href: string; icon: any }[] = [];
 
-  // Dashboard only for super_admin
-  if (user.role === 'super_admin') {
+  // Dashboard for super_admin and admin
+  if (user.role === 'super_admin' || user.role === 'admin') {
     navigation.push({ name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard });
   }
 
@@ -120,11 +120,11 @@ export default function PlatformLayout({ children }: { children: React.ReactNode
         {/* Sidebar Header */}
         <div className="h-16 flex items-center justify-between px-4 border-b border-slate-900/60">
           <div className="flex items-center gap-3 overflow-hidden">
-            <div className="p-2 bg-violet-600/10 rounded-xl border border-violet-500/20">
-              <Shield className="h-5 w-5 text-violet-400" />
+            <div className="p-2 bg-blue-600/10 rounded-xl border border-blue-500/20">
+              <Shield className="h-5 w-5 text-blue-400" />
             </div>
             {sidebarOpen && (
-              <span className="font-extrabold text-sm tracking-tight bg-gradient-to-r from-violet-200 via-slate-100 to-cyan-200 bg-clip-text text-transparent truncate">
+              <span className="font-extrabold text-sm tracking-tight bg-gradient-to-r from-blue-200 via-slate-100 to-cyan-200 bg-clip-text text-transparent truncate">
                 CHP Maturity
               </span>
             )}
@@ -150,13 +150,13 @@ export default function PlatformLayout({ children }: { children: React.ReactNode
                 href={item.href}
                 className={`flex items-center gap-3.5 px-3.5 py-3 rounded-xl text-sm font-semibold transition-all duration-200 group ${
                   isActive
-                    ? 'bg-gradient-to-r from-violet-600/20 to-indigo-600/20 border border-violet-500/20 text-violet-300'
+                    ? 'bg-gradient-to-r from-blue-600/20 to-sky-600/20 border border-blue-500/20 text-blue-300'
                     : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/50 border border-transparent'
                 }`}
               >
                 <Icon
                   className={`h-5 w-5 transition-transform duration-200 group-hover:scale-105 ${
-                    isActive ? 'text-violet-400' : 'text-slate-400 group-hover:text-slate-300'
+                    isActive ? 'text-blue-400' : 'text-slate-400 group-hover:text-slate-300'
                   }`}
                 />
                 {sidebarOpen && <span>{item.name}</span>}
@@ -170,7 +170,7 @@ export default function PlatformLayout({ children }: { children: React.ReactNode
           {sidebarOpen ? (
             <div className="flex flex-col gap-3">
               <div className="flex items-center gap-3 p-2 rounded-xl bg-slate-900/40 border border-slate-800/50">
-                <div className="h-9 w-9 rounded-full bg-violet-600/20 flex items-center justify-center text-violet-400 font-bold border border-violet-500/20">
+                <div className="h-9 w-9 rounded-full bg-blue-600/20 flex items-center justify-center text-blue-400 font-bold border border-blue-500/20">
                   {user.fullName.charAt(0)}
                 </div>
                 <div className="overflow-hidden">
@@ -256,7 +256,7 @@ export default function PlatformLayout({ children }: { children: React.ReactNode
                 onClick={() => setDropdownOpen(!dropdownOpen)}
                 className="flex items-center gap-2 p-1.5 rounded-xl text-slate-400 hover:text-slate-200 transition-colors focus:outline-none"
               >
-                <div className="h-8 w-8 rounded-xl bg-violet-600/10 border border-violet-500/20 flex items-center justify-center text-violet-400 font-bold text-sm">
+                <div className="h-8 w-8 rounded-xl bg-blue-600/10 border border-blue-500/20 flex items-center justify-center text-blue-400 font-bold text-sm">
                   {user.fullName.charAt(0)}
                 </div>
               </button>
@@ -296,8 +296,8 @@ export default function PlatformLayout({ children }: { children: React.ReactNode
           <aside className="fixed inset-y-0 left-0 w-64 glass-panel border-r border-slate-900/60 z-50 flex flex-col md:hidden">
             <div className="h-16 flex items-center justify-between px-4 border-b border-slate-900/60">
               <div className="flex items-center gap-3">
-                <Shield className="h-5 w-5 text-violet-400" />
-                <span className="font-extrabold text-sm tracking-tight bg-gradient-to-r from-violet-200 to-cyan-200 bg-clip-text text-transparent">
+                <Shield className="h-5 w-5 text-blue-400" />
+                <span className="font-extrabold text-sm tracking-tight bg-gradient-to-r from-blue-200 to-cyan-200 bg-clip-text text-transparent">
                   CHP Maturity
                 </span>
               </div>
@@ -319,11 +319,11 @@ export default function PlatformLayout({ children }: { children: React.ReactNode
                     onClick={() => setMobileMenuOpen(false)}
                     className={`flex items-center gap-3.5 px-3.5 py-3 rounded-xl text-sm font-semibold transition-all duration-200 ${
                       isActive
-                        ? 'bg-gradient-to-r from-violet-600/20 to-indigo-600/20 border border-violet-500/20 text-violet-300'
+                        ? 'bg-gradient-to-r from-blue-600/20 to-sky-600/20 border border-blue-500/20 text-blue-300'
                         : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/50'
                     }`}
                   >
-                    <Icon className={`h-5 w-5 ${isActive ? 'text-violet-400' : 'text-slate-400'}`} />
+                    <Icon className={`h-5 w-5 ${isActive ? 'text-blue-400' : 'text-slate-400'}`} />
                     <span>{item.name}</span>
                   </Link>
                 );
@@ -331,7 +331,7 @@ export default function PlatformLayout({ children }: { children: React.ReactNode
             </nav>
             <div className="p-4 border-t border-slate-900/60 space-y-3">
               <div className="flex items-center gap-3 p-2 rounded-xl bg-slate-900/40 border border-slate-800/50">
-                <div className="h-8 w-8 rounded-full bg-violet-600/20 flex items-center justify-center text-violet-400 font-bold border border-violet-500/20">
+                <div className="h-8 w-8 rounded-full bg-blue-600/20 flex items-center justify-center text-blue-400 font-bold border border-blue-500/20">
                   {user.fullName.charAt(0)}
                 </div>
                 <div className="overflow-hidden">

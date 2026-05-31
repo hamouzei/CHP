@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { useAuthStore } from '../../../store/authStore';
 import { useRouter } from 'next/navigation';
+import { useQuery } from '@tanstack/react-query';
 import { api } from '../../../services/api';
 import Link from 'next/link';
 import {
@@ -189,40 +190,33 @@ function CustomTooltip({ active, payload, label }: any) {
 export default function DashboardPage() {
   const { user } = useAuthStore();
   const router = useRouter();
-  const [data, setData] = useState<DashboardData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [exportingPdf, setExportingPdf] = useState(false);
-  const [exportingExcel, setExportingExcel] = useState(false);
+  const [exportingPdf, setExportingPdf] = React.useState(false);
+  const [exportingExcel, setExportingExcel] = React.useState(false);
 
-  // Access guard: only super_admin can view the dashboard
-  useEffect(() => {
-    if (user && user.role !== 'super_admin') {
+  const isAllowed = user?.role === 'super_admin' || user?.role === 'admin';
+
+  // Access guard: only super_admin and admin can view the dashboard
+  React.useEffect(() => {
+    if (user && !isAllowed) {
       router.replace('/assessments');
     }
-  }, [user, router]);
+  }, [user, isAllowed, router]);
 
-  const fetchDashboard = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      // super_admin uses the platform-wide endpoint (no orgId needed)
-      const result = await api.get('/dashboard/platform');
-      setData(result);
-    } catch (err: any) {
-      console.error('Dashboard fetch error:', err);
-      setError(err.message || 'Failed to load dashboard');
-    } finally {
-      setLoading(false);
-    }
-  };
+  // Determine API endpoint based on role
+  const dashboardEndpoint = user?.role === 'super_admin'
+    ? '/dashboard/platform'
+    : `/dashboard/organization/${user?.organizationId}`;
 
-  useEffect(() => {
-    if (user?.role === 'super_admin') {
-      fetchDashboard();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.role]);
+  // Use React Query for auto-refreshing dashboard data
+  const { data, isLoading: loading, error: queryError, refetch: fetchDashboard } = useQuery<DashboardData>({
+    queryKey: ['dashboard', user?.role, user?.organizationId],
+    queryFn: () => api.get(dashboardEndpoint),
+    enabled: !!user && isAllowed,
+    refetchInterval: 15000, // Auto-refresh every 15 seconds
+    refetchOnWindowFocus: true,
+  });
+
+  const error = queryError ? (queryError as any).message || 'Failed to load dashboard' : null;
 
   /* ─── Radar data ─── */
   const radarData = useMemo(() => {
@@ -307,7 +301,7 @@ export default function DashboardPage() {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="flex flex-col items-center gap-3">
-          <Loader2 className="h-8 w-8 text-violet-500 animate-spin" />
+          <Loader2 className="h-8 w-8 text-blue-500 animate-spin" />
           <span className="text-sm text-slate-400">Loading dashboard analytics...</span>
         </div>
       </div>
@@ -320,7 +314,7 @@ export default function DashboardPage() {
         <div className="glass-card rounded-3xl p-8 text-center max-w-md">
           <AlertTriangle className="h-10 w-10 text-red-400 mx-auto mb-4" />
           <p className="text-sm text-slate-300 font-medium">{error}</p>
-          <button onClick={fetchDashboard} className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-violet-300 bg-violet-600/10 border border-violet-500/20 hover:bg-violet-600/20 transition-all">
+          <button onClick={fetchDashboard} className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-blue-300 bg-blue-600/10 border border-blue-500/20 hover:bg-blue-600/20 transition-all">
             <RefreshCw className="h-3.5 w-3.5" /> Retry
           </button>
         </div>
@@ -337,12 +331,12 @@ export default function DashboardPage() {
     <div className="space-y-6 animate-fade-in">
       {/* ─── Welcome Banner ─── */}
       <div className="glass-card rounded-3xl p-6 sm:p-8 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-violet-600/10 blur-3xl -z-10" />
+        <div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-blue-600/10 blur-3xl -z-10" />
         <div className="absolute bottom-0 left-0 w-96 h-96 rounded-full bg-cyan-500/10 blur-3xl -z-10" />
 
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
           <div className="max-w-xl">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-500/10 border border-violet-500/20 text-xs font-bold text-violet-300 mb-3">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-xs font-bold text-blue-300 mb-3">
               <Shield className="h-3.5 w-3.5" />
               CHPMI Analytics Dashboard
             </div>
@@ -360,7 +354,7 @@ export default function DashboardPage() {
           <div className="flex flex-wrap gap-3 shrink-0">
             <Link
               href="/assessments"
-              className="inline-flex items-center gap-2 py-2.5 px-4 rounded-2xl text-xs font-bold text-white bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 shadow-lg shadow-violet-500/15 hover:shadow-violet-500/25 transition-all active:scale-[0.98]"
+              className="inline-flex items-center gap-2 py-2.5 px-4 rounded-2xl text-xs font-bold text-white bg-gradient-to-r from-blue-600 to-sky-600 hover:from-blue-500 hover:to-sky-500 shadow-lg shadow-blue-500/15 hover:shadow-blue-500/25 transition-all active:scale-[0.98]"
             >
               Assessments <ArrowRight className="h-3.5 w-3.5" />
             </Link>
@@ -398,7 +392,7 @@ export default function DashboardPage() {
           </p>
           <Link
             href="/assessments"
-            className="inline-flex items-center gap-2 mt-6 py-3 px-5 rounded-2xl text-xs font-bold text-white bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 transition-all"
+            className="inline-flex items-center gap-2 mt-6 py-3 px-5 rounded-2xl text-xs font-bold text-white bg-gradient-to-r from-blue-600 to-sky-600 hover:from-blue-500 hover:to-sky-500 transition-all"
           >
             Create Assessment <ArrowRight className="h-3.5 w-3.5" />
           </Link>
@@ -412,9 +406,9 @@ export default function DashboardPage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* CHPMI Gauge Card */}
             <div className="glass-card rounded-3xl p-6 relative overflow-hidden">
-              <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-violet-500/40 to-transparent" />
+              <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-blue-500/40 to-transparent" />
               <div className="flex items-center gap-2 mb-4">
-                <Sparkles className="h-4 w-4 text-violet-400" />
+                <Sparkles className="h-4 w-4 text-blue-400" />
                 <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Overall Index</span>
               </div>
               <ChpmiGauge score={latest.chpmiScore} band={latest.maturityBand} />
@@ -471,7 +465,7 @@ export default function DashboardPage() {
 
               <Link
                 href={`/assessments/${latest.id}/scoring`}
-                className="mt-5 inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-2xl text-xs font-bold text-violet-300 bg-violet-600/10 border border-violet-500/20 hover:bg-violet-600/20 transition-all w-full"
+                className="mt-5 inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-2xl text-xs font-bold text-blue-300 bg-blue-600/10 border border-blue-500/20 hover:bg-blue-600/20 transition-all w-full"
               >
                 Open Assessment <ChevronRight className="h-3.5 w-3.5" />
               </Link>
@@ -538,8 +532,9 @@ export default function DashboardPage() {
                   <Tooltip content={<CustomTooltip />} />
                   <Bar dataKey="score" name="Score" radius={[0, 6, 6, 0]} barSize={18}>
                     {barData.map((entry, idx) => {
-                      const domainIdx = ['D1', 'D2', 'D3', 'D4', 'D5'].indexOf(entry.domain);
-                      return <Cell key={idx} fill={DOMAIN_COLORS[domainIdx >= 0 ? domainIdx : 0]} fillOpacity={0.8} />;
+                      const domainCodes = (data?.domainScores || []).map(d => d.domainCode);
+                      const domainIdx = domainCodes.indexOf(entry.domain);
+                      return <Cell key={idx} fill={DOMAIN_COLORS[domainIdx >= 0 ? domainIdx % DOMAIN_COLORS.length : 0]} fillOpacity={0.8} />;
                     })}
                   </Bar>
                 </BarChart>
@@ -591,7 +586,7 @@ export default function DashboardPage() {
                   <Activity className="h-8 w-8 text-slate-700" />
                   <span>Multiple assessments needed to show trends</span>
                   {trendData.length === 1 && (
-                    <span className="text-violet-400 font-bold mt-1">
+                    <span className="text-blue-400 font-bold mt-1">
                       Current: {trendData[0].chpmi.toFixed(2)}% ({trendData[0].band})
                     </span>
                   )}
@@ -622,7 +617,7 @@ export default function DashboardPage() {
                         <div className="flex items-start justify-between mb-2">
                           <div>
                             <div className="flex items-center gap-2 mb-1">
-                              <span className="text-[10px] font-bold text-violet-400 bg-violet-600/10 border border-violet-500/20 px-1.5 py-0.5 rounded">
+                              <span className="text-[10px] font-bold text-blue-400 bg-blue-600/10 border border-blue-500/20 px-1.5 py-0.5 rounded">
                                 {gap.componentCode}
                               </span>
                               <span className={`text-[10px] font-extrabold uppercase ${sevColor}`}>{severity}</span>
@@ -685,7 +680,7 @@ export default function DashboardPage() {
                       return (
                         <tr key={a.id} className="border-b border-slate-900/40 hover:bg-slate-900/20 transition-colors">
                           <td className="py-3 px-3 font-bold text-slate-200">
-                            <Link href={`/assessments/${a.id}/scoring`} className="hover:text-violet-400 transition-colors inline-flex items-center gap-1">
+                            <Link href={`/assessments/${a.id}/scoring`} className="hover:text-blue-400 transition-colors inline-flex items-center gap-1">
                               {a.cycleName} <ArrowUpRight className="h-3 w-3" />
                             </Link>
                           </td>

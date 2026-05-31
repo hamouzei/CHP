@@ -124,7 +124,7 @@ export default function AssessmentReviewPage() {
   if (isLoading) {
     return (
       <div className="h-96 flex flex-col items-center justify-center gap-3">
-        <Loader2 className="h-8 w-8 text-violet-500 animate-spin" />
+        <Loader2 className="h-8 w-8 text-blue-500 animate-spin" />
         <span className="text-sm text-slate-400">Loading assessment audit details...</span>
       </div>
     );
@@ -136,7 +136,7 @@ export default function AssessmentReviewPage() {
         <AlertCircle className="h-10 w-10 text-red-500 mx-auto mb-3" />
         <h3 className="font-bold text-slate-200">Failed to Load Review Details</h3>
         <p className="text-xs text-slate-400 mt-1">{(fetchErr as any)?.message || 'Assessment records not found.'}</p>
-        <Link href="/assessments" className="mt-4 inline-flex items-center gap-1.5 text-xs text-violet-400 hover:underline">
+        <Link href="/assessments" className="mt-4 inline-flex items-center gap-1.5 text-xs text-blue-400 hover:underline">
           <ArrowLeft className="h-3.5 w-3.5" /> Back to List
         </Link>
       </div>
@@ -249,7 +249,7 @@ export default function AssessmentReviewPage() {
               >
                 <div className="space-y-2 overflow-hidden flex-1">
                   <div className="flex items-center gap-2">
-                    <span className="font-bold text-xs text-violet-400">{resp.criterion.code}</span>
+                    <span className="font-bold text-xs text-blue-400">{resp.criterion.code}</span>
                     <span className="text-xs font-medium text-slate-400 truncate">{resp.criterion.component.domain.name} / {resp.criterion.component.name}</span>
                   </div>
                   <h4 className="text-sm font-bold text-slate-200">{resp.criterion.name}</h4>
@@ -268,7 +268,7 @@ export default function AssessmentReviewPage() {
                           rel="noopener noreferrer"
                           className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-900 border border-slate-800 text-[10px] text-slate-300 hover:text-slate-100 hover:border-slate-700 transition-colors"
                         >
-                          <FileText className="h-3.5 w-3.5 text-violet-400" />
+                          <FileText className="h-3.5 w-3.5 text-blue-400" />
                           {file.fileTitle || file.fileName}
                           <Download className="h-3 w-3 text-slate-500" />
                         </a>
@@ -280,7 +280,7 @@ export default function AssessmentReviewPage() {
                 {/* Score badge */}
                 <div className="flex flex-col items-center justify-center p-3 rounded-2xl bg-slate-900/50 border border-slate-900 text-center shrink-0 w-full sm:w-20 self-stretch sm:self-center">
                   <span className="text-[9px] text-slate-500 font-bold uppercase tracking-wider block">Score</span>
-                  <span className="text-xl font-extrabold text-violet-400 block mt-0.5">
+                  <span className="text-xl font-extrabold text-blue-400 block mt-0.5">
                     {resp.score !== null ? resp.score : '-'}
                   </span>
                 </div>
@@ -294,13 +294,13 @@ export default function AssessmentReviewPage() {
           
           {/* Index summary card */}
           <div className="glass-card rounded-3xl p-6 border border-slate-900 text-center relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-violet-600/5 blur-3xl -z-10"></div>
+            <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-blue-600/5 blur-3xl -z-10"></div>
             
             <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest block">Overall Index</span>
-            <div className="text-4xl font-black bg-gradient-to-r from-violet-200 via-slate-100 to-cyan-200 bg-clip-text text-transparent mt-1 block">
+            <div className="text-4xl font-black bg-gradient-to-r from-blue-200 via-slate-100 to-cyan-200 bg-clip-text text-transparent mt-1 block">
               {Number(assessment.chpmiScore).toFixed(2)}%
             </div>
-            <div className="inline-flex items-center gap-1 mt-2.5 px-3 py-1 rounded-full bg-violet-600/10 border border-violet-500/20 text-xs font-bold text-violet-300">
+            <div className="inline-flex items-center gap-1 mt-2.5 px-3 py-1 rounded-full bg-blue-600/10 border border-blue-500/20 text-xs font-bold text-blue-300">
               <Sparkles className="h-3.5 w-3.5" />
               {assessment.maturityBand?.label || 'Calculating...'}
             </div>
@@ -310,7 +310,7 @@ export default function AssessmentReviewPage() {
           {isReviewActive && (
             <div className="glass-card rounded-3xl p-6 border border-slate-900 space-y-4">
               <h3 className="text-sm font-bold text-slate-200 flex items-center gap-1.5">
-                <MessageSquare className="h-4.5 w-4.5 text-violet-400" />
+                <MessageSquare className="h-4.5 w-4.5 text-blue-400" />
                 Review Decision
               </h3>
 

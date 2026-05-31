@@ -6,7 +6,7 @@ import { requireRole } from '../middleware/rbac';
 const router = Router();
 
 // GET /dashboard/organization/:orgId - Organization-level dashboard data
-router.get('/organization/:orgId', authenticate, requireRole('super_admin'), async (req: AuthenticatedRequest, res) => {
+router.get('/organization/:orgId', authenticate, requireRole('admin', 'super_admin'), async (req: AuthenticatedRequest, res) => {
   try {
     const { orgId } = req.params;
     const user = req.user!;

@@ -19,7 +19,8 @@ import {
   TrendingUp,
   FolderOpen,
   Eye,
-  Loader2
+  Loader2,
+  Trash2
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -47,8 +48,10 @@ interface Assessment {
 
 export default function AssessmentsListPage() {
   const { user } = useAuthStore();
+  const queryClient = useQueryClient();
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const { data: assessments = [], isLoading, error } = useQuery<Assessment[]>({
     queryKey: ['assessments'],
@@ -64,7 +67,7 @@ export default function AssessmentsListPage() {
       case 'revision_requested':
         return 'bg-gradient-to-r from-rose-500/20 to-red-500/20 border border-rose-500/30 text-rose-300';
       case 'in_progress':
-        return 'bg-gradient-to-r from-indigo-500/20 to-violet-500/20 border border-indigo-500/30 text-indigo-300';
+        return 'bg-gradient-to-r from-sky-500/20 to-blue-500/20 border border-sky-500/30 text-sky-300';
       case 'draft':
         return 'bg-slate-800/80 border border-slate-700/80 text-slate-300';
       default:
@@ -98,6 +101,28 @@ export default function AssessmentsListPage() {
   });
 
   const canCreate = user?.role === 'admin' || user?.role === 'super_admin';
+  const canDelete = user?.role === 'admin' || user?.role === 'super_admin';
+
+  // Delete assessment mutation
+  const deleteAssessmentMutation = useMutation({
+    mutationFn: (assessmentId: string) => api.delete(`/assessments/${assessmentId}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['assessments'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+      setDeletingId(null);
+    },
+    onError: (err: any) => {
+      alert(err.message || 'Failed to delete assessment.');
+      setDeletingId(null);
+    },
+  });
+
+  const handleDeleteAssessment = (assessmentId: string, cycleName: string) => {
+    if (window.confirm(`Are you sure you want to permanently delete the assessment "${cycleName}"? This action cannot be undone.`)) {
+      setDeletingId(assessmentId);
+      deleteAssessmentMutation.mutate(assessmentId);
+    }
+  };
 
   return (
     <div className="space-y-8 animate-fade-in">
@@ -115,7 +140,7 @@ export default function AssessmentsListPage() {
         {canCreate && (
           <Link
             href="/assessments/new"
-            className="inline-flex items-center justify-center gap-2 py-3 px-5 rounded-2xl text-xs font-bold text-white bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 shadow-lg shadow-violet-500/15 hover:shadow-violet-500/25 transition-all duration-300 active:scale-[0.98] self-start sm:self-auto"
+            className="inline-flex items-center justify-center gap-2 py-3 px-5 rounded-2xl text-xs font-bold text-white bg-gradient-to-r from-blue-600 to-sky-600 hover:from-blue-500 hover:to-sky-500 shadow-lg shadow-blue-500/15 hover:shadow-blue-500/25 transition-all duration-300 active:scale-[0.98] self-start sm:self-auto"
           >
             <Plus className="h-4.5 w-4.5" />
             New Assessment
@@ -135,7 +160,7 @@ export default function AssessmentsListPage() {
             placeholder="Search by cycle, period, or organization..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="glass-input pl-10 pr-4 py-2.5 rounded-2xl text-sm w-full block focus:ring-1 focus:ring-violet-500"
+            className="glass-input pl-10 pr-4 py-2.5 rounded-2xl text-sm w-full block focus:ring-1 focus:ring-blue-500"
           />
         </div>
 
@@ -160,7 +185,7 @@ export default function AssessmentsListPage() {
       {/* Main List */}
       {isLoading ? (
         <div className="h-64 flex flex-col items-center justify-center gap-3">
-          <Loader2 className="h-8 w-8 text-violet-500 animate-spin" />
+          <Loader2 className="h-8 w-8 text-blue-500 animate-spin" />
           <span className="text-sm text-slate-400">Fetching assessments data...</span>
         </div>
       ) : error ? (
@@ -181,7 +206,7 @@ export default function AssessmentsListPage() {
           {canCreate && !search && statusFilter === 'all' && (
             <Link
               href="/assessments/new"
-              className="inline-flex items-center gap-2 mt-6 py-2.5 px-4 rounded-xl text-xs font-bold text-violet-300 hover:text-violet-200 bg-violet-600/10 border border-violet-500/20 transition-all"
+              className="inline-flex items-center gap-2 mt-6 py-2.5 px-4 rounded-xl text-xs font-bold text-blue-300 hover:text-blue-200 bg-blue-600/10 border border-blue-500/20 transition-all"
             >
               Get Started
               <Plus className="h-4 w-4" />
@@ -198,7 +223,7 @@ export default function AssessmentsListPage() {
               {/* Header */}
               <div className="flex justify-between items-start gap-4">
                 <div className="space-y-1 overflow-hidden">
-                  <h3 className="text-lg font-extrabold text-white group-hover:text-violet-300 transition-colors truncate">
+                  <h3 className="text-lg font-extrabold text-white group-hover:text-blue-300 transition-colors truncate">
                     {a.cycleName}
                   </h3>
                   <span className="block text-xs font-bold text-slate-400 truncate">
@@ -242,14 +267,33 @@ export default function AssessmentsListPage() {
                 </div>
                 <div className="text-right">
                   <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider block">CHPMI Score</span>
-                  <span className="text-base font-extrabold text-violet-400 mt-0.5 block">
+                  <span className="text-base font-extrabold text-blue-400 mt-0.5 block">
                     {Number(a.chpmiScore).toFixed(2)}%
                   </span>
                 </div>
               </div>
 
               {/* Action Buttons */}
-              <div className="mt-6 flex justify-end gap-3.5">
+              <div className="mt-6 flex justify-between items-center gap-3.5">
+                {/* Delete button */}
+                <div>
+                  {canDelete && (a.status === 'draft' || a.status === 'in_progress') && (
+                    <button
+                      onClick={() => handleDeleteAssessment(a.id, a.cycleName)}
+                      disabled={deletingId === a.id}
+                      className="inline-flex items-center gap-1.5 py-2.5 px-4 rounded-xl text-xs font-bold text-red-400 hover:text-red-300 bg-red-950/20 border border-red-500/15 hover:border-red-500/30 transition-all active:scale-[0.98] disabled:opacity-50"
+                    >
+                      {deletingId === a.id ? (
+                        <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                      ) : (
+                        <Trash2 className="h-3.5 w-3.5" />
+                      )}
+                      Delete
+                    </button>
+                  )}
+                </div>
+
+                <div className="flex gap-3.5">
                 {a.status === 'under_review' && (user?.role === 'reviewer' || user?.role === 'super_admin') ? (
                   <Link
                     href={`/assessments/${a.id}/review`}
@@ -264,7 +308,7 @@ export default function AssessmentsListPage() {
                 {a.status !== 'approved' && a.status !== 'archived' && (user?.role === 'assessor' || user?.role === 'admin' || user?.role === 'super_admin') ? (
                   <Link
                     href={`/assessments/${a.id}/scoring`}
-                    className="inline-flex items-center gap-1.5 py-2.5 px-4 rounded-xl text-xs font-bold text-violet-300 hover:text-violet-200 bg-violet-600/10 border border-violet-500/20 hover:border-violet-500/40 transition-all active:scale-[0.98]"
+                    className="inline-flex items-center gap-1.5 py-2.5 px-4 rounded-xl text-xs font-bold text-blue-300 hover:text-blue-200 bg-blue-600/10 border border-blue-500/20 hover:border-blue-500/40 transition-all active:scale-[0.98]"
                   >
                     <FileEdit className="h-3.5 w-3.5" />
                     Score Framework
@@ -278,6 +322,7 @@ export default function AssessmentsListPage() {
                     View Scoring
                   </Link>
                 )}
+                </div>
               </div>
             </div>
           ))}

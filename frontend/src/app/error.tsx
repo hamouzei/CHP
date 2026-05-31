@@ -29,7 +29,7 @@ export default function GlobalErrorPage({
 
         {/* Messaging */}
         <div className="space-y-2">
-          <h1 className="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-red-200 via-slate-100 to-indigo-200 bg-clip-text text-transparent">
+          <h1 className="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-red-200 via-slate-100 to-sky-200 bg-clip-text text-transparent">
             Application Crash Detected
           </h1>
           <p className="text-sm text-slate-400 max-w-sm mx-auto leading-relaxed">
