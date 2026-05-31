@@ -395,16 +395,33 @@ export default function AssessmentScoringWizard() {
 
           {/* Active Domain Component Lists */}
           <div className="space-y-8">
-            {domains[activeDomain] &&
-              Object.entries(domains[activeDomain].components).map(([compCode, comp]) => (
+            {domains[activeDomain] && (
+              <>
+                {/* Category / Domain Header */}
+                <div className="relative">
+                  <div className="flex items-center gap-4 px-6 py-5 rounded-3xl bg-gradient-to-r from-violet-950/40 via-slate-900/60 to-indigo-950/40 border border-violet-500/15">
+                    <div className="flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-br from-violet-600/20 to-indigo-600/20 border border-violet-500/25 shrink-0">
+                      <Shield className="h-5 w-5 text-violet-400" />
+                    </div>
+                    <div>
+                      <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-violet-400/70 block mb-0.5">Category</span>
+                      <h2 className="text-lg sm:text-xl font-extrabold tracking-tight bg-gradient-to-r from-slate-100 to-violet-200 bg-clip-text text-transparent leading-snug">
+                        {domains[activeDomain].name}
+                      </h2>
+                    </div>
+                  </div>
+                </div>
+
+                {Object.entries(domains[activeDomain].components).map(([compCode, comp]) => (
                 <div key={compCode} className="space-y-4">
                   {/* Component Header Banner */}
-                  <div className="flex items-start gap-3 p-4 rounded-2xl bg-slate-900/50 border border-slate-900">
-                    <div className="p-1.5 bg-violet-600/10 rounded-xl border border-violet-500/20 text-violet-400 shrink-0 font-extrabold text-[10px] tracking-wider">
+                  <div className="flex items-start gap-3 p-4 rounded-2xl bg-slate-900/50 border-l-[3px] border-l-violet-500/40 border border-slate-900">
+                    <div className="p-2 bg-violet-600/10 rounded-xl border border-violet-500/20 text-violet-400 shrink-0 font-extrabold text-xs tracking-wider">
                       {compCode}
                     </div>
                     <div>
-                      <h3 className="text-sm font-bold text-slate-200">{comp.name}</h3>
+                      <span className="text-[9px] font-bold uppercase tracking-[0.15em] text-slate-500 block mb-0.5">Component</span>
+                      <h3 className="text-sm sm:text-base font-bold text-slate-200 leading-snug">{comp.name}</h3>
                     </div>
                   </div>
 
@@ -420,11 +437,14 @@ export default function AssessmentScoringWizard() {
                           key={cId}
                           className="glass-card rounded-3xl p-6 border border-slate-900 hover:border-slate-800/80 relative"
                         >
-                          {/* Top indicator header */}
+                          {/* Top indicator header — Key Criteria */}
                           <div className="flex justify-between items-start gap-4 mb-4">
-                            <div className="flex items-center gap-2">
-                              <span className="font-bold text-xs text-violet-400">{resp.criterion.code}</span>
-                              <h4 className="text-sm font-bold text-slate-200">{resp.criterion.name}</h4>
+                            <div className="flex items-start gap-2">
+                              <span className="font-extrabold text-[10px] text-violet-400 bg-violet-600/10 border border-violet-500/20 px-1.5 py-0.5 rounded mt-0.5 shrink-0">{resp.criterion.code}</span>
+                              <div>
+                                <span className="text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-500 block mb-0.5">Key Criteria</span>
+                                <h4 className="text-xs sm:text-[13px] font-semibold text-slate-300 leading-snug">{resp.criterion.name}</h4>
+                              </div>
                             </div>
 
                             {/* Auto save indicator */}
@@ -595,6 +615,8 @@ export default function AssessmentScoringWizard() {
                   </div>
                 </div>
               ))}
+              </>
+            )}
           </div>
         </div>
 
