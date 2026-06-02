@@ -4,7 +4,7 @@ import * as bcrypt from 'bcrypt';
 import prisma from '../config/db';
 import { authenticate, AuthenticatedRequest } from '../middleware/auth';
 import { requireRole } from '../middleware/rbac';
-import { logAction } from '../services/audit';
+import { logAction, logActionFromReq } from '../services/audit';
 import * as jwt from 'jsonwebtoken';
 import { getKeys } from '../config/keys';
 

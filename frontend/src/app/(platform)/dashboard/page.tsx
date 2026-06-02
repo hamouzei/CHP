@@ -107,9 +107,9 @@ const MATURITY_COLORS: Record<string, string> = {
   'Non-Existent': '#ef4444',
   'Nascent': '#f97316',
   'Emerging': '#eab308',
-  'Established': '#22c55e',
-  'Institutionalized': '#06b6d4',
-  'Optimized': '#8b5cf6',
+  'Developing': '#22c55e',
+  'Established': '#06b6d4',
+  'Matured': '#8b5cf6',
 };
 
 const DOMAIN_COLORS = ['#8b5cf6', '#06b6d4', '#22c55e', '#f59e0b', '#ef4444'];
@@ -193,14 +193,14 @@ export default function DashboardPage() {
   const [exportingPdf, setExportingPdf] = React.useState(false);
   const [exportingExcel, setExportingExcel] = React.useState(false);
 
-  const isAllowed = user?.role === 'super_admin' || user?.role === 'admin';
+  const isAllowed = !!user; // All authenticated roles can access the dashboard
 
-  // Access guard: only super_admin and admin can view the dashboard
+  // Redirect unauthenticated users
   React.useEffect(() => {
-    if (user && !isAllowed) {
-      router.replace('/assessments');
+    if (!isAllowed) {
+      router.replace('/login');
     }
-  }, [user, isAllowed, router]);
+  }, [isAllowed, router]);
 
   // Determine API endpoint based on role
   const dashboardEndpoint = user?.role === 'super_admin'
@@ -211,7 +211,7 @@ export default function DashboardPage() {
   const { data, isLoading: loading, error: queryError, refetch: fetchDashboard } = useQuery<DashboardData>({
     queryKey: ['dashboard', user?.role, user?.organizationId],
     queryFn: () => api.get(dashboardEndpoint),
-    enabled: !!user && isAllowed,
+    enabled: isAllowed,
     refetchInterval: 15000, // Auto-refresh every 15 seconds
     refetchOnWindowFocus: true,
   });
@@ -314,7 +314,7 @@ export default function DashboardPage() {
         <div className="glass-card rounded-3xl p-8 text-center max-w-md">
           <AlertTriangle className="h-10 w-10 text-red-400 mx-auto mb-4" />
           <p className="text-sm text-slate-300 font-medium">{error}</p>
-          <button onClick={fetchDashboard} className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-blue-300 bg-blue-600/10 border border-blue-500/20 hover:bg-blue-600/20 transition-all">
+          <button onClick={() => fetchDashboard()} className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-blue-300 bg-blue-600/10 border border-blue-500/20 hover:bg-blue-600/20 transition-all">
             <RefreshCw className="h-3.5 w-3.5" /> Retry
           </button>
         </div>

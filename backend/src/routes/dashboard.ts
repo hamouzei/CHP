@@ -6,7 +6,7 @@ import { requireRole } from '../middleware/rbac';
 const router = Router();
 
 // GET /dashboard/organization/:orgId - Organization-level dashboard data
-router.get('/organization/:orgId', authenticate, requireRole('admin', 'super_admin'), async (req: AuthenticatedRequest, res) => {
+router.get('/organization/:orgId', authenticate, async (req: AuthenticatedRequest, res) => {
   try {
     const { orgId } = req.params;
     const user = req.user!;
@@ -182,7 +182,7 @@ router.get('/platform', authenticate, requireRole('super_admin'), async (req: Au
     const domains = await prisma.domain.findMany({ orderBy: { displayOrder: 'asc' } });
     const domainScoresFormatted = domains.map((d) => {
       const compScores = componentScoresFormatted.filter((c) => c.domainId === d.id);
-      const active = compScores.filter((c) => c.rawScore > 0);
+      const active = compScores.filter((c) => c.rawScore !== null);
       const domainScorePct = active.length > 0
         ? Math.round(((active.reduce((s, c) => s + c.rawScore, 0) / active.length) / 4.0) * 100 * 100) / 100
         : 0;

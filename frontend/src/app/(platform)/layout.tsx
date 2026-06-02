@@ -13,8 +13,11 @@ import {
   Shield,
   Menu,
   X,
+  Building2,
+  Settings,
 } from 'lucide-react';
 import Link from 'next/link';
+import { api } from '@/services/api';
 
 export default function PlatformLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -87,17 +90,23 @@ export default function PlatformLayout({ children }: { children: React.ReactNode
 
   const navigation: { name: string; href: string; icon: any }[] = [];
 
-  // Dashboard for super_admin and admin
-  if (user.role === 'super_admin' || user.role === 'admin') {
-    navigation.push({ name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard });
-  }
+  // Dashboard for all authenticated roles
+  navigation.push({ name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard });
 
   navigation.push({ name: 'Assessments', href: '/assessments', icon: ClipboardList });
 
-  // Add User Directory panel for super admin and admin
+  // Organizations management for super_admin only
+  if (user.role === 'super_admin') {
+    navigation.push({ name: 'Organizations', href: '/organizations', icon: Building2 });
+  }
+
+  // User Directory for super admin and admin
   if (user.role === 'super_admin' || user.role === 'admin') {
     navigation.push({ name: 'User Directory', href: '/users', icon: Users });
   }
+
+  // Settings for all roles
+  navigation.push({ name: 'Settings', href: '/settings', icon: Settings });
 
   const getBreadcrumb = () => {
     const segments = pathname.split('/').filter(Boolean);

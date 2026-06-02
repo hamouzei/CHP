@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuthStore } from '../../../store/authStore';
 import { api } from '../../../services/api';
 import { Shield, Mail, Lock, Eye, EyeOff, Loader2, AlertCircle } from 'lucide-react';
+import Link from 'next/link';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -151,6 +152,12 @@ export default function LoginPage() {
                 <label htmlFor="password" className="block text-xs font-semibold text-slate-400 uppercase tracking-wider">
                   Password
                 </label>
+                <Link
+                  href="/forgot-password"
+                  className="text-xs font-medium text-blue-400 hover:text-blue-300 transition-colors"
+                >
+                  Forgot password?
+                </Link>
               </div>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">

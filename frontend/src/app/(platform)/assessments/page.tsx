@@ -277,7 +277,7 @@ export default function AssessmentsListPage() {
               <div className="mt-6 flex justify-between items-center gap-3.5">
                 {/* Delete button */}
                 <div>
-                  {canDelete && (a.status === 'draft' || a.status === 'in_progress') && (
+                  {canDelete && (user?.role === 'super_admin' || a.status === 'draft' || a.status === 'in_progress') && (
                     <button
                       onClick={() => handleDeleteAssessment(a.id, a.cycleName)}
                       disabled={deletingId === a.id}

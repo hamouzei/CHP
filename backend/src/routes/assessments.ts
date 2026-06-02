@@ -7,7 +7,7 @@ import prisma from '../config/db';
 import { authenticate, AuthenticatedRequest } from '../middleware/auth';
 import { requireRole } from '../middleware/rbac';
 import { recalculateAssessment } from '../services/scoringEngine';
-import { logAction } from '../services/audit';
+import { logAction, logActionFromReq } from '../services/audit';
 import { uploadFile, deleteFile, getDownloadUrl } from '../services/storage';
 import { sniffMimeType } from '../utils/mimeSniffer';
 import { scanBuffer } from '../services/antivirus';
@@ -20,7 +20,7 @@ const storage = multer.memoryStorage();
 const upload = multer({
   storage,
   limits: {
-    fileSize: 50 * 1024 * 1024, // 50MB limit per individual upload
+    fileSize: 20 * 1024 * 1024, // 20MB limit per individual upload (FR-EV-03)
   },
 });
 
@@ -252,8 +252,8 @@ router.post('/:id/responses', authenticate, async (req: AuthenticatedRequest, re
       return res.status(403).json({ error: 'FORBIDDEN', message: 'Access denied' });
     }
 
-    if (user.role === 'viewer') {
-      return res.status(403).json({ error: 'FORBIDDEN', message: 'Viewer role cannot submit scores' });
+    if (user.role === 'viewer' || user.role === 'reviewer') {
+      return res.status(403).json({ error: 'FORBIDDEN', message: 'Viewer and Reviewer roles cannot submit scores' });
     }
 
     if (assessment.status === 'approved' || assessment.status === 'archived') {
@@ -839,7 +839,7 @@ router.delete('/:id', authenticate, requireRole('admin', 'super_admin'), async (
       return res.status(403).json({ error: 'FORBIDDEN', message: 'Access denied' });
     }
 
-    if (assessment.status !== 'draft' && assessment.status !== 'in_progress') {
+    if (user.role !== 'super_admin' && assessment.status !== 'draft' && assessment.status !== 'in_progress') {
       return res.status(400).json({ error: 'BAD_REQUEST', message: 'Only draft or in-progress assessments can be deleted' });
     }
 
