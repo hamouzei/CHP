@@ -30,8 +30,8 @@ This monorepo contains two apps deployed as **separate Vercel projects**:
    | Variable | Value |
    |---|---|
    | `DATABASE_URL` | Your Neon PostgreSQL connection string |
-   | `JWT_SECRET` | Your JWT secret |
-   | `REFRESH_TOKEN_SECRET` | Your refresh token secret |
+   | `JWT_PRIVATE_KEY` | Contents of `keys/jwt.key` (replace newlines with `\n`) |
+   | `JWT_PUBLIC_KEY` | Contents of `keys/jwt.key.pub` (replace newlines with `\n`) |
    | `FRONTEND_URL` | *(set after deploying frontend — see step 3)* |
    | `NODE_ENV` | `production` |
    | `STORAGE_PROVIDER` | `local` |
@@ -71,8 +71,8 @@ cd backend
 vercel --yes
 # Follow prompts, then set env vars:
 vercel env add DATABASE_URL
-vercel env add JWT_SECRET
-vercel env add REFRESH_TOKEN_SECRET
+vercel env add JWT_PRIVATE_KEY
+vercel env add JWT_PUBLIC_KEY
 vercel env add FRONTEND_URL
 vercel env add NODE_ENV
 vercel env add STORAGE_PROVIDER
