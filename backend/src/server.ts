@@ -46,9 +46,11 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 });
 
 // --------------- Start Server ---------------
-app.listen(PORT, () => {
-  console.log(`✅ CHP Maturity API server running on http://localhost:${PORT}`);
-  console.log(`📚 API base: http://localhost:${PORT}/api/v1`);
-});
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`✅ CHP Maturity API server running on http://localhost:${PORT}`);
+    console.log(`📚 API base: http://localhost:${PORT}/api/v1`);
+  });
+}
 
 export default app;

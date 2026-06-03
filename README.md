@@ -144,16 +144,39 @@ All 51 tests across 5 suites:
 
 ## Deployment
 
+This project is set up as a monorepo. You can deploy both the frontend and backend to Vercel as two separate projects.
+
 ### Frontend → Vercel
 
-1. Connect your GitHub repo to [Vercel](https://vercel.com)
-2. Set **Root Directory** to `frontend`
-3. Set **Framework Preset** to `Next.js`
-4. Add environment variable:
-   - `NEXT_PUBLIC_API_URL` = your backend API URL (e.g. `https://api.yourapp.com/api/v1`)
-5. Deploy
+1. Connect your GitHub repository to [Vercel](https://vercel.com).
+2. Create a new project and select the repository.
+3. In the project settings, set **Root Directory** to `frontend`.
+4. Set **Framework Preset** to `Next.js`.
+5. Add the following environment variable:
+   - `NEXT_PUBLIC_API_URL` = your deployed backend API URL (e.g., `https://chp-backend.vercel.app/api/v1`)
+6. Click **Deploy**.
 
-### Backend → Any Node.js Host (Railway, Render, Fly.io, VPS)
+### Backend → Vercel (Express Serverless)
+
+We have configured the backend with a `vercel.json` file and a `postinstall` script to allow serverless deployment on Vercel.
+
+1. Connect your GitHub repository to [Vercel](https://vercel.com).
+2. Create a new project and select the repository.
+3. In the project settings, set **Root Directory** to `backend`.
+4. Set **Framework Preset** to `Other` (or let it auto-detect).
+5. Add the following environment variables:
+   - `DATABASE_URL` = Your Neon PostgreSQL connection URL.
+   - `NODE_ENV` = `production`
+   - `CORS_ORIGINS` = Your deployed Vercel frontend URL (e.g., `https://chp-frontend.vercel.app`).
+   - `JWT_PRIVATE_KEY` = Your RS256 private key (copy the multiline PEM structure or single line with `\n` characters).
+   - `JWT_PUBLIC_KEY` = Your RS256 public key.
+   - `STORAGE_PROVIDER` = `s3` (local storage will not work in a serverless environment).
+   - `S3_ENDPOINT`, `S3_REGION`, `S3_BUCKET`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY` = Your S3 credentials.
+6. Click **Deploy**.
+
+### Backend → Standard Node.js Host (Alternative: Railway, Render, Fly.io, VPS)
+
+If you prefer to run the backend as a persistent service instead of serverless:
 
 ```bash
 cd backend
