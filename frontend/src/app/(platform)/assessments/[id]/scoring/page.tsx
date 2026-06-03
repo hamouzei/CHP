@@ -561,7 +561,7 @@ export default function AssessmentScoringWizard() {
                                         
                                         <div className="flex items-center gap-1">
                                           <a
-                                            href={`http://localhost:3001${file.storageUrl}`}
+                                            href={`${process.env.NEXT_PUBLIC_API_URL?.replace('/api/v1', '') || 'http://localhost:3001'}${file.storageUrl}`}
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             className="p-1 rounded text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-colors"

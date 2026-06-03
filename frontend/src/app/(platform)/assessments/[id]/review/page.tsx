@@ -263,7 +263,7 @@ export default function AssessmentReviewPage() {
                       {resp.evidenceFiles.map((file) => (
                         <a
                           key={file.id}
-                          href={`http://localhost:3001${file.storageUrl}`}
+                          href={`${process.env.NEXT_PUBLIC_API_URL?.replace('/api/v1', '') || 'http://localhost:3001'}${file.storageUrl}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-900 border border-slate-800 text-[10px] text-slate-300 hover:text-slate-100 hover:border-slate-700 transition-colors"
