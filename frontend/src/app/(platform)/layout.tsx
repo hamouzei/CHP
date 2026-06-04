@@ -90,8 +90,10 @@ export default function PlatformLayout({ children }: { children: React.ReactNode
 
   const navigation: { name: string; href: string; icon: any }[] = [];
 
-  // Dashboard for all authenticated roles
-  navigation.push({ name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard });
+  // Dashboard for admin roles only
+  if (user.role === 'super_admin' || user.role === 'admin') {
+    navigation.push({ name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard });
+  }
 
   navigation.push({ name: 'Assessments', href: '/assessments', icon: ClipboardList });
 

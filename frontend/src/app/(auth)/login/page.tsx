@@ -22,7 +22,7 @@ export default function LoginPage() {
   // If already authenticated, redirect based on role
   useEffect(() => {
     if (isAuthenticated && authUser) {
-      if (authUser.role === 'super_admin') {
+      if (authUser.role === 'super_admin' || authUser.role === 'admin') {
         router.push('/dashboard');
       } else {
         router.push('/assessments');
@@ -68,7 +68,7 @@ export default function LoginPage() {
       setAuth(data.user, data.accessToken, data.refreshToken);
       
       // Redirect based on role
-      if (data.user.role === 'super_admin') {
+      if (data.user.role === 'super_admin' || data.user.role === 'admin') {
         router.push('/dashboard');
       } else {
         router.push('/assessments');
@@ -90,14 +90,14 @@ export default function LoginPage() {
   return (
     <main className="min-h-screen flex items-center justify-center relative overflow-hidden aurora-bg animate-aurora py-12 px-4 sm:px-6 lg:px-8">
       {/* Background Orbs */}
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-blue-600/20 blur-3xl animate-pulse-slow"></div>
-      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-cyan-500/20 blur-3xl animate-pulse-slow"></div>
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-blue-600/8 blur-2xl animate-pulse-slow"></div>
+      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-cyan-500/8 blur-2xl animate-pulse-slow"></div>
 
       <div className="max-w-md w-full space-y-8 relative z-10">
         {/* Logo and title */}
         <div className="text-center">
-          <div className="inline-flex items-center justify-center p-3.5 bg-blue-600/10 rounded-2xl border border-blue-500/20 shadow-lg shadow-blue-500/5 mb-4 group hover:border-blue-500/40 transition-all duration-300">
-            <Shield className="h-10 w-10 text-blue-400 group-hover:scale-110 transition-transform duration-300" />
+          <div className="inline-flex items-center justify-center p-3.5 bg-blue-600/8 rounded-2xl border border-blue-500/15 shadow-md shadow-blue-500/3 mb-4 group hover:border-blue-500/25 transition-all duration-300">
+            <Shield className="h-10 w-10 text-blue-300 group-hover:scale-110 transition-transform duration-300" />
           </div>
           <h2 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-blue-200 via-slate-100 to-cyan-200 bg-clip-text text-transparent">
             CHP Maturity Platform
@@ -109,7 +109,7 @@ export default function LoginPage() {
 
         {/* Card */}
         <div className="glass-card rounded-3xl p-8 sm:p-10 shadow-2xl relative overflow-hidden">
-          <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-blue-500/40 to-transparent"></div>
+          <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-blue-500/20 to-transparent"></div>
 
           {/* Locked out alert */}
           {error && (

@@ -193,14 +193,16 @@ export default function DashboardPage() {
   const [exportingPdf, setExportingPdf] = React.useState(false);
   const [exportingExcel, setExportingExcel] = React.useState(false);
 
-  const isAllowed = !!user; // All authenticated roles can access the dashboard
+  const isAdmin = user?.role === 'super_admin' || user?.role === 'admin';
 
-  // Redirect unauthenticated users
+  // Redirect non-admin roles to assessments, unauthenticated to login
   React.useEffect(() => {
-    if (!isAllowed) {
+    if (!user) {
       router.replace('/login');
+    } else if (!isAdmin) {
+      router.replace('/assessments');
     }
-  }, [isAllowed, router]);
+  }, [user, isAdmin, router]);
 
   // Determine API endpoint based on role
   const dashboardEndpoint = user?.role === 'super_admin'
@@ -211,7 +213,7 @@ export default function DashboardPage() {
   const { data, isLoading: loading, error: queryError, refetch: fetchDashboard } = useQuery<DashboardData>({
     queryKey: ['dashboard', user?.role, user?.organizationId],
     queryFn: () => api.get(dashboardEndpoint),
-    enabled: isAllowed,
+    enabled: isAdmin,
     refetchInterval: 15000, // Auto-refresh every 15 seconds
     refetchOnWindowFocus: true,
   });
@@ -295,7 +297,7 @@ export default function DashboardPage() {
   };
 
   /* ─── Loading / Error States ─── */
-  if (!user) return null;
+  if (!user || !isAdmin) return null;
 
   if (loading) {
     return (
