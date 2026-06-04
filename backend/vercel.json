@@ -8,6 +8,11 @@
   ],
   "routes": [
     {
+      "src": "/api/v1/(.*)",
+      "methods": ["OPTIONS"],
+      "dest": "api/index.ts"
+    },
+    {
       "src": "/(.*)",
       "dest": "api/index.ts"
     }
