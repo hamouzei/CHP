@@ -90,8 +90,8 @@ export default function AssessmentReportPage() {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="flex flex-col items-center gap-3">
-          <Loader2 className="h-8 w-8 text-blue-500 animate-spin" />
-          <span className="text-sm text-slate-400">Loading report options...</span>
+          <Loader2 className="h-8 w-8 text-[#0072BC] animate-spin" />
+          <span className="text-sm text-white/50">Loading report options...</span>
         </div>
       </div>
     );
@@ -102,10 +102,10 @@ export default function AssessmentReportPage() {
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="glass-card rounded-3xl p-8 text-center max-w-md">
           <AlertTriangle className="h-10 w-10 text-red-400 mx-auto mb-4" />
-          <p className="text-sm text-slate-300 font-medium">{(error as any)?.message || 'Assessment not found'}</p>
+          <p className="text-sm text-white/70 font-medium">{(error as any)?.message || 'Assessment not found'}</p>
           <Link
             href="/assessments"
-            className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-blue-300 bg-blue-600/10 border border-blue-500/20 hover:bg-blue-600/20 transition-all"
+            className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-[#0072BC]/80 bg-[#0072BC]/10 border border-[#0072BC]/25 hover:bg-[#0072BC]/20 transition-all"
           >
             <ArrowLeft className="h-3.5 w-3.5" /> Back to Assessments
           </Link>
@@ -124,15 +124,15 @@ export default function AssessmentReportPage() {
     <div className="space-y-6 animate-fade-in max-w-3xl">
       {/* Breadcrumb */}
       <div className="flex items-center gap-3 mb-2">
-        <Link href="/assessments" className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-500 hover:text-slate-300 transition-colors">
+        <Link href="/assessments" className="inline-flex items-center gap-1.5 text-xs font-medium text-white/40 hover:text-white/70 transition-colors">
           <ArrowLeft className="h-3.5 w-3.5" /> Assessments
         </Link>
-        <span className="text-slate-700">/</span>
-        <Link href={`/assessments/${id}`} className="text-xs font-medium text-slate-500 hover:text-slate-300 transition-colors">
+        <span className="text-white/20">/</span>
+        <Link href={`/assessments/${id}`} className="text-xs font-medium text-white/40 hover:text-white/70 transition-colors">
           {assessment.cycleName}
         </Link>
-        <span className="text-slate-700">/</span>
-        <span className="text-xs font-bold text-slate-300">Reports</span>
+        <span className="text-white/20">/</span>
+        <span className="text-xs font-bold text-white/70">Reports</span>
       </div>
 
       {/* Header */}
@@ -140,21 +140,21 @@ export default function AssessmentReportPage() {
         <div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-emerald-600/10 blur-3xl -z-10" />
         <div className="flex items-center gap-3 mb-1">
           <BarChart3 className="h-5 w-5 text-emerald-400" />
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-slate-100 via-slate-200 to-slate-400 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold tracking-tight text-white">
             Assessment Reports
           </h1>
         </div>
-        <p className="text-sm text-slate-400">
-          Download formatted reports for <span className="font-semibold text-slate-300">{assessment.cycleName}</span>
+        <p className="text-sm text-white/50">
+          Download formatted reports for <span className="font-semibold text-white/70">{assessment.cycleName}</span>
         </p>
 
         {/* Score Summary */}
-        <div className="flex items-center gap-6 mt-5 p-4 rounded-2xl bg-slate-900/30 border border-slate-800/40">
+        <div className="flex items-center gap-6 mt-5 p-4 rounded-2xl bg-[#003366]/30 border border-white/10/40">
           <div>
-            <div className="text-3xl font-black text-white">{chpmi.toFixed(1)}<span className="text-lg text-slate-500">%</span></div>
-            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">CHPMI</div>
+            <div className="text-3xl font-black text-white">{chpmi.toFixed(1)}<span className="text-lg text-white/40">%</span></div>
+            <div className="text-[10px] font-bold text-white/40 uppercase tracking-widest">CHPMI</div>
           </div>
-          <div className="w-px h-10 bg-slate-800" />
+          <div className="w-px h-10 bg-[#003366]/60" />
           <div>
             <span
               className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold uppercase border"
@@ -163,12 +163,12 @@ export default function AssessmentReportPage() {
               <Sparkles className="h-3 w-3" />
               {bandLabel}
             </span>
-            <div className="text-[10px] text-slate-500 mt-1">Maturity Band</div>
+            <div className="text-[10px] text-white/40 mt-1">Maturity Band</div>
           </div>
-          <div className="w-px h-10 bg-slate-800" />
+          <div className="w-px h-10 bg-[#003366]/60" />
           <div>
-            <div className="text-lg font-bold text-white">{scoredCount}<span className="text-sm text-slate-500">/{totalCount}</span></div>
-            <div className="text-[10px] text-slate-500">Criteria Scored</div>
+            <div className="text-lg font-bold text-white">{scoredCount}<span className="text-sm text-white/40">/{totalCount}</span></div>
+            <div className="text-[10px] text-white/40">Criteria Scored</div>
           </div>
         </div>
       </div>
@@ -184,10 +184,10 @@ export default function AssessmentReportPage() {
             </div>
             <div>
               <h3 className="text-sm font-bold text-white">PDF Report</h3>
-              <p className="text-[10px] text-slate-500">Full assessment report with scores and charts</p>
+              <p className="text-[10px] text-white/40">Full assessment report with scores and charts</p>
             </div>
           </div>
-          <p className="text-xs text-slate-400 mb-5 leading-relaxed">
+          <p className="text-xs text-white/50 mb-5 leading-relaxed">
             Generate a comprehensive PDF report including organization details, all 30 criteria scores with justifications, component and domain summaries, maturity band classification, and visual charts.
           </p>
           {pdfSuccess && (
@@ -221,10 +221,10 @@ export default function AssessmentReportPage() {
             </div>
             <div>
               <h3 className="text-sm font-bold text-white">Excel Export</h3>
-              <p className="text-[10px] text-slate-500">Structured data in spreadsheet format</p>
+              <p className="text-[10px] text-white/40">Structured data in spreadsheet format</p>
             </div>
           </div>
-          <p className="text-xs text-slate-400 mb-5 leading-relaxed">
+          <p className="text-xs text-white/50 mb-5 leading-relaxed">
             Export the full scoring matrix as an Excel workbook with separate sheets for criteria scores, component summaries, domain scores, and overall CHPMI calculation. Ideal for further analysis.
           </p>
           {excelSuccess && (

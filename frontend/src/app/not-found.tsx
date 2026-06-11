@@ -6,26 +6,22 @@ import Link from 'next/link';
 
 export default function NotFoundPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-950 text-slate-100 font-sans p-6 relative overflow-hidden">
-      {/* Background Subtle Gradient Glow */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(124,58,237,0.03),transparent_50%)] pointer-events-none"></div>
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(6,182,212,0.02),transparent_50%)] pointer-events-none"></div>
-
-      <div className="w-full max-w-md glass-card rounded-3xl p-8 border border-slate-900/80 shadow-2xl relative z-10 text-center space-y-6">
-        {/* Warning Icon Badge */}
-        <div className="mx-auto w-16 h-16 rounded-2xl bg-blue-600/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 text-gray-900 font-[var(--font-inter)] p-6 relative overflow-hidden">
+      <div className="w-full max-w-md glass-card rounded-2xl p-8 shadow-lg relative z-10 text-center space-y-6">
+        {/* Icon Badge */}
+        <div className="mx-auto w-16 h-16 rounded-2xl bg-[#0072BC]/10 border border-[#0072BC]/20 flex items-center justify-center text-[#0072BC]">
           <HelpCircle className="h-9 w-9" />
         </div>
 
         {/* Messaging */}
         <div className="space-y-2">
-          <h1 className="text-4xl font-black tracking-tight text-white">
+          <h1 className="text-4xl font-black tracking-tight text-gray-900">
             404
           </h1>
-          <h2 className="text-xl font-bold bg-gradient-to-r from-blue-200 via-slate-100 to-cyan-200 bg-clip-text text-transparent">
+          <h2 className="text-xl font-bold text-[#0072BC]">
             Page Not Found
           </h2>
-          <p className="text-xs text-slate-400 max-w-xs mx-auto leading-relaxed pt-1">
+          <p className="text-sm text-gray-500 max-w-xs mx-auto leading-relaxed pt-1">
             The resource scope or address you tried to reach does not exist or has been archived under an older framework version.
           </p>
         </div>
@@ -34,7 +30,7 @@ export default function NotFoundPage() {
         <div className="pt-4 flex justify-center">
           <Link
             href="/assessments"
-            className="inline-flex items-center justify-center gap-2 py-3 px-6 rounded-2xl text-xs font-bold text-white bg-gradient-to-r from-blue-600 to-sky-600 hover:from-blue-500 hover:to-sky-500 shadow-md shadow-blue-500/15 transition-all active:scale-[0.98]"
+            className="inline-flex items-center justify-center gap-2 py-3 px-6 rounded-xl text-sm font-bold text-white bg-[#0072BC] hover:bg-[#005a94] shadow-md transition-all active:scale-[0.98]"
           >
             <Home className="h-4 w-4" />
             Back to Assessments

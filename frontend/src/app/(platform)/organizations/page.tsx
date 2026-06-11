@@ -185,16 +185,16 @@ export default function OrganizationsPage() {
               <Shield className="h-3.5 w-3.5" />
               Super Admin
             </div>
-            <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-slate-100 via-slate-200 to-slate-400 bg-clip-text text-transparent">
+            <h1 className="text-3xl font-extrabold tracking-tight text-white">
               Organizations
             </h1>
-            <p className="mt-1 text-sm text-slate-400">
+            <p className="mt-1 text-sm text-white/50">
               Manage platform organizations — create, edit, suspend, or remove.
             </p>
           </div>
           <button
             onClick={openCreateModal}
-            className="inline-flex items-center gap-2 py-2.5 px-5 rounded-2xl text-xs font-bold text-white bg-gradient-to-r from-blue-600 to-sky-600 hover:from-blue-500 hover:to-sky-500 shadow-lg shadow-blue-500/15 hover:shadow-blue-500/25 transition-all active:scale-[0.98]"
+            className="inline-flex items-center gap-2 py-2.5 px-5 rounded-2xl text-xs font-bold text-white bg-gradient-to-r from-[#0072BC] to-[#0072BC]/80 hover:from-[#005a94] hover:to-[#0072BC] shadow-lg shadow-[#0072BC]/15 hover:shadow-[#0072BC]/25 transition-all active:scale-[0.98]"
           >
             <Plus className="h-4 w-4" />
             New Organization
@@ -223,7 +223,7 @@ export default function OrganizationsPage() {
         {/* Search Bar */}
         <div className="mb-5">
           <div className="relative max-w-sm">
-            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
+            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-white/40">
               <Search className="h-4 w-4" />
             </div>
             <input
@@ -238,12 +238,12 @@ export default function OrganizationsPage() {
 
         {isLoading ? (
           <div className="flex items-center justify-center py-16">
-            <Loader2 className="h-8 w-8 text-blue-500 animate-spin" />
+            <Loader2 className="h-8 w-8 text-[#0072BC] animate-spin" />
           </div>
         ) : filtered.length === 0 ? (
           <div className="text-center py-16">
-            <Building2 className="h-12 w-12 text-slate-700 mx-auto mb-3" />
-            <p className="text-sm text-slate-500">
+            <Building2 className="h-12 w-12 text-white/20 mx-auto mb-3" />
+            <p className="text-sm text-white/40">
               {search ? 'No organizations match your search.' : 'No organizations yet. Create one to get started.'}
             </p>
           </div>
@@ -251,45 +251,45 @@ export default function OrganizationsPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
               <thead>
-                <tr className="border-b border-slate-800/60">
-                  <th className="text-left py-2.5 px-3 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Name</th>
-                  <th className="text-left py-2.5 px-3 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Country</th>
-                  <th className="text-left py-2.5 px-3 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Region</th>
-                  <th className="text-left py-2.5 px-3 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Type</th>
-                  <th className="text-center py-2.5 px-3 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Status</th>
-                  <th className="text-right py-2.5 px-3 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Created</th>
-                  <th className="text-center py-2.5 px-3 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Actions</th>
+                <tr className="border-b border-white/08">
+                  <th className="text-left py-2.5 px-3 text-[10px] font-bold text-white/40 uppercase tracking-widest">Name</th>
+                  <th className="text-left py-2.5 px-3 text-[10px] font-bold text-white/40 uppercase tracking-widest">Country</th>
+                  <th className="text-left py-2.5 px-3 text-[10px] font-bold text-white/40 uppercase tracking-widest">Region</th>
+                  <th className="text-left py-2.5 px-3 text-[10px] font-bold text-white/40 uppercase tracking-widest">Type</th>
+                  <th className="text-center py-2.5 px-3 text-[10px] font-bold text-white/40 uppercase tracking-widest">Status</th>
+                  <th className="text-right py-2.5 px-3 text-[10px] font-bold text-white/40 uppercase tracking-widest">Created</th>
+                  <th className="text-center py-2.5 px-3 text-[10px] font-bold text-white/40 uppercase tracking-widest">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {filtered.map((org) => (
-                  <tr key={org.id} className="border-b border-slate-900/40 hover:bg-slate-900/20 transition-colors">
-                    <td className="py-3 px-3 font-bold text-slate-200">
+                  <tr key={org.id} className="border-b border-white/05 hover:bg-[#003366]/20 transition-colors">
+                    <td className="py-3 px-3 font-bold text-white">
                       <div className="flex items-center gap-2">
-                        <Building2 className="h-3.5 w-3.5 text-blue-400 shrink-0" />
+                        <Building2 className="h-3.5 w-3.5 text-[#0072BC] shrink-0" />
                         {org.name}
                       </div>
                     </td>
-                    <td className="py-3 px-3 text-slate-400">
+                    <td className="py-3 px-3 text-white/50">
                       {org.countryCode ? (
                         <span className="inline-flex items-center gap-1">
                           <Globe className="h-3 w-3" /> {org.countryCode}
                         </span>
                       ) : (
-                        <span className="text-slate-600">—</span>
+                        <span className="text-white/30">—</span>
                       )}
                     </td>
-                    <td className="py-3 px-3 text-slate-400">
+                    <td className="py-3 px-3 text-white/50">
                       {org.region ? (
                         <span className="inline-flex items-center gap-1">
                           <MapPin className="h-3 w-3" /> {org.region}
                         </span>
                       ) : (
-                        <span className="text-slate-600">—</span>
+                        <span className="text-white/30">—</span>
                       )}
                     </td>
                     <td className="py-3 px-3">
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-blue-600/10 border border-blue-500/20 text-blue-300">
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-[#0072BC]/10 border border-[#0072BC]/25 text-[#0072BC]/80">
                         {org.organizationType || 'national'}
                       </span>
                     </td>
@@ -306,14 +306,14 @@ export default function OrganizationsPage() {
                         {org.isActive ? 'Active' : 'Suspended'}
                       </button>
                     </td>
-                    <td className="py-3 px-3 text-right text-slate-400">
+                    <td className="py-3 px-3 text-right text-white/50">
                       {new Date(org.createdAt).toLocaleDateString()}
                     </td>
                     <td className="py-3 px-3 text-center">
                       <div className="inline-flex gap-1.5">
                         <button
                           onClick={() => openEditModal(org)}
-                          className="p-1.5 rounded-lg text-blue-400 hover:bg-blue-950/30 transition-colors"
+                          className="p-1.5 rounded-lg text-[#0072BC] hover:bg-blue-950/30 transition-colors"
                           title="Edit"
                         >
                           <Pencil className="h-3.5 w-3.5" />
@@ -344,13 +344,13 @@ export default function OrganizationsPage() {
                 <Trash2 className="h-8 w-8 text-red-400" />
               </div>
               <h3 className="text-lg font-bold text-white mb-2">Delete Organization?</h3>
-              <p className="text-sm text-slate-400 mb-6">
+              <p className="text-sm text-white/50 mb-6">
                 This will permanently delete the organization and all associated data. This action cannot be undone.
               </p>
               <div className="flex gap-3 justify-center">
                 <button
                   onClick={() => setDeleteConfirm(null)}
-                  className="py-2.5 px-5 rounded-2xl text-xs font-bold text-slate-300 bg-slate-800/60 border border-slate-700/40 hover:bg-slate-800 transition-all"
+                  className="py-2.5 px-5 rounded-2xl text-xs font-bold text-white/70 bg-white/08 border border-white/10/40 hover:bg-[#003366]/80 transition-all"
                 >
                   Cancel
                 </button>
@@ -372,7 +372,7 @@ export default function OrganizationsPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4" onClick={closeModal}>
           <div className="glass-card rounded-3xl p-8 max-w-lg w-full relative" onClick={(e) => e.stopPropagation()}>
             <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-blue-500/40 to-transparent" />
-            <button onClick={closeModal} className="absolute top-4 right-4 text-slate-500 hover:text-slate-300 transition-colors">
+            <button onClick={closeModal} className="absolute top-4 right-4 text-white/40 hover:text-white/70 transition-colors">
               <X className="h-5 w-5" />
             </button>
 
@@ -389,7 +389,7 @@ export default function OrganizationsPage() {
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">
+                <label className="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-1.5">
                   Organization Name *
                 </label>
                 <input
@@ -404,7 +404,7 @@ export default function OrganizationsPage() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">
+                  <label className="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-1.5">
                     Country Code (ISO)
                   </label>
                   <input
@@ -417,7 +417,7 @@ export default function OrganizationsPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">
+                  <label className="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-1.5">
                     Region
                   </label>
                   <input
@@ -431,7 +431,7 @@ export default function OrganizationsPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">
+                <label className="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-1.5">
                   Organization Type
                 </label>
                 <select
@@ -440,7 +440,7 @@ export default function OrganizationsPage() {
                   className="glass-input px-4 py-2.5 rounded-xl w-full text-sm"
                 >
                   {ORG_TYPES.map((t) => (
-                    <option key={t.value} value={t.value} className="bg-slate-900">
+                    <option key={t.value} value={t.value} className="bg-[#003366]">
                       {t.label}
                     </option>
                   ))}
@@ -451,14 +451,14 @@ export default function OrganizationsPage() {
                 <button
                   type="button"
                   onClick={closeModal}
-                  className="py-2.5 px-5 rounded-2xl text-xs font-bold text-slate-300 bg-slate-800/60 border border-slate-700/40 hover:bg-slate-800 transition-all"
+                  className="py-2.5 px-5 rounded-2xl text-xs font-bold text-white/70 bg-white/08 border border-white/10/40 hover:bg-[#003366]/80 transition-all"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={createMutation.isPending || updateMutation.isPending}
-                  className="py-2.5 px-5 rounded-2xl text-xs font-bold text-white bg-gradient-to-r from-blue-600 to-sky-600 hover:from-blue-500 hover:to-sky-500 transition-all disabled:opacity-50"
+                  className="py-2.5 px-5 rounded-2xl text-xs font-bold text-white bg-gradient-to-r from-[#0072BC] to-[#0072BC]/80 hover:from-[#005a94] hover:to-[#0072BC] transition-all disabled:opacity-50"
                 >
                   {(createMutation.isPending || updateMutation.isPending) ? (
                     <Loader2 className="h-4 w-4 animate-spin" />

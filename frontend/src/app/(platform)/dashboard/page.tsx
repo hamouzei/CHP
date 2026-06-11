@@ -115,12 +115,12 @@ const MATURITY_COLORS: Record<string, string> = {
 const DOMAIN_COLORS = ['#8b5cf6', '#06b6d4', '#22c55e', '#f59e0b', '#ef4444'];
 
 const STATUS_MAP: Record<string, { label: string; color: string; icon: React.ElementType }> = {
-  draft: { label: 'Draft', color: 'text-slate-400', icon: Clock },
-  in_progress: { label: 'In Progress', color: 'text-amber-400', icon: Activity },
-  under_review: { label: 'Under Review', color: 'text-cyan-400', icon: Target },
-  revision_requested: { label: 'Revision Requested', color: 'text-orange-400', icon: AlertTriangle },
-  approved: { label: 'Approved', color: 'text-emerald-400', icon: CheckCircle2 },
-  rejected: { label: 'Rejected', color: 'text-red-400', icon: XCircle },
+  draft: { label: 'Draft', color: 'text-gray-500', icon: Clock },
+  in_progress: { label: 'In Progress', color: 'text-amber-600', icon: Activity },
+  under_review: { label: 'Under Review', color: 'text-cyan-600', icon: Target },
+  revision_requested: { label: 'Revision Requested', color: 'text-orange-600', icon: AlertTriangle },
+  approved: { label: 'Approved', color: 'text-emerald-600', icon: CheckCircle2 },
+  rejected: { label: 'Rejected', color: 'text-red-600', icon: XCircle },
 };
 
 function getBandColor(band: string) {
@@ -141,7 +141,7 @@ function ChpmiGauge({ score, band }: { score: number; band: string }) {
         {/* Background ring */}
         <circle
           cx="80" cy="80" r={radius}
-          stroke="rgba(148,163,184,0.08)"
+          stroke="rgba(0,0,0,0.06)"
           strokeWidth="12"
           fill="none"
         />
@@ -159,10 +159,10 @@ function ChpmiGauge({ score, band }: { score: number; band: string }) {
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-4xl font-black text-white tracking-tight">
+        <span className="text-4xl font-black text-gray-900 tracking-tight">
           {pct.toFixed(1)}
         </span>
-        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">
+        <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mt-0.5">
           CHPMI %
         </span>
       </div>
@@ -174,10 +174,10 @@ function ChpmiGauge({ score, band }: { score: number; band: string }) {
 function CustomTooltip({ active, payload, label }: any) {
   if (!active || !payload?.length) return null;
   return (
-    <div className="bg-slate-900/95 backdrop-blur-xl border border-slate-700/50 rounded-xl px-4 py-3 shadow-2xl">
-      <p className="text-xs font-bold text-slate-300 mb-1.5">{label}</p>
+    <div className="bg-white border border-gray-200 rounded-xl px-4 py-3 shadow-lg">
+      <p className="text-xs font-bold text-gray-700 mb-1.5">{label}</p>
       {payload.map((entry: any, idx: number) => (
-        <p key={idx} className="text-xs" style={{ color: entry.color || '#c4b5fd' }}>
+        <p key={idx} className="text-xs" style={{ color: entry.color || '#0072BC' }}>
           <span className="font-semibold">{entry.name}: </span>
           {typeof entry.value === 'number' ? entry.value.toFixed(2) : entry.value}
         </p>
@@ -303,8 +303,8 @@ export default function DashboardPage() {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="flex flex-col items-center gap-3">
-          <Loader2 className="h-8 w-8 text-blue-500 animate-spin" />
-          <span className="text-sm text-slate-400">Loading dashboard analytics...</span>
+          <Loader2 className="h-8 w-8 text-[#0072BC] animate-spin" />
+          <span className="text-sm text-gray-500">Loading dashboard analytics...</span>
         </div>
       </div>
     );
@@ -313,10 +313,10 @@ export default function DashboardPage() {
   if (error) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="glass-card rounded-3xl p-8 text-center max-w-md">
-          <AlertTriangle className="h-10 w-10 text-red-400 mx-auto mb-4" />
-          <p className="text-sm text-slate-300 font-medium">{error}</p>
-          <button onClick={() => fetchDashboard()} className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-blue-300 bg-blue-600/10 border border-blue-500/20 hover:bg-blue-600/20 transition-all">
+        <div className="glass-card rounded-2xl p-8 text-center max-w-md">
+          <AlertTriangle className="h-10 w-10 text-red-500 mx-auto mb-4" />
+          <p className="text-sm text-gray-700 font-medium">{error}</p>
+          <button onClick={() => fetchDashboard()} className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-[#0072BC] bg-[#0072BC]/10 border border-[#0072BC]/20 hover:bg-[#0072BC]/20 transition-all">
             <RefreshCw className="h-3.5 w-3.5" /> Retry
           </button>
         </div>
@@ -330,22 +330,21 @@ export default function DashboardPage() {
   const StatusIcon = statusInfo.icon;
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-6">
       {/* ─── Welcome Banner ─── */}
-      <div className="glass-card rounded-3xl p-6 sm:p-8 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-blue-600/10 blur-3xl -z-10" />
-        <div className="absolute bottom-0 left-0 w-96 h-96 rounded-full bg-cyan-500/10 blur-3xl -z-10" />
+      <div className="glass-card rounded-2xl p-6 sm:p-8 relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-[#0072BC] to-[#0096c7] rounded-t-2xl" />
 
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
           <div className="max-w-xl">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-xs font-bold text-blue-300 mb-3">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#0072BC]/10 border border-[#0072BC]/20 text-xs font-bold text-[#0072BC] mb-3">
               <Shield className="h-3.5 w-3.5" />
               CHPMI Analytics Dashboard
             </div>
-            <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-slate-100 via-slate-200 to-slate-400 bg-clip-text text-transparent">
+            <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-gray-900">
               Welcome, {user.fullName}
             </h1>
-            <p className="mt-2 text-slate-400 text-sm leading-relaxed">
+            <p className="mt-2 text-gray-500 text-sm leading-relaxed">
               {data?.organizationCount !== undefined
                 ? `Platform-wide analytics across ${data.organizationCount} active organization${data.organizationCount !== 1 ? 's' : ''} — CHPMI scores, domain radar, trend lines, and report exports.`
                 : 'CHP Maturity Index analytics, domain radar, trend lines, and report exports.'}
@@ -356,7 +355,7 @@ export default function DashboardPage() {
           <div className="flex flex-wrap gap-3 shrink-0">
             <Link
               href="/assessments"
-              className="inline-flex items-center gap-2 py-2.5 px-4 rounded-2xl text-xs font-bold text-white bg-gradient-to-r from-blue-600 to-sky-600 hover:from-blue-500 hover:to-sky-500 shadow-lg shadow-blue-500/15 hover:shadow-blue-500/25 transition-all active:scale-[0.98]"
+              className="inline-flex items-center gap-2 py-2.5 px-4 rounded-xl text-xs font-bold text-white bg-[#0072BC] hover:bg-[#005a94] shadow-md transition-all active:scale-[0.98]"
             >
               Assessments <ArrowRight className="h-3.5 w-3.5" />
             </Link>
@@ -365,7 +364,7 @@ export default function DashboardPage() {
                 <button
                   onClick={() => handleExportPdf(latest.id)}
                   disabled={exportingPdf}
-                  className="inline-flex items-center gap-2 py-2.5 px-4 rounded-2xl text-xs font-bold text-red-300 bg-red-600/10 border border-red-500/20 hover:bg-red-600/20 transition-all active:scale-[0.98] disabled:opacity-50"
+                  className="inline-flex items-center gap-2 py-2.5 px-4 rounded-xl text-xs font-bold text-red-600 bg-red-50 border border-red-200 hover:bg-red-100 transition-all active:scale-[0.98] disabled:opacity-50"
                 >
                   {exportingPdf ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <FileText className="h-3.5 w-3.5" />}
                   Export PDF
@@ -373,7 +372,7 @@ export default function DashboardPage() {
                 <button
                   onClick={() => handleExportExcel(latest.id)}
                   disabled={exportingExcel}
-                  className="inline-flex items-center gap-2 py-2.5 px-4 rounded-2xl text-xs font-bold text-emerald-300 bg-emerald-600/10 border border-emerald-500/20 hover:bg-emerald-600/20 transition-all active:scale-[0.98] disabled:opacity-50"
+                  className="inline-flex items-center gap-2 py-2.5 px-4 rounded-xl text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 transition-all active:scale-[0.98] disabled:opacity-50"
                 >
                   {exportingExcel ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <FileSpreadsheet className="h-3.5 w-3.5" />}
                   Export Excel
@@ -386,15 +385,15 @@ export default function DashboardPage() {
 
       {/* ─── No Data State ─── */}
       {!hasData && (
-        <div className="glass-card rounded-3xl p-10 text-center">
-          <BarChart3 className="h-12 w-12 text-slate-600 mx-auto mb-4" />
-          <h2 className="text-lg font-bold text-slate-300">No Assessment Data Yet</h2>
-          <p className="text-sm text-slate-500 mt-2 max-w-md mx-auto">
+        <div className="glass-card rounded-2xl p-10 text-center">
+          <BarChart3 className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+          <h2 className="text-lg font-bold text-gray-700">No Assessment Data Yet</h2>
+          <p className="text-sm text-gray-500 mt-2 max-w-md mx-auto">
             Start your first maturity assessment to see CHPMI scores, domain radar charts, trend lines, and priority gap analysis here.
           </p>
           <Link
             href="/assessments"
-            className="inline-flex items-center gap-2 mt-6 py-3 px-5 rounded-2xl text-xs font-bold text-white bg-gradient-to-r from-blue-600 to-sky-600 hover:from-blue-500 hover:to-sky-500 transition-all"
+            className="inline-flex items-center gap-2 mt-6 py-3 px-5 rounded-xl text-xs font-bold text-white bg-[#0072BC] hover:bg-[#005a94] transition-all"
           >
             Create Assessment <ArrowRight className="h-3.5 w-3.5" />
           </Link>
@@ -407,11 +406,11 @@ export default function DashboardPage() {
           {/* Row 1: CHPMI Gauge + Latest Info + Domain Radar */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* CHPMI Gauge Card */}
-            <div className="glass-card rounded-3xl p-6 relative overflow-hidden">
-              <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-blue-500/40 to-transparent" />
+            <div className="glass-card rounded-2xl p-6 relative overflow-hidden">
+              <div className="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-[#0072BC] to-[#0096c7] rounded-t-2xl" />
               <div className="flex items-center gap-2 mb-4">
-                <Sparkles className="h-4 w-4 text-blue-400" />
-                <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Overall Index</span>
+                <Sparkles className="h-4 w-4 text-[#0072BC]" />
+                <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">Overall Index</span>
               </div>
               <ChpmiGauge score={latest.chpmiScore} band={latest.maturityBand} />
               {/* Maturity Band Badge */}
@@ -426,128 +425,128 @@ export default function DashboardPage() {
                 >
                   {latest.maturityBand}
                 </span>
-                <p className="text-[10px] text-slate-500 mt-2">{latest.cycleName}</p>
+                <p className="text-[10px] text-gray-500 mt-2">{latest.cycleName}</p>
               </div>
             </div>
 
             {/* Latest Assessment Info Card */}
-            <div className="glass-card rounded-3xl p-6 flex flex-col justify-between">
+            <div className="glass-card rounded-2xl p-6 flex flex-col justify-between">
               <div>
                 <div className="flex items-center gap-2 mb-4">
-                  <Activity className="h-4 w-4 text-cyan-400" />
-                  <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Latest Assessment</span>
+                  <Activity className="h-4 w-4 text-[#0072BC]" />
+                  <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">Latest Assessment</span>
                 </div>
 
-                <h3 className="text-lg font-extrabold text-white mb-3 tracking-tight">
+                <h3 className="text-lg font-extrabold text-gray-900 mb-3 tracking-tight">
                   {latest.cycleName}
                 </h3>
 
                 <div className="space-y-3">
                   <div className="flex justify-between items-center text-xs">
-                    <span className="text-slate-500 font-semibold">Status</span>
+                    <span className="text-gray-500 font-semibold">Status</span>
                     <span className={`inline-flex items-center gap-1 font-bold ${statusInfo.color}`}>
                       <StatusIcon className="h-3.5 w-3.5" />
                       {statusInfo.label}
                     </span>
                   </div>
                   <div className="flex justify-between items-center text-xs">
-                    <span className="text-slate-500 font-semibold">Score</span>
-                    <span className="font-extrabold text-white">{Number(latest.chpmiScore).toFixed(2)}%</span>
+                    <span className="text-gray-500 font-semibold">Score</span>
+                    <span className="font-extrabold text-gray-900">{Number(latest.chpmiScore).toFixed(2)}%</span>
                   </div>
                   <div className="flex justify-between items-center text-xs">
-                    <span className="text-slate-500 font-semibold">Maturity</span>
+                    <span className="text-gray-500 font-semibold">Maturity</span>
                     <span className="font-bold" style={{ color: getBandColor(latest.maturityBand) }}>{latest.maturityBand}</span>
                   </div>
                   <div className="flex justify-between items-center text-xs">
-                    <span className="text-slate-500 font-semibold">Updated</span>
-                    <span className="font-medium text-slate-300">{new Date(latest.updatedAt).toLocaleDateString()}</span>
+                    <span className="text-gray-500 font-semibold">Updated</span>
+                    <span className="font-medium text-gray-700">{new Date(latest.updatedAt).toLocaleDateString()}</span>
                   </div>
                 </div>
               </div>
 
               <Link
                 href={`/assessments/${latest.id}/scoring`}
-                className="mt-5 inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-2xl text-xs font-bold text-blue-300 bg-blue-600/10 border border-blue-500/20 hover:bg-blue-600/20 transition-all w-full"
+                className="mt-5 inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-bold text-[#0072BC] bg-[#0072BC]/10 border border-[#0072BC]/20 hover:bg-[#0072BC]/20 transition-all w-full"
               >
                 Open Assessment <ChevronRight className="h-3.5 w-3.5" />
               </Link>
             </div>
 
             {/* Domain Radar Chart */}
-            <div className="glass-card rounded-3xl p-6 relative overflow-hidden">
+            <div className="glass-card rounded-2xl p-6 relative overflow-hidden">
               <div className="flex items-center gap-2 mb-4">
-                <Radar className="h-4 w-4 text-emerald-400" />
-                <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Domain Radar</span>
+                <Radar className="h-4 w-4 text-[#0072BC]" />
+                <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">Domain Radar</span>
               </div>
               {radarData.length > 0 ? (
                 <ResponsiveContainer width="100%" height={220}>
                   <RadarChart cx="50%" cy="50%" outerRadius="72%" data={radarData}>
-                    <PolarGrid stroke="#334155" strokeDasharray="3 3" />
+                    <PolarGrid stroke="#d1d5db" strokeDasharray="3 3" />
                     <PolarAngleAxis
                       dataKey="domain"
-                      tick={{ fill: '#94a3b8', fontSize: 10, fontWeight: 700 }}
+                      tick={{ fill: '#6b7280', fontSize: 10, fontWeight: 700 }}
                     />
                     <PolarRadiusAxis
                       angle={90}
                       domain={[0, 100]}
-                      tick={{ fill: '#64748b', fontSize: 8 }}
+                      tick={{ fill: '#9ca3af', fontSize: 8 }}
                       tickCount={5}
                     />
                     <RechartsRadar
                       name="Score %"
                       dataKey="score"
-                      stroke="#8b5cf6"
-                      fill="#8b5cf6"
-                      fillOpacity={0.2}
+                      stroke="#0072BC"
+                      fill="#0072BC"
+                      fillOpacity={0.15}
                       strokeWidth={2}
                     />
                     <Tooltip content={<CustomTooltip />} />
                   </RadarChart>
                 </ResponsiveContainer>
               ) : (
-                <div className="h-[220px] flex items-center justify-center text-xs text-slate-500">No domain data</div>
+                <div className="h-[220px] flex items-center justify-center text-xs text-gray-400">No domain data</div>
               )}
             </div>
           </div>
 
           {/* Row 2: Component Scores Bar Chart */}
-          <div className="glass-card rounded-3xl p-6 relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-cyan-500/30 to-transparent" />
+          <div className="glass-card rounded-2xl p-6 relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-[#0072BC] to-[#0096c7] rounded-t-2xl" />
             <div className="flex items-center justify-between mb-5">
               <div className="flex items-center gap-2">
-                <BarChart3 className="h-4 w-4 text-cyan-400" />
-                <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Component Scores (0–4 Scale)</span>
+                <BarChart3 className="h-4 w-4 text-[#0072BC]" />
+                <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">Component Scores (0–4 Scale)</span>
               </div>
-              <span className="text-[10px] text-slate-500 font-medium">Sorted by score</span>
+              <span className="text-[10px] text-gray-400 font-medium">Sorted by score</span>
             </div>
             {barData.length > 0 ? (
               <ResponsiveContainer width="100%" height={320}>
                 <BarChart data={barData} layout="vertical" margin={{ left: 10, right: 30 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-                  <XAxis type="number" domain={[0, 4]} tick={{ fill: '#94a3b8', fontSize: 10 }} tickCount={5} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                  <XAxis type="number" domain={[0, 4]} tick={{ fill: '#6b7280', fontSize: 10 }} tickCount={5} />
                   <YAxis
                     dataKey="name"
                     type="category"
                     width={50}
-                    tick={{ fill: '#94a3b8', fontSize: 10, fontWeight: 600 }}
+                    tick={{ fill: '#6b7280', fontSize: 10, fontWeight: 600 }}
                   />
                   <Tooltip content={<CustomTooltip />} />
                   <Bar dataKey="score" name="Score" radius={[0, 6, 6, 0]} barSize={18}>
                     {barData.map((entry, idx) => {
                       const domainCodes = (data?.domainScores || []).map(d => d.domainCode);
                       const domainIdx = domainCodes.indexOf(entry.domain);
-                      return <Cell key={idx} fill={DOMAIN_COLORS[domainIdx >= 0 ? domainIdx % DOMAIN_COLORS.length : 0]} fillOpacity={0.8} />;
+                      return <Cell key={idx} fill={DOMAIN_COLORS[domainIdx >= 0 ? domainIdx % DOMAIN_COLORS.length : 0]} fillOpacity={0.85} />;
                     })}
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
             ) : (
-              <div className="h-[320px] flex items-center justify-center text-xs text-slate-500">No component data</div>
+              <div className="h-[320px] flex items-center justify-center text-xs text-gray-400">No component data</div>
             )}
             {/* Domain Color Legend */}
             <div className="flex flex-wrap gap-3 mt-3 justify-center">
               {data?.domainScores?.map((d, i) => (
-                <div key={d.domainCode} className="flex items-center gap-1.5 text-[10px] text-slate-400">
+                <div key={d.domainCode} className="flex items-center gap-1.5 text-[10px] text-gray-500">
                   <div className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: DOMAIN_COLORS[i] || '#64748b' }} />
                   <span className="font-semibold">{d.domainCode}</span>
                   <span>{d.domainName}</span>
@@ -559,18 +558,18 @@ export default function DashboardPage() {
           {/* Row 3: Trend Chart + Priority Gaps */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Longitudinal Trend Chart */}
-            <div className="glass-card rounded-3xl p-6 relative overflow-hidden">
-              <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent" />
+            <div className="glass-card rounded-2xl p-6 relative overflow-hidden">
+              <div className="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-t-2xl" />
               <div className="flex items-center gap-2 mb-5">
-                <TrendingUp className="h-4 w-4 text-emerald-400" />
-                <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">CHPMI Trend Over Time</span>
+                <TrendingUp className="h-4 w-4 text-emerald-600" />
+                <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">CHPMI Trend Over Time</span>
               </div>
               {trendData.length > 1 ? (
                 <ResponsiveContainer width="100%" height={240}>
                   <LineChart data={trendData} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-                    <XAxis dataKey="name" tick={{ fill: '#94a3b8', fontSize: 10 }} />
-                    <YAxis domain={[0, 100]} tick={{ fill: '#94a3b8', fontSize: 10 }} />
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                    <XAxis dataKey="name" tick={{ fill: '#6b7280', fontSize: 10 }} />
+                    <YAxis domain={[0, 100]} tick={{ fill: '#6b7280', fontSize: 10 }} />
                     <Tooltip content={<CustomTooltip />} />
                     <Line
                       type="monotone"
@@ -578,17 +577,17 @@ export default function DashboardPage() {
                       name="CHPMI %"
                       stroke="#22c55e"
                       strokeWidth={2.5}
-                      dot={{ fill: '#22c55e', r: 4, strokeWidth: 2, stroke: '#0f172a' }}
+                      dot={{ fill: '#22c55e', r: 4, strokeWidth: 2, stroke: '#ffffff' }}
                       activeDot={{ r: 6, fill: '#22c55e' }}
                     />
                   </LineChart>
                 </ResponsiveContainer>
               ) : (
-                <div className="h-[240px] flex flex-col items-center justify-center text-xs text-slate-500 gap-2">
-                  <Activity className="h-8 w-8 text-slate-700" />
+                <div className="h-[240px] flex flex-col items-center justify-center text-xs text-gray-400 gap-2">
+                  <Activity className="h-8 w-8 text-gray-300" />
                   <span>Multiple assessments needed to show trends</span>
                   {trendData.length === 1 && (
-                    <span className="text-blue-400 font-bold mt-1">
+                    <span className="text-[#0072BC] font-bold mt-1">
                       Current: {trendData[0].chpmi.toFixed(2)}% ({trendData[0].band})
                     </span>
                   )}
@@ -597,11 +596,11 @@ export default function DashboardPage() {
             </div>
 
             {/* Priority Gap Analysis */}
-            <div className="glass-card rounded-3xl p-6 relative overflow-hidden">
-              <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-amber-500/30 to-transparent" />
+            <div className="glass-card rounded-2xl p-6 relative overflow-hidden">
+              <div className="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-amber-500 to-amber-400 rounded-t-2xl" />
               <div className="flex items-center gap-2 mb-5">
-                <AlertTriangle className="h-4 w-4 text-amber-400" />
-                <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Priority Gaps (Lowest 3)</span>
+                <AlertTriangle className="h-4 w-4 text-amber-600" />
+                <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">Priority Gaps (Lowest 3)</span>
               </div>
 
               {data?.priorityGaps && data.priorityGaps.length > 0 ? (
@@ -609,31 +608,31 @@ export default function DashboardPage() {
                   {data.priorityGaps.map((gap, idx) => {
                     const pct = (gap.rawScore / 4) * 100;
                     const severity = gap.rawScore <= 1 ? 'Critical' : gap.rawScore <= 2 ? 'Moderate' : 'Mild';
-                    const sevColor = gap.rawScore <= 1 ? 'text-red-400' : gap.rawScore <= 2 ? 'text-amber-400' : 'text-yellow-400';
+                    const sevColor = gap.rawScore <= 1 ? 'text-red-600' : gap.rawScore <= 2 ? 'text-amber-600' : 'text-yellow-600';
                     const barColor = gap.rawScore <= 1 ? 'bg-red-500' : gap.rawScore <= 2 ? 'bg-amber-500' : 'bg-yellow-500';
                     return (
                       <div
                         key={gap.componentId}
-                        className="p-4 rounded-2xl bg-slate-900/30 border border-slate-800/60 hover:border-slate-700/60 transition-colors"
+                        className="p-4 rounded-xl bg-gray-50 border border-gray-200 hover:border-gray-300 transition-colors"
                       >
                         <div className="flex items-start justify-between mb-2">
                           <div>
                             <div className="flex items-center gap-2 mb-1">
-                              <span className="text-[10px] font-bold text-blue-400 bg-blue-600/10 border border-blue-500/20 px-1.5 py-0.5 rounded">
+                              <span className="text-[10px] font-bold text-[#0072BC] bg-[#0072BC]/10 border border-[#0072BC]/20 px-1.5 py-0.5 rounded">
                                 {gap.componentCode}
                               </span>
                               <span className={`text-[10px] font-extrabold uppercase ${sevColor}`}>{severity}</span>
                             </div>
-                            <h4 className="text-sm font-bold text-slate-200">{gap.componentName}</h4>
-                            <p className="text-[10px] text-slate-500 mt-0.5">{gap.domainName}</p>
+                            <h4 className="text-sm font-bold text-gray-800">{gap.componentName}</h4>
+                            <p className="text-[10px] text-gray-500 mt-0.5">{gap.domainName}</p>
                           </div>
                           <div className="text-right shrink-0">
-                            <span className="text-lg font-black text-white">{gap.rawScore.toFixed(1)}</span>
-                            <span className="text-[10px] text-slate-500 block">/ 4.0</span>
+                            <span className="text-lg font-black text-gray-900">{gap.rawScore.toFixed(1)}</span>
+                            <span className="text-[10px] text-gray-400 block">/ 4.0</span>
                           </div>
                         </div>
                         {/* Mini bar */}
-                        <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                        <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
                           <div
                             className={`h-full ${barColor} rounded-full transition-all duration-700`}
                             style={{ width: `${pct}%` }}
@@ -644,7 +643,7 @@ export default function DashboardPage() {
                   })}
                 </div>
               ) : (
-                <div className="h-[240px] flex items-center justify-center text-xs text-slate-500">
+                <div className="h-[240px] flex items-center justify-center text-xs text-gray-400">
                   No gap data available
                 </div>
               )}
@@ -653,26 +652,26 @@ export default function DashboardPage() {
 
           {/* Row 4: All Assessments Table */}
           {data?.allAssessments && data.allAssessments.length > 0 && (
-            <div className="glass-card rounded-3xl p-6 relative overflow-hidden">
-              <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-slate-500/20 to-transparent" />
+            <div className="glass-card rounded-2xl p-6 relative overflow-hidden">
+              <div className="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-gray-300 to-gray-200 rounded-t-2xl" />
               <div className="flex items-center justify-between mb-5">
                 <div className="flex items-center gap-2">
-                  <Target className="h-4 w-4 text-slate-400" />
-                  <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Assessment History</span>
+                  <Target className="h-4 w-4 text-gray-500" />
+                  <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">Assessment History</span>
                 </div>
-                <span className="text-[10px] text-slate-500">{data.allAssessments.length} total</span>
+                <span className="text-[10px] text-gray-400">{data.allAssessments.length} total</span>
               </div>
 
               <div className="overflow-x-auto">
                 <table className="w-full text-xs">
                   <thead>
-                    <tr className="border-b border-slate-800/60">
-                      <th className="text-left py-2.5 px-3 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Cycle</th>
-                      <th className="text-left py-2.5 px-3 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Status</th>
-                      <th className="text-right py-2.5 px-3 text-[10px] font-bold text-slate-500 uppercase tracking-widest">CHPMI</th>
-                      <th className="text-left py-2.5 px-3 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Band</th>
-                      <th className="text-right py-2.5 px-3 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Created</th>
-                      <th className="text-center py-2.5 px-3 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Export</th>
+                    <tr className="border-b border-gray-200">
+                      <th className="text-left py-2.5 px-3 text-[10px] font-bold text-gray-500 uppercase tracking-widest">Cycle</th>
+                      <th className="text-left py-2.5 px-3 text-[10px] font-bold text-gray-500 uppercase tracking-widest">Status</th>
+                      <th className="text-right py-2.5 px-3 text-[10px] font-bold text-gray-500 uppercase tracking-widest">CHPMI</th>
+                      <th className="text-left py-2.5 px-3 text-[10px] font-bold text-gray-500 uppercase tracking-widest">Band</th>
+                      <th className="text-right py-2.5 px-3 text-[10px] font-bold text-gray-500 uppercase tracking-widest">Created</th>
+                      <th className="text-center py-2.5 px-3 text-[10px] font-bold text-gray-500 uppercase tracking-widest">Export</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -680,9 +679,9 @@ export default function DashboardPage() {
                       const si = STATUS_MAP[a.status] || STATUS_MAP.draft;
                       const SI = si.icon;
                       return (
-                        <tr key={a.id} className="border-b border-slate-900/40 hover:bg-slate-900/20 transition-colors">
-                          <td className="py-3 px-3 font-bold text-slate-200">
-                            <Link href={`/assessments/${a.id}/scoring`} className="hover:text-blue-400 transition-colors inline-flex items-center gap-1">
+                        <tr key={a.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                          <td className="py-3 px-3 font-bold text-gray-800">
+                            <Link href={`/assessments/${a.id}/scoring`} className="hover:text-[#0072BC] transition-colors inline-flex items-center gap-1">
                               {a.cycleName} <ArrowUpRight className="h-3 w-3" />
                             </Link>
                           </td>
@@ -691,23 +690,23 @@ export default function DashboardPage() {
                               <SI className="h-3 w-3" /> {si.label}
                             </span>
                           </td>
-                          <td className="py-3 px-3 text-right font-extrabold text-white">{Number(a.chpmiScore).toFixed(2)}%</td>
+                          <td className="py-3 px-3 text-right font-extrabold text-gray-900">{Number(a.chpmiScore).toFixed(2)}%</td>
                           <td className="py-3 px-3">
                             <span className="font-bold" style={{ color: getBandColor(a.maturityBand) }}>{a.maturityBand}</span>
                           </td>
-                          <td className="py-3 px-3 text-right text-slate-400">{new Date(a.createdAt).toLocaleDateString()}</td>
+                          <td className="py-3 px-3 text-right text-gray-500">{new Date(a.createdAt).toLocaleDateString()}</td>
                           <td className="py-3 px-3 text-center">
                             <div className="inline-flex gap-1.5">
                               <button
                                 onClick={() => handleExportPdf(a.id)}
-                                className="p-1.5 rounded-lg text-red-400 hover:bg-red-950/30 transition-colors"
+                                className="p-1.5 rounded-lg text-red-500 hover:bg-red-50 transition-colors"
                                 title="Export PDF"
                               >
                                 <FileText className="h-3.5 w-3.5" />
                               </button>
                               <button
                                 onClick={() => handleExportExcel(a.id)}
-                                className="p-1.5 rounded-lg text-emerald-400 hover:bg-emerald-950/30 transition-colors"
+                                className="p-1.5 rounded-lg text-emerald-600 hover:bg-emerald-50 transition-colors"
                                 title="Export Excel"
                               >
                                 <FileSpreadsheet className="h-3.5 w-3.5" />

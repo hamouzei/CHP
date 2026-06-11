@@ -61,9 +61,9 @@ export default function SettingsPage() {
     switch (role) {
       case 'super_admin': return 'bg-amber-500/10 border-amber-500/20 text-amber-300';
       case 'admin': return 'bg-emerald-500/10 border-emerald-500/20 text-emerald-300';
-      case 'assessor': return 'bg-blue-500/10 border-blue-500/20 text-blue-300';
+      case 'assessor': return 'bg-[#0072BC]/10 border-[#0072BC]/25 text-[#0072BC]/80';
       case 'reviewer': return 'bg-cyan-500/10 border-cyan-500/20 text-cyan-300';
-      default: return 'bg-slate-500/10 border-slate-500/20 text-slate-300';
+      default: return 'bg-white/05 border-white/10 text-white/70';
     }
   };
 
@@ -131,44 +131,44 @@ export default function SettingsPage() {
     <div className="space-y-6 animate-fade-in max-w-3xl">
       {/* Header */}
       <div className="glass-card rounded-3xl p-6 sm:p-8 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-blue-600/10 blur-3xl -z-10" />
+        <div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-[#0072BC]/10 blur-3xl -z-10" />
         <div className="flex items-center gap-3 mb-1">
-          <Settings className="h-5 w-5 text-blue-400" />
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-slate-100 via-slate-200 to-slate-400 bg-clip-text text-transparent">
+          <Settings className="h-5 w-5 text-[#0072BC]" />
+          <h1 className="text-3xl font-extrabold tracking-tight text-white">
             Account Settings
           </h1>
         </div>
-        <p className="text-sm text-slate-400">
+        <p className="text-sm text-white/50">
           Manage your profile information and security settings.
         </p>
       </div>
 
       {/* Profile Info Card (Read-only) */}
       <div className="glass-card rounded-3xl p-6 relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-slate-500/20 to-transparent" />
-        <h2 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+        <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+        <h2 className="text-sm font-bold text-white/50 uppercase tracking-widest mb-4 flex items-center gap-2">
           <User className="h-4 w-4" /> Account Information
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="p-3 rounded-xl bg-slate-900/30 border border-slate-800/40">
-            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Email</div>
-            <div className="text-sm text-slate-200 font-medium flex items-center gap-1.5">
-              <Mail className="h-3.5 w-3.5 text-slate-500" />
+          <div className="p-3 rounded-xl bg-[#003366]/30 border border-white/10/40">
+            <div className="text-[10px] font-bold text-white/40 uppercase tracking-widest mb-1">Email</div>
+            <div className="text-sm text-white font-medium flex items-center gap-1.5">
+              <Mail className="h-3.5 w-3.5 text-white/40" />
               {user.email}
             </div>
           </div>
-          <div className="p-3 rounded-xl bg-slate-900/30 border border-slate-800/40">
-            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Role</div>
+          <div className="p-3 rounded-xl bg-[#003366]/30 border border-white/10/40">
+            <div className="text-[10px] font-bold text-white/40 uppercase tracking-widest mb-1">Role</div>
             <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase border ${getRoleBadgeColor(user.role)}`}>
               <Shield className="h-3 w-3" />
               {getRoleLabel(user.role)}
             </span>
           </div>
           {user.organizationName && (
-            <div className="p-3 rounded-xl bg-slate-900/30 border border-slate-800/40 sm:col-span-2">
-              <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Organization</div>
-              <div className="text-sm text-slate-200 font-medium flex items-center gap-1.5">
-                <Building2 className="h-3.5 w-3.5 text-slate-500" />
+            <div className="p-3 rounded-xl bg-[#003366]/30 border border-white/10/40 sm:col-span-2">
+              <div className="text-[10px] font-bold text-white/40 uppercase tracking-widest mb-1">Organization</div>
+              <div className="text-sm text-white font-medium flex items-center gap-1.5">
+                <Building2 className="h-3.5 w-3.5 text-white/40" />
                 {user.organizationName}
               </div>
             </div>
@@ -179,7 +179,7 @@ export default function SettingsPage() {
       {/* Edit Profile Card */}
       <div className="glass-card rounded-3xl p-6 relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-blue-500/30 to-transparent" />
-        <h2 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+        <h2 className="text-sm font-bold text-white/50 uppercase tracking-widest mb-4 flex items-center gap-2">
           <User className="h-4 w-4" /> Edit Profile
         </h2>
 
@@ -196,7 +196,7 @@ export default function SettingsPage() {
 
         <form onSubmit={handleProfileUpdate} className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">
+            <label className="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-1.5">
               Full Name
             </label>
             <input
@@ -213,7 +213,7 @@ export default function SettingsPage() {
             <button
               type="submit"
               disabled={profileLoading || fullName === user.fullName}
-              className="py-2.5 px-5 rounded-2xl text-xs font-bold text-white bg-gradient-to-r from-blue-600 to-sky-600 hover:from-blue-500 hover:to-sky-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="py-2.5 px-5 rounded-2xl text-xs font-bold text-white bg-gradient-to-r from-[#0072BC] to-[#0072BC]/80 hover:from-[#005a94] hover:to-[#0072BC] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {profileLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Save Changes'}
             </button>
@@ -224,7 +224,7 @@ export default function SettingsPage() {
       {/* Change Password Card */}
       <div className="glass-card rounded-3xl p-6 relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-amber-500/30 to-transparent" />
-        <h2 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+        <h2 className="text-sm font-bold text-white/50 uppercase tracking-widest mb-4 flex items-center gap-2">
           <Lock className="h-4 w-4" /> Change Password
         </h2>
 
@@ -241,7 +241,7 @@ export default function SettingsPage() {
 
         <form onSubmit={handlePasswordUpdate} className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">
+            <label className="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-1.5">
               New Password
             </label>
             <div className="relative">
@@ -255,7 +255,7 @@ export default function SettingsPage() {
               <button
                 type="button"
                 onClick={() => setShowNew(!showNew)}
-                className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-200 transition-colors"
+                className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-white/50 hover:text-white transition-colors"
               >
                 {showNew ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               </button>
@@ -264,7 +264,7 @@ export default function SettingsPage() {
 
           {/* Password rules */}
           {newPassword.length > 0 && (
-            <div className="space-y-1.5 p-3 rounded-xl bg-slate-900/40 border border-slate-800/60">
+            <div className="space-y-1.5 p-3 rounded-xl bg-[#003366]/40 border border-white/08">
               {PASSWORD_RULES.map((rule) => {
                 const passes = rule.test(newPassword);
                 return (
@@ -282,7 +282,7 @@ export default function SettingsPage() {
           )}
 
           <div>
-            <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">
+            <label className="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-1.5">
               Confirm Password
             </label>
             <div className="relative">
@@ -298,7 +298,7 @@ export default function SettingsPage() {
               <button
                 type="button"
                 onClick={() => setShowConfirm(!showConfirm)}
-                className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-200 transition-colors"
+                className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-white/50 hover:text-white transition-colors"
               >
                 {showConfirm ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               </button>

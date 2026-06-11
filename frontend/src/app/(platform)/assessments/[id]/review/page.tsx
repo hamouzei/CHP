@@ -124,8 +124,8 @@ export default function AssessmentReviewPage() {
   if (isLoading) {
     return (
       <div className="h-96 flex flex-col items-center justify-center gap-3">
-        <Loader2 className="h-8 w-8 text-blue-500 animate-spin" />
-        <span className="text-sm text-slate-400">Loading assessment audit details...</span>
+        <Loader2 className="h-8 w-8 text-[#0072BC] animate-spin" />
+        <span className="text-sm text-white/50">Loading assessment audit details...</span>
       </div>
     );
   }
@@ -134,9 +134,9 @@ export default function AssessmentReviewPage() {
     return (
       <div className="glass-card rounded-3xl p-8 text-center border-red-500/20 text-red-400 max-w-xl mx-auto mt-12">
         <AlertCircle className="h-10 w-10 text-red-500 mx-auto mb-3" />
-        <h3 className="font-bold text-slate-200">Failed to Load Review Details</h3>
-        <p className="text-xs text-slate-400 mt-1">{(fetchErr as any)?.message || 'Assessment records not found.'}</p>
-        <Link href="/assessments" className="mt-4 inline-flex items-center gap-1.5 text-xs text-blue-400 hover:underline">
+        <h3 className="font-bold text-white">Failed to Load Review Details</h3>
+        <p className="text-xs text-white/50 mt-1">{(fetchErr as any)?.message || 'Assessment records not found.'}</p>
+        <Link href="/assessments" className="mt-4 inline-flex items-center gap-1.5 text-xs text-[#0072BC] hover:underline">
           <ArrowLeft className="h-3.5 w-3.5" /> Back to List
         </Link>
       </div>
@@ -166,7 +166,7 @@ export default function AssessmentReviewPage() {
       case 'revision_requested':
         return 'bg-gradient-to-r from-rose-500/20 to-red-500/20 border border-rose-500/30 text-rose-300';
       default:
-        return 'bg-slate-800 border border-slate-700 text-slate-300';
+        return 'bg-[#003366]/60 border border-white/10 text-white/70';
     }
   };
 
@@ -179,16 +179,16 @@ export default function AssessmentReviewPage() {
         <div className="space-y-1">
           <Link
             href="/assessments"
-            className="inline-flex items-center gap-1 text-xs font-semibold text-slate-400 hover:text-slate-200 transition-colors mb-1.5"
+            className="inline-flex items-center gap-1 text-xs font-semibold text-white/50 hover:text-white transition-colors mb-1.5"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
             Back to Manager
           </Link>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight bg-gradient-to-r from-slate-100 to-slate-400 bg-clip-text text-transparent">
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
             Review: {assessment.cycleName}
           </h1>
-          <p className="text-xs text-slate-400">
-            Organization: <strong className="text-slate-300 font-semibold">{assessment.organization.name}</strong> • Period: <strong className="text-slate-300 font-semibold">{assessment.assessmentPeriod || 'N/A'}</strong>
+          <p className="text-xs text-white/50">
+            Organization: <strong className="text-white/70 font-semibold">{assessment.organization.name}</strong> • Period: <strong className="text-white/70 font-semibold">{assessment.assessmentPeriod || 'N/A'}</strong>
           </p>
         </div>
 
@@ -239,21 +239,21 @@ export default function AssessmentReviewPage() {
         
         {/* LEFT COLUMN: Criteria Score Breakdown */}
         <div className="xl:col-span-8 space-y-6">
-          <h3 className="text-lg font-bold text-slate-200">Framework Criteria Scores</h3>
+          <h3 className="text-lg font-bold text-white">Framework Criteria Scores</h3>
           
           <div className="space-y-4">
             {assessment.responses.map((resp) => (
               <div
                 key={resp.id}
-                className="glass-card rounded-3xl p-5 border border-slate-900 flex flex-col sm:flex-row gap-4 justify-between items-start"
+                className="glass-card rounded-3xl p-5 border border-white/08 flex flex-col sm:flex-row gap-4 justify-between items-start"
               >
                 <div className="space-y-2 overflow-hidden flex-1">
                   <div className="flex items-center gap-2">
-                    <span className="font-bold text-xs text-blue-400">{resp.criterion.code}</span>
-                    <span className="text-xs font-medium text-slate-400 truncate">{resp.criterion.component.domain.name} / {resp.criterion.component.name}</span>
+                    <span className="font-bold text-xs text-[#0072BC]">{resp.criterion.code}</span>
+                    <span className="text-xs font-medium text-white/50 truncate">{resp.criterion.component.domain.name} / {resp.criterion.component.name}</span>
                   </div>
-                  <h4 className="text-sm font-bold text-slate-200">{resp.criterion.name}</h4>
-                  <p className="text-xs text-slate-400 leading-relaxed italic bg-slate-950/30 p-3 rounded-xl border border-slate-900/60 mt-2">
+                  <h4 className="text-sm font-bold text-white">{resp.criterion.name}</h4>
+                  <p className="text-xs text-white/50 leading-relaxed italic bg-[#001a33]/30 p-3 rounded-xl border border-white/08 mt-2">
                     &ldquo;{resp.justification || 'No justification provided.'}&rdquo;
                   </p>
 
@@ -266,11 +266,11 @@ export default function AssessmentReviewPage() {
                           href={`${process.env.NEXT_PUBLIC_API_URL?.replace('/api/v1', '') || 'http://localhost:3001'}${file.storageUrl}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-900 border border-slate-800 text-[10px] text-slate-300 hover:text-slate-100 hover:border-slate-700 transition-colors"
+                          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-[#003366] border border-white/10 text-[10px] text-white/70 hover:text-white hover:border-white/10 transition-colors"
                         >
-                          <FileText className="h-3.5 w-3.5 text-blue-400" />
+                          <FileText className="h-3.5 w-3.5 text-[#0072BC]" />
                           {file.fileTitle || file.fileName}
-                          <Download className="h-3 w-3 text-slate-500" />
+                          <Download className="h-3 w-3 text-white/40" />
                         </a>
                       ))}
                     </div>
@@ -278,9 +278,9 @@ export default function AssessmentReviewPage() {
                 </div>
 
                 {/* Score badge */}
-                <div className="flex flex-col items-center justify-center p-3 rounded-2xl bg-slate-900/50 border border-slate-900 text-center shrink-0 w-full sm:w-20 self-stretch sm:self-center">
-                  <span className="text-[9px] text-slate-500 font-bold uppercase tracking-wider block">Score</span>
-                  <span className="text-xl font-extrabold text-blue-400 block mt-0.5">
+                <div className="flex flex-col items-center justify-center p-3 rounded-2xl bg-[#003366]/50 border border-white/08 text-center shrink-0 w-full sm:w-20 self-stretch sm:self-center">
+                  <span className="text-[9px] text-white/40 font-bold uppercase tracking-wider block">Score</span>
+                  <span className="text-xl font-extrabold text-[#0072BC] block mt-0.5">
                     {resp.score !== null ? resp.score : '-'}
                   </span>
                 </div>
@@ -293,14 +293,14 @@ export default function AssessmentReviewPage() {
         <div className="xl:col-span-4 space-y-6">
           
           {/* Index summary card */}
-          <div className="glass-card rounded-3xl p-6 border border-slate-900 text-center relative overflow-hidden">
+          <div className="glass-card rounded-3xl p-6 border border-white/08 text-center relative overflow-hidden">
             <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-blue-600/5 blur-3xl -z-10"></div>
             
-            <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest block">Overall Index</span>
-            <div className="text-4xl font-black bg-gradient-to-r from-blue-200 via-slate-100 to-cyan-200 bg-clip-text text-transparent mt-1 block">
+            <span className="text-[10px] text-white/40 font-bold uppercase tracking-widest block">Overall Index</span>
+            <div className="text-4xl font-black text-white mt-1 block">
               {Number(assessment.chpmiScore).toFixed(2)}%
             </div>
-            <div className="inline-flex items-center gap-1 mt-2.5 px-3 py-1 rounded-full bg-blue-600/10 border border-blue-500/20 text-xs font-bold text-blue-300">
+            <div className="inline-flex items-center gap-1 mt-2.5 px-3 py-1 rounded-full bg-[#0072BC]/10 border border-[#0072BC]/25 text-xs font-bold text-[#0072BC]/80">
               <Sparkles className="h-3.5 w-3.5" />
               {assessment.maturityBand?.label || 'Calculating...'}
             </div>
@@ -308,14 +308,14 @@ export default function AssessmentReviewPage() {
 
           {/* Action Comments entry for Reviewer */}
           {isReviewActive && (
-            <div className="glass-card rounded-3xl p-6 border border-slate-900 space-y-4">
-              <h3 className="text-sm font-bold text-slate-200 flex items-center gap-1.5">
-                <MessageSquare className="h-4.5 w-4.5 text-blue-400" />
+            <div className="glass-card rounded-3xl p-6 border border-white/08 space-y-4">
+              <h3 className="text-sm font-bold text-white flex items-center gap-1.5">
+                <MessageSquare className="h-4.5 w-4.5 text-[#0072BC]" />
                 Review Decision
               </h3>
 
               <div>
-                <label htmlFor="reviewComment" className="block text-[10px] font-semibold text-slate-400 uppercase tracking-widest mb-1.5">
+                <label htmlFor="reviewComment" className="block text-[10px] font-semibold text-white/50 uppercase tracking-widest mb-1.5">
                   Review Comment / Notes <span className="text-red-400">*</span>
                 </label>
                 <textarea
@@ -349,21 +349,21 @@ export default function AssessmentReviewPage() {
           )}
 
           {/* Review Comments History */}
-          <div className="glass-card rounded-3xl p-6 border border-slate-900 space-y-4">
-            <h3 className="text-sm font-bold text-slate-200">Review History</h3>
+          <div className="glass-card rounded-3xl p-6 border border-white/08 space-y-4">
+            <h3 className="text-sm font-bold text-white">Review History</h3>
             
             {assessment.reviewComments.length === 0 ? (
-              <p className="text-xs text-slate-500 italic">No previous comments or review history found.</p>
+              <p className="text-xs text-white/40 italic">No previous comments or review history found.</p>
             ) : (
               <div className="space-y-4 max-h-[300px] overflow-y-auto pr-1">
                 {assessment.reviewComments.map((comm) => (
                   <div
                     key={comm.id}
-                    className="p-3 rounded-2xl bg-slate-900/40 border border-slate-900 space-y-1.5 text-xs"
+                    className="p-3 rounded-2xl bg-[#003366]/40 border border-white/08 space-y-1.5 text-xs"
                   >
                     <div className="flex justify-between items-center text-[10px]">
-                      <span className="font-bold text-slate-300">{comm.commentedBy.fullName}</span>
-                      <span className="text-slate-500">{new Date(comm.createdAt).toLocaleDateString()}</span>
+                      <span className="font-bold text-white/70">{comm.commentedBy.fullName}</span>
+                      <span className="text-white/40">{new Date(comm.createdAt).toLocaleDateString()}</span>
                     </div>
                     <span className={`inline-block text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded tracking-wide ${
                       comm.commentType === 'approval_note'
@@ -372,7 +372,7 @@ export default function AssessmentReviewPage() {
                     }`}>
                       {comm.commentType.replace('_', ' ')}
                     </span>
-                    <p className="text-slate-400 mt-1 leading-relaxed italic">
+                    <p className="text-white/50 mt-1 leading-relaxed italic">
                       &ldquo;{comm.comment}&rdquo;
                     </p>
                   </div>

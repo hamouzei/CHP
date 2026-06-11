@@ -106,7 +106,7 @@ export default function NewAssessmentPage() {
       {/* Back Button */}
       <Link
         href="/assessments"
-        className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-slate-200 transition-colors"
+        className="inline-flex items-center gap-1.5 text-xs font-semibold text-white/50 hover:text-white transition-colors"
       >
         <ArrowLeft className="h-4 w-4" />
         Back to Assessments
@@ -114,10 +114,10 @@ export default function NewAssessmentPage() {
 
       {/* Title */}
       <div>
-        <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-slate-100 to-slate-400 bg-clip-text text-transparent">
+        <h1 className="text-3xl font-extrabold tracking-tight text-white">
           New Assessment Cycle
         </h1>
-        <p className="mt-1 text-slate-400 text-sm">
+        <p className="mt-1 text-white/50 text-sm">
           Initialize a new maturity assessment cycle for community health program reviews.
         </p>
       </div>
@@ -137,7 +137,7 @@ export default function NewAssessmentPage() {
           {/* Organization Selection (Super Admin only) */}
           {currentUser?.role === 'super_admin' && (
             <div>
-              <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
+              <label className="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-2">
                 Target Organization <span className="text-red-400">*</span>
               </label>
               <select
@@ -162,7 +162,7 @@ export default function NewAssessmentPage() {
 
           {/* Cycle Name */}
           <div>
-            <label htmlFor="cycleName" className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
+            <label htmlFor="cycleName" className="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-2">
               Cycle Name <span className="text-red-400">*</span>
             </label>
             <input
@@ -184,7 +184,7 @@ export default function NewAssessmentPage() {
           {/* Assessment Period & Type */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div>
-              <label htmlFor="assessmentPeriod" className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
+              <label htmlFor="assessmentPeriod" className="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-2">
                 Assessment Period
               </label>
               <input
@@ -198,7 +198,7 @@ export default function NewAssessmentPage() {
             </div>
 
             <div>
-              <label htmlFor="assessmentType" className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
+              <label htmlFor="assessmentType" className="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-2">
                 Assessment Type
               </label>
               <select
@@ -217,7 +217,7 @@ export default function NewAssessmentPage() {
           {/* User Assignments */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div>
-              <label htmlFor="assignedAssessor" className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
+              <label htmlFor="assignedAssessor" className="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-2">
                 Assigned Assessor
               </label>
               <select
@@ -237,7 +237,7 @@ export default function NewAssessmentPage() {
             </div>
 
             <div>
-              <label htmlFor="assignedReviewer" className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
+              <label htmlFor="assignedReviewer" className="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-2">
                 Assigned Reviewer
               </label>
               <select
@@ -258,17 +258,17 @@ export default function NewAssessmentPage() {
           </div>
 
           {/* Submit */}
-          <div className="pt-4 border-t border-slate-900/60 flex justify-end gap-4">
+          <div className="pt-4 border-t border-white/08 flex justify-end gap-4">
             <Link
               href="/assessments"
-              className="py-3.5 px-6 rounded-2xl text-xs font-bold text-slate-400 hover:text-slate-200 bg-slate-900/60 border border-slate-800 transition-colors active:scale-[0.98]"
+              className="py-3.5 px-6 rounded-2xl text-xs font-bold text-white/50 hover:text-white bg-[#003366]/60 border border-white/10 transition-colors active:scale-[0.98]"
             >
               Cancel
             </Link>
             <button
               type="submit"
               disabled={createMutation.isPending}
-              className="inline-flex justify-center items-center gap-2 py-3.5 px-6 rounded-2xl text-xs font-bold text-white bg-gradient-to-r from-blue-600 to-sky-600 hover:from-blue-500 hover:to-sky-500 shadow-lg shadow-blue-500/15 hover:shadow-blue-500/25 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg active:scale-[0.98]"
+              className="inline-flex justify-center items-center gap-2 py-3.5 px-6 rounded-2xl text-xs font-bold text-white bg-gradient-to-r from-[#0072BC] to-[#0072BC]/80 hover:from-[#005a94] hover:to-[#0072BC] shadow-lg shadow-[#0072BC]/15 hover:shadow-[#0072BC]/25 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg active:scale-[0.98]"
             >
               {createMutation.isPending ? (
                 <>

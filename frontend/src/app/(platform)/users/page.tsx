@@ -241,11 +241,11 @@ export default function UserDirectoryPage() {
       case 'admin':
         return 'bg-gradient-to-r from-emerald-500/20 to-teal-500/20 border border-emerald-500/30 text-emerald-300';
       case 'assessor':
-        return 'bg-gradient-to-r from-blue-500/20 to-sky-500/20 border border-blue-500/30 text-blue-300';
+        return 'bg-gradient-to-r from-blue-500/20 to-sky-500/20 border border-[#0072BC]/30 text-[#0072BC]/80';
       case 'reviewer':
         return 'bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border border-cyan-500/30 text-cyan-300';
       default:
-        return 'bg-slate-800/80 border border-slate-700/80 text-slate-300';
+        return 'bg-[#003366]/60 border border-white/10 text-white/70';
     }
   };
 
@@ -283,10 +283,10 @@ export default function UserDirectoryPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-slate-100 to-slate-400 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold tracking-tight text-white">
             User Directory
           </h1>
-          <p className="mt-1 text-slate-400 text-sm">
+          <p className="mt-1 text-white/50 text-sm">
             {isSuperAdmin
               ? 'Manage platform users, coordinate organizations, assign roles, and support sessions.'
               : 'View and invite users within your organization.'}
@@ -296,7 +296,7 @@ export default function UserDirectoryPage() {
         <div className="flex flex-wrap gap-3">
           <button
             onClick={() => setIsInviteModalOpen(true)}
-            className="inline-flex items-center justify-center gap-2 py-3 px-5 rounded-2xl text-xs font-bold text-white bg-gradient-to-r from-blue-600 to-sky-600 hover:from-blue-500 hover:to-sky-500 shadow-lg shadow-blue-500/15 hover:shadow-blue-500/25 transition-all duration-300 active:scale-[0.98]"
+            className="inline-flex items-center justify-center gap-2 py-3 px-5 rounded-2xl text-xs font-bold text-white bg-gradient-to-r from-[#0072BC] to-[#0072BC]/80 hover:from-[#005a94] hover:to-[#0072BC] shadow-lg shadow-[#0072BC]/15 hover:shadow-[#0072BC]/25 transition-all duration-300 active:scale-[0.98]"
           >
             <UserPlus className="h-4.5 w-4.5" />
             Invite New User
@@ -320,13 +320,13 @@ export default function UserDirectoryPage() {
 
       {/* Tabs Selector (Super Admin Only) */}
       {isSuperAdmin && (
-        <div className="flex border-b border-slate-900/60 gap-4">
+        <div className="flex border-b border-white/08 gap-4">
           <button
             onClick={() => setActiveTab('users')}
             className={`pb-3.5 text-sm font-bold border-b-2 transition-all flex items-center gap-2 ${
               activeTab === 'users'
-                ? 'border-blue-500 text-blue-400'
-                : 'border-transparent text-slate-400 hover:text-slate-200'
+                ? 'border-blue-500 text-[#0072BC]'
+                : 'border-transparent text-white/50 hover:text-white'
             }`}
           >
             <Users className="h-4.5 w-4.5" />
@@ -336,8 +336,8 @@ export default function UserDirectoryPage() {
             onClick={() => setActiveTab('organizations')}
             className={`pb-3.5 text-sm font-bold border-b-2 transition-all flex items-center gap-2 ${
               activeTab === 'organizations'
-                ? 'border-blue-500 text-blue-400'
-                : 'border-transparent text-slate-400 hover:text-slate-200'
+                ? 'border-blue-500 text-[#0072BC]'
+                : 'border-transparent text-white/50 hover:text-white'
             }`}
           >
             <Building2 className="h-4.5 w-4.5" />
@@ -350,10 +350,10 @@ export default function UserDirectoryPage() {
       {activeTab === 'users' && (
         <div className="space-y-6">
           {/* Filters Bar */}
-          <div className="flex flex-col md:flex-row gap-4 p-4 rounded-3xl glass-panel border-slate-900/60">
+          <div className="flex flex-col md:flex-row gap-4 p-4 rounded-3xl glass-panel border-white/08">
             {/* Search */}
             <div className="relative flex-1">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-white/50">
                 <Search className="h-4 w-4" />
               </div>
               <input
@@ -361,13 +361,13 @@ export default function UserDirectoryPage() {
                 placeholder="Search by name, email, or organization..."
                 value={userSearch}
                 onChange={(e) => setUserSearch(e.target.value)}
-                className="glass-input pl-10 pr-4 py-2.5 rounded-2xl text-sm w-full block focus:ring-1 focus:ring-blue-500"
+                className="glass-input pl-10 pr-4 py-2.5 rounded-2xl text-sm w-full block focus:ring-1 focus:ring-[#0072BC]"
               />
             </div>
 
             {/* Role Filter */}
             <div className="flex items-center gap-2">
-              <Filter className="h-4 w-4 text-slate-400 shrink-0" />
+              <Filter className="h-4 w-4 text-white/50 shrink-0" />
               <select
                 value={roleFilter}
                 onChange={(e) => setRoleFilter(e.target.value)}
@@ -385,7 +385,7 @@ export default function UserDirectoryPage() {
             {/* Org Filter (Super Admin Only) */}
             {isSuperAdmin && (
               <div className="flex items-center gap-2">
-                <Building className="h-4 w-4 text-slate-400 shrink-0" />
+                <Building className="h-4 w-4 text-white/50 shrink-0" />
                 <select
                   value={orgFilter}
                   onChange={(e) => setOrgFilter(e.target.value)}
@@ -403,25 +403,25 @@ export default function UserDirectoryPage() {
           {/* User List Panel */}
           {isUsersLoading ? (
             <div className="h-64 flex flex-col items-center justify-center gap-3">
-              <Loader2 className="h-8 w-8 text-blue-500 animate-spin" />
-              <span className="text-sm text-slate-400">Fetching users list...</span>
+              <Loader2 className="h-8 w-8 text-[#0072BC] animate-spin" />
+              <span className="text-sm text-white/50">Fetching users list...</span>
             </div>
           ) : usersError ? (
             <div className="glass-card rounded-3xl p-8 text-center border-red-500/20 text-red-400">
               <AlertCircle className="h-10 w-10 text-red-500 mx-auto mb-3" />
-              <h3 className="font-bold text-slate-200">Failed to Load Users</h3>
-              <p className="text-xs text-slate-400 mt-1">{(usersError as any).message}</p>
+              <h3 className="font-bold text-white">Failed to Load Users</h3>
+              <p className="text-xs text-white/50 mt-1">{(usersError as any).message}</p>
             </div>
           ) : filteredUsers.length === 0 ? (
             <div className="glass-card rounded-3xl p-12 text-center">
-              <Users className="h-12 w-12 text-slate-600 mx-auto mb-4" />
-              <h3 className="text-lg font-bold text-slate-200">No Users Found</h3>
-              <p className="text-sm text-slate-400 mt-1">Try modifying your search query or filters.</p>
+              <Users className="h-12 w-12 text-white/30 mx-auto mb-4" />
+              <h3 className="text-lg font-bold text-white">No Users Found</h3>
+              <p className="text-sm text-white/50 mt-1">Try modifying your search query or filters.</p>
             </div>
           ) : (
-            <div className="overflow-x-auto rounded-3xl glass-panel border-slate-900/60">
-              <table className="min-w-full divide-y divide-slate-900/60 text-sm">
-                <thead className="bg-slate-950/40 text-slate-400 font-bold">
+            <div className="overflow-x-auto rounded-3xl glass-panel border-white/08">
+              <table className="min-w-full divide-y divide-white/08 text-sm">
+                <thead className="bg-[#001a33]/40 text-white/50 font-bold">
                   <tr>
                     <th scope="col" className="px-6 py-4.5 text-left tracking-wide">Name & Email</th>
                     {isSuperAdmin && <th scope="col" className="px-6 py-4.5 text-left tracking-wide">Organization</th>}
@@ -430,25 +430,25 @@ export default function UserDirectoryPage() {
                     {isSuperAdmin && <th scope="col" className="px-6 py-4.5 text-right tracking-wide">Actions</th>}
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-900/40">
+                <tbody className="divide-y divide-white/05">
                   {filteredUsers.map((u) => (
-                    <tr key={u.id} className="hover:bg-slate-900/10 transition-colors">
+                    <tr key={u.id} className="hover:bg-[#003366]/10 transition-colors">
                       {/* Name / Email */}
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
-                          <div className="h-9 w-9 rounded-xl bg-blue-600/15 flex items-center justify-center text-blue-400 font-bold border border-blue-500/10 shrink-0">
+                          <div className="h-9 w-9 rounded-xl bg-blue-600/15 flex items-center justify-center text-[#0072BC] font-bold border border-blue-500/10 shrink-0">
                             {u.fullName.charAt(0)}
                           </div>
                           <div>
-                            <span className="block font-bold text-slate-200">{u.fullName}</span>
-                            <span className="block text-xs text-slate-400 mt-0.5">{u.email}</span>
+                            <span className="block font-bold text-white">{u.fullName}</span>
+                            <span className="block text-xs text-white/50 mt-0.5">{u.email}</span>
                           </div>
                         </div>
                       </td>
 
                       {/* Org */}
                       {isSuperAdmin && (
-                        <td className="px-6 py-4 text-slate-300 font-semibold">
+                        <td className="px-6 py-4 text-white/70 font-semibold">
                           {u.organizationName || 'No Organization'}
                         </td>
                       )}
@@ -462,8 +462,8 @@ export default function UserDirectoryPage() {
 
                       {/* Status */}
                       <td className="px-6 py-4">
-                        <span className={`inline-flex items-center gap-1.5 text-xs font-semibold ${u.isActive ? 'text-emerald-400' : 'text-slate-500'}`}>
-                          <span className={`h-1.5 w-1.5 rounded-full ${u.isActive ? 'bg-emerald-500 animate-pulse' : 'bg-slate-500'}`}></span>
+                        <span className={`inline-flex items-center gap-1.5 text-xs font-semibold ${u.isActive ? 'text-emerald-400' : 'text-white/40'}`}>
+                          <span className={`h-1.5 w-1.5 rounded-full ${u.isActive ? 'bg-emerald-500 animate-pulse' : 'bg-white/30'}`}></span>
                           {u.isActive ? 'Active' : 'Suspended'}
                         </span>
                       </td>
@@ -493,7 +493,7 @@ export default function UserDirectoryPage() {
                               <select
                                 value={u.role}
                                 onChange={(e) => changeUserRoleMutation.mutate({ userId: u.id, role: e.target.value })}
-                                className="bg-slate-950 border border-slate-800 rounded-lg text-xs py-1.5 px-2 text-slate-300 cursor-pointer focus:ring-1 focus:ring-blue-500 shrink-0 font-semibold"
+                                className="bg-[#001a33] border border-white/10 rounded-lg text-xs py-1.5 px-2 text-white/70 cursor-pointer focus:ring-1 focus:ring-[#0072BC] shrink-0 font-semibold"
                               >
                                 <option value="super_admin">Super Admin</option>
                                 <option value="admin">Admin</option>
@@ -534,9 +534,9 @@ export default function UserDirectoryPage() {
       {isSuperAdmin && activeTab === 'organizations' && (
         <div className="space-y-6">
           {/* Org Search Bar */}
-          <div className="flex gap-4 p-4 rounded-3xl glass-panel border-slate-900/60">
+          <div className="flex gap-4 p-4 rounded-3xl glass-panel border-white/08">
             <div className="relative flex-1">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-white/50">
                 <Search className="h-4 w-4" />
               </div>
               <input
@@ -544,7 +544,7 @@ export default function UserDirectoryPage() {
                 placeholder="Search organizations by name, region, country..."
                 value={orgSearch}
                 onChange={(e) => setOrgSearch(e.target.value)}
-                className="glass-input pl-10 pr-4 py-2.5 rounded-2xl text-sm w-full block focus:ring-1 focus:ring-blue-500"
+                className="glass-input pl-10 pr-4 py-2.5 rounded-2xl text-sm w-full block focus:ring-1 focus:ring-[#0072BC]"
               />
             </div>
           </div>
@@ -553,24 +553,24 @@ export default function UserDirectoryPage() {
           {isOrgsLoading ? (
             <div className="h-64 flex flex-col items-center justify-center gap-3">
               <Loader2 className="h-8 w-8 text-cyan-500 animate-spin" />
-              <span className="text-sm text-slate-400">Fetching organizations list...</span>
+              <span className="text-sm text-white/50">Fetching organizations list...</span>
             </div>
           ) : orgsError ? (
             <div className="glass-card rounded-3xl p-8 text-center border-red-500/20 text-red-400">
               <AlertCircle className="h-10 w-10 text-red-500 mx-auto mb-3" />
-              <h3 className="font-bold text-slate-200">Failed to Load Organizations</h3>
-              <p className="text-xs text-slate-400 mt-1">{(orgsError as any).message}</p>
+              <h3 className="font-bold text-white">Failed to Load Organizations</h3>
+              <p className="text-xs text-white/50 mt-1">{(orgsError as any).message}</p>
             </div>
           ) : filteredOrgs.length === 0 ? (
             <div className="glass-card rounded-3xl p-12 text-center">
-              <Building2 className="h-12 w-12 text-slate-600 mx-auto mb-4" />
-              <h3 className="text-lg font-bold text-slate-200">No Organizations Found</h3>
-              <p className="text-sm text-slate-400 mt-1">Create your first organization above to begin assessments.</p>
+              <Building2 className="h-12 w-12 text-white/30 mx-auto mb-4" />
+              <h3 className="text-lg font-bold text-white">No Organizations Found</h3>
+              <p className="text-sm text-white/50 mt-1">Create your first organization above to begin assessments.</p>
             </div>
           ) : (
-            <div className="overflow-x-auto rounded-3xl glass-panel border-slate-900/60">
-              <table className="min-w-full divide-y divide-slate-900/60 text-sm">
-                <thead className="bg-slate-950/40 text-slate-400 font-bold">
+            <div className="overflow-x-auto rounded-3xl glass-panel border-white/08">
+              <table className="min-w-full divide-y divide-white/08 text-sm">
+                <thead className="bg-[#001a33]/40 text-white/50 font-bold">
                   <tr>
                     <th scope="col" className="px-6 py-4.5 text-left tracking-wide">Organization Name</th>
                     <th scope="col" className="px-6 py-4.5 text-left tracking-wide">Type</th>
@@ -579,31 +579,31 @@ export default function UserDirectoryPage() {
                     <th scope="col" className="px-6 py-4.5 text-right tracking-wide">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-900/40">
+                <tbody className="divide-y divide-white/05">
                   {filteredOrgs.map((org) => (
-                    <tr key={org.id} className="hover:bg-slate-900/10 transition-colors">
+                    <tr key={org.id} className="hover:bg-[#003366]/10 transition-colors">
                       {/* Name */}
-                      <td className="px-6 py-4 font-bold text-slate-200">
+                      <td className="px-6 py-4 font-bold text-white">
                         {org.name}
                       </td>
 
                       {/* Type */}
-                      <td className="px-6 py-4 capitalize font-semibold text-slate-400">
+                      <td className="px-6 py-4 capitalize font-semibold text-white/50">
                         {org.organizationType}
                       </td>
 
                       {/* Code / Region */}
-                      <td className="px-6 py-4 text-slate-300">
+                      <td className="px-6 py-4 text-white/70">
                         <div className="flex flex-col">
-                          <span>Country ISO: <strong className="text-slate-100 font-semibold">{org.countryCode || 'N/A'}</strong></span>
-                          <span className="text-xs text-slate-400 mt-0.5">Region: {org.region || 'N/A'}</span>
+                          <span>Country ISO: <strong className="text-white font-semibold">{org.countryCode || 'N/A'}</strong></span>
+                          <span className="text-xs text-white/50 mt-0.5">Region: {org.region || 'N/A'}</span>
                         </div>
                       </td>
 
                       {/* Status */}
                       <td className="px-6 py-4">
-                        <span className={`inline-flex items-center gap-1.5 text-xs font-semibold ${org.isActive ? 'text-emerald-400' : 'text-slate-500'}`}>
-                          <span className={`h-1.5 w-1.5 rounded-full ${org.isActive ? 'bg-emerald-500 animate-pulse' : 'bg-slate-500'}`}></span>
+                        <span className={`inline-flex items-center gap-1.5 text-xs font-semibold ${org.isActive ? 'text-emerald-400' : 'text-white/40'}`}>
+                          <span className={`h-1.5 w-1.5 rounded-full ${org.isActive ? 'bg-emerald-500 animate-pulse' : 'bg-white/30'}`}></span>
                           {org.isActive ? 'Active' : 'Suspended'}
                         </span>
                       </td>
@@ -663,23 +663,23 @@ export default function UserDirectoryPage() {
 
       {/* --- INVITE USER MODAL --- */}
       {isInviteModalOpen && (
-        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in">
-          <div className="glass-card rounded-3xl w-full max-w-lg p-6 sm:p-8 border border-slate-900 shadow-2xl relative">
+        <div className="fixed inset-0 bg-[#001a33]/80 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in">
+          <div className="glass-card rounded-3xl w-full max-w-lg p-6 sm:p-8 border border-white/08 shadow-2xl relative">
             <button
               onClick={() => {
                 setIsInviteModalOpen(false);
                 setInviteError('');
               }}
-              className="absolute top-6 right-6 text-slate-400 hover:text-slate-200 p-1.5 rounded-lg hover:bg-slate-900"
+              className="absolute top-6 right-6 text-white/50 hover:text-white p-1.5 rounded-lg hover:bg-[#003366]"
             >
               <X className="h-5 w-5" />
             </button>
 
             <h3 className="text-xl font-extrabold text-white flex items-center gap-2">
-              <UserPlus className="h-5.5 w-5.5 text-blue-400" />
+              <UserPlus className="h-5.5 w-5.5 text-[#0072BC]" />
               Invite New User
             </h3>
-            <p className="text-xs text-slate-400 mt-1.5">
+            <p className="text-xs text-white/50 mt-1.5">
               Add user metadata and issue system authentication access credentials.
             </p>
 
@@ -693,48 +693,48 @@ export default function UserDirectoryPage() {
 
               {/* Name */}
               <div className="space-y-1.5">
-                <label className="block text-xs font-bold text-slate-300">Full Name</label>
+                <label className="block text-xs font-bold text-white/70">Full Name</label>
                 <div className="relative">
-                  <User className="absolute left-3.5 top-3 h-4 w-4 text-slate-500" />
+                  <User className="absolute left-3.5 top-3 h-4 w-4 text-white/40" />
                   <input
                     type="text"
                     required
                     placeholder="Enter full name..."
                     value={inviteForm.fullName}
                     onChange={(e) => setInviteForm({ ...inviteForm, fullName: e.target.value })}
-                    className="glass-input pl-10 pr-4 py-2.5 rounded-2xl text-sm w-full focus:ring-1 focus:ring-blue-500"
+                    className="glass-input pl-10 pr-4 py-2.5 rounded-2xl text-sm w-full focus:ring-1 focus:ring-[#0072BC]"
                   />
                 </div>
               </div>
 
               {/* Email */}
               <div className="space-y-1.5">
-                <label className="block text-xs font-bold text-slate-300">Email Address</label>
+                <label className="block text-xs font-bold text-white/70">Email Address</label>
                 <div className="relative">
-                  <Mail className="absolute left-3.5 top-3 h-4 w-4 text-slate-500" />
+                  <Mail className="absolute left-3.5 top-3 h-4 w-4 text-white/40" />
                   <input
                     type="email"
                     required
                     placeholder="name@organization.org"
                     value={inviteForm.email}
                     onChange={(e) => setInviteForm({ ...inviteForm, email: e.target.value })}
-                    className="glass-input pl-10 pr-4 py-2.5 rounded-2xl text-sm w-full focus:ring-1 focus:ring-blue-500"
+                    className="glass-input pl-10 pr-4 py-2.5 rounded-2xl text-sm w-full focus:ring-1 focus:ring-[#0072BC]"
                   />
                 </div>
               </div>
 
               {/* Password */}
               <div className="space-y-1.5">
-                <label className="block text-xs font-bold text-slate-300">Default Password</label>
+                <label className="block text-xs font-bold text-white/70">Default Password</label>
                 <div className="relative">
-                  <Lock className="absolute left-3.5 top-3 h-4 w-4 text-slate-500" />
+                  <Lock className="absolute left-3.5 top-3 h-4 w-4 text-white/40" />
                   <input
                     type="password"
                     required
                     placeholder="Must meet strength guidelines (10+ chars)"
                     value={inviteForm.password}
                     onChange={(e) => setInviteForm({ ...inviteForm, password: e.target.value })}
-                    className="glass-input pl-10 pr-4 py-2.5 rounded-2xl text-sm w-full focus:ring-1 focus:ring-blue-500"
+                    className="glass-input pl-10 pr-4 py-2.5 rounded-2xl text-sm w-full focus:ring-1 focus:ring-[#0072BC]"
                   />
                 </div>
               </div>
@@ -742,9 +742,9 @@ export default function UserDirectoryPage() {
               {/* Scope/Organization Selector */}
               {isSuperAdmin ? (
                 <div className="space-y-1.5">
-                  <label className="block text-xs font-bold text-slate-300">Assigned Organization</label>
+                  <label className="block text-xs font-bold text-white/70">Assigned Organization</label>
                   <div className="relative">
-                    <Building className="absolute left-3.5 top-3 h-4 w-4 text-slate-500" />
+                    <Building className="absolute left-3.5 top-3 h-4 w-4 text-white/40" />
                     <select
                       required
                       value={inviteForm.organizationId}
@@ -762,7 +762,7 @@ export default function UserDirectoryPage() {
 
               {/* Role Selector */}
               <div className="space-y-1.5">
-                <label className="block text-xs font-bold text-slate-300">System Role</label>
+                <label className="block text-xs font-bold text-white/70">System Role</label>
                 <select
                   required
                   value={inviteForm.role}
@@ -777,21 +777,21 @@ export default function UserDirectoryPage() {
               </div>
 
               {/* Submit Buttons */}
-              <div className="mt-8 flex justify-end gap-3 pt-4 border-t border-slate-900/60">
+              <div className="mt-8 flex justify-end gap-3 pt-4 border-t border-white/08">
                 <button
                   type="button"
                   onClick={() => {
                     setIsInviteModalOpen(false);
                     setInviteError('');
                   }}
-                  className="py-2.5 px-4 rounded-xl text-xs font-bold text-slate-400 hover:text-slate-200 bg-slate-900/40 hover:bg-slate-900 transition-colors"
+                  className="py-2.5 px-4 rounded-xl text-xs font-bold text-white/50 hover:text-white bg-[#003366]/40 hover:bg-[#003366] transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={inviteUserMutation.isPending}
-                  className="inline-flex items-center gap-1.5 py-2.5 px-5 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-blue-600 to-sky-600 hover:from-blue-500 hover:to-sky-500 shadow-md shadow-blue-500/10 active:scale-[0.98] transition-all disabled:opacity-50"
+                  className="inline-flex items-center gap-1.5 py-2.5 px-5 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-[#0072BC] to-[#0072BC]/80 hover:from-[#005a94] hover:to-[#0072BC] shadow-md shadow-[#0072BC]/10 active:scale-[0.98] transition-all disabled:opacity-50"
                 >
                   {inviteUserMutation.isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
                   Invite User
@@ -804,15 +804,15 @@ export default function UserDirectoryPage() {
 
       {/* --- CREATE / EDIT ORGANIZATION MODAL --- */}
       {isSuperAdmin && isOrgModalOpen && (
-        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in">
-          <div className="glass-card rounded-3xl w-full max-w-lg p-6 sm:p-8 border border-slate-900 shadow-2xl relative">
+        <div className="fixed inset-0 bg-[#001a33]/80 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in">
+          <div className="glass-card rounded-3xl w-full max-w-lg p-6 sm:p-8 border border-white/08 shadow-2xl relative">
             <button
               onClick={() => {
                 setIsOrgModalOpen(false);
                 setEditingOrg(null);
                 setOrgError('');
               }}
-              className="absolute top-6 right-6 text-slate-400 hover:text-slate-200 p-1.5 rounded-lg hover:bg-slate-900"
+              className="absolute top-6 right-6 text-white/50 hover:text-white p-1.5 rounded-lg hover:bg-[#003366]"
             >
               <X className="h-5 w-5" />
             </button>
@@ -821,7 +821,7 @@ export default function UserDirectoryPage() {
               <Building2 className="h-5.5 w-5.5 text-cyan-400" />
               {editingOrg ? 'Edit Organization' : 'Create Organization'}
             </h3>
-            <p className="text-xs text-slate-400 mt-1.5">
+            <p className="text-xs text-white/50 mt-1.5">
               Define organization properties, metadata scopes, and structure types.
             </p>
 
@@ -835,23 +835,23 @@ export default function UserDirectoryPage() {
 
               {/* Organization Name */}
               <div className="space-y-1.5">
-                <label className="block text-xs font-bold text-slate-300">Organization Name</label>
+                <label className="block text-xs font-bold text-white/70">Organization Name</label>
                 <div className="relative">
-                  <Building2 className="absolute left-3.5 top-3 h-4 w-4 text-slate-500" />
+                  <Building2 className="absolute left-3.5 top-3 h-4 w-4 text-white/40" />
                   <input
                     type="text"
                     required
                     placeholder="e.g. Kenya Ministry of Health"
                     value={orgForm.name}
                     onChange={(e) => setOrgForm({ ...orgForm, name: e.target.value })}
-                    className="glass-input pl-10 pr-4 py-2.5 rounded-2xl text-sm w-full focus:ring-1 focus:ring-blue-500"
+                    className="glass-input pl-10 pr-4 py-2.5 rounded-2xl text-sm w-full focus:ring-1 focus:ring-[#0072BC]"
                   />
                 </div>
               </div>
 
               {/* Organization Type */}
               <div className="space-y-1.5">
-                <label className="block text-xs font-bold text-slate-300">Scope Type</label>
+                <label className="block text-xs font-bold text-white/70">Scope Type</label>
                 <select
                   required
                   value={orgForm.organizationType}
@@ -866,37 +866,37 @@ export default function UserDirectoryPage() {
 
               {/* Country ISO Code */}
               <div className="space-y-1.5">
-                <label className="block text-xs font-bold text-slate-300">Country ISO Code (3-letter)</label>
+                <label className="block text-xs font-bold text-white/70">Country ISO Code (3-letter)</label>
                 <div className="relative">
-                  <Globe className="absolute left-3.5 top-3 h-4 w-4 text-slate-500" />
+                  <Globe className="absolute left-3.5 top-3 h-4 w-4 text-white/40" />
                   <input
                     type="text"
                     placeholder="e.g. KEN, ETH, RWA"
                     maxLength={3}
                     value={orgForm.countryCode}
                     onChange={(e) => setOrgForm({ ...orgForm, countryCode: e.target.value.toUpperCase() })}
-                    className="glass-input pl-10 pr-4 py-2.5 rounded-2xl text-sm w-full focus:ring-1 focus:ring-blue-500"
+                    className="glass-input pl-10 pr-4 py-2.5 rounded-2xl text-sm w-full focus:ring-1 focus:ring-[#0072BC]"
                   />
                 </div>
               </div>
 
               {/* Region */}
               <div className="space-y-1.5">
-                <label className="block text-xs font-bold text-slate-300">Region / Province</label>
+                <label className="block text-xs font-bold text-white/70">Region / Province</label>
                 <div className="relative">
-                  <MapPin className="absolute left-3.5 top-3 h-4 w-4 text-slate-500" />
+                  <MapPin className="absolute left-3.5 top-3 h-4 w-4 text-white/40" />
                   <input
                     type="text"
                     placeholder="e.g. Sub-Saharan Africa, Nairobi"
                     value={orgForm.region}
                     onChange={(e) => setOrgForm({ ...orgForm, region: e.target.value })}
-                    className="glass-input pl-10 pr-4 py-2.5 rounded-2xl text-sm w-full focus:ring-1 focus:ring-blue-500"
+                    className="glass-input pl-10 pr-4 py-2.5 rounded-2xl text-sm w-full focus:ring-1 focus:ring-[#0072BC]"
                   />
                 </div>
               </div>
 
               {/* Submit Buttons */}
-              <div className="mt-8 flex justify-end gap-3 pt-4 border-t border-slate-900/60">
+              <div className="mt-8 flex justify-end gap-3 pt-4 border-t border-white/08">
                 <button
                   type="button"
                   onClick={() => {
@@ -904,7 +904,7 @@ export default function UserDirectoryPage() {
                     setEditingOrg(null);
                     setOrgError('');
                   }}
-                  className="py-2.5 px-4 rounded-xl text-xs font-bold text-slate-400 hover:text-slate-200 bg-slate-900/40 hover:bg-slate-900 transition-colors"
+                  className="py-2.5 px-4 rounded-xl text-xs font-bold text-white/50 hover:text-white bg-[#003366]/40 hover:bg-[#003366] transition-colors"
                 >
                   Cancel
                 </button>

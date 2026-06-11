@@ -169,8 +169,8 @@ export default function AssessmentScoringWizard() {
   if (isLoading) {
     return (
       <div className="h-96 flex flex-col items-center justify-center gap-3">
-        <Loader2 className="h-8 w-8 text-blue-500 animate-spin" />
-        <span className="text-sm text-slate-400">Loading maturity framework scoring wizard...</span>
+        <Loader2 className="h-8 w-8 text-[#0072BC] animate-spin" />
+        <span className="text-sm text-white/50">Loading maturity framework scoring wizard...</span>
       </div>
     );
   }
@@ -179,9 +179,9 @@ export default function AssessmentScoringWizard() {
     return (
       <div className="glass-card rounded-3xl p-8 text-center border-red-500/20 text-red-400 max-w-xl mx-auto mt-12">
         <AlertCircle className="h-10 w-10 text-red-500 mx-auto mb-3" />
-        <h3 className="font-bold text-slate-200">Failed to Load Framework</h3>
-        <p className="text-xs text-slate-400 mt-1">{(error as any)?.message || 'Assessment records not found.'}</p>
-        <Link href="/assessments" className="mt-4 inline-flex items-center gap-1.5 text-xs text-blue-400 hover:underline">
+        <h3 className="font-bold text-white">Failed to Load Framework</h3>
+        <p className="text-xs text-white/50 mt-1">{(error as any)?.message || 'Assessment records not found.'}</p>
+        <Link href="/assessments" className="mt-4 inline-flex items-center gap-1.5 text-xs text-[#0072BC] hover:underline">
           <ArrowLeft className="h-3.5 w-3.5" /> Back to List
         </Link>
       </div>
@@ -307,16 +307,16 @@ export default function AssessmentScoringWizard() {
         <div className="space-y-1">
           <Link
             href="/assessments"
-            className="inline-flex items-center gap-1 text-xs font-semibold text-slate-400 hover:text-slate-200 transition-colors mb-1.5"
+            className="inline-flex items-center gap-1 text-xs font-semibold text-white/50 hover:text-white transition-colors mb-1.5"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
             Back to Manager
           </Link>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight bg-gradient-to-r from-slate-100 to-slate-400 bg-clip-text text-transparent">
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
             {assessment.cycleName}
           </h1>
-          <p className="text-xs text-slate-400">
-            Organization: <strong className="text-slate-300 font-semibold">{assessment.organization.name}</strong> • Period: <strong className="text-slate-300 font-semibold">{assessment.assessmentPeriod || 'N/A'}</strong>
+          <p className="text-xs text-white/50">
+            Organization: <strong className="text-white/70 font-semibold">{assessment.organization.name}</strong> • Period: <strong className="text-white/70 font-semibold">{assessment.assessmentPeriod || 'N/A'}</strong>
           </p>
         </div>
 
@@ -354,7 +354,7 @@ export default function AssessmentScoringWizard() {
             <button
               onClick={() => submitMutation.mutate()}
               disabled={completedCriteria < 30 || submitMutation.isPending}
-              className="inline-flex items-center justify-center gap-2 py-2.5 px-5 rounded-2xl text-xs font-bold text-white bg-gradient-to-r from-blue-600 to-sky-600 hover:from-blue-500 hover:to-sky-500 shadow-lg shadow-blue-500/15 hover:shadow-blue-500/25 transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98]"
+              className="inline-flex items-center justify-center gap-2 py-2.5 px-5 rounded-2xl text-xs font-bold text-white bg-gradient-to-r from-[#0072BC] to-[#0072BC]/80 hover:from-[#005a94] hover:to-[#0072BC] shadow-lg shadow-[#0072BC]/15 hover:shadow-[#0072BC]/25 transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98]"
             >
               {submitMutation.isPending ? (
                 <Loader2 className="animate-spin h-4 w-4" />
@@ -373,7 +373,7 @@ export default function AssessmentScoringWizard() {
         {/* LEFT COLUMN: scoring framework tab sheets */}
         <div className="xl:col-span-8 space-y-6">
           {/* Domain Tabs List */}
-          <div className="flex flex-wrap gap-2 p-1.5 rounded-2xl bg-slate-900/40 border border-slate-900">
+          <div className="flex flex-wrap gap-2 p-1.5 rounded-2xl bg-[#003366]/40 border border-white/08">
             {Object.entries(domains).map(([code, dom]) => {
               const isActive = activeDomain === code;
               return (
@@ -382,8 +382,8 @@ export default function AssessmentScoringWizard() {
                   onClick={() => setActiveDomain(code)}
                   className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 ${
                     isActive
-                      ? 'bg-gradient-to-r from-blue-600/20 to-sky-600/20 border border-blue-500/30 text-blue-300 shadow-inner'
-                      : 'text-slate-400 hover:text-slate-200'
+                      ? 'bg-gradient-to-r from-[#0072BC]/15 to-[#0072BC]/10 border border-[#0072BC]/30 text-[#0072BC]/80 shadow-inner'
+                      : 'text-white/50 hover:text-white'
                   }`}
                 >
                   <span className="mr-1">{code}</span>
@@ -399,13 +399,13 @@ export default function AssessmentScoringWizard() {
               <>
                 {/* Category / Domain Header */}
                 <div className="relative">
-                  <div className="flex items-center gap-4 px-6 py-5 rounded-3xl bg-gradient-to-r from-blue-950/40 via-slate-900/60 to-sky-950/40 border border-blue-500/15">
-                    <div className="flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-600/20 to-sky-600/20 border border-blue-500/25 shrink-0">
-                      <Shield className="h-5 w-5 text-blue-400" />
+                  <div className="flex items-center gap-4 px-6 py-5 rounded-3xl bg-gradient-to-r from-blue-950/40 via-[#003366]/60 to-sky-950/40 border border-blue-500/15">
+                    <div className="flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-br from-[#0072BC]/15 to-[#0072BC]/10 border border-blue-500/25 shrink-0">
+                      <Shield className="h-5 w-5 text-[#0072BC]" />
                     </div>
                     <div>
-                      <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-blue-400/70 block mb-0.5">Category</span>
-                      <h2 className="text-lg sm:text-xl font-extrabold tracking-tight bg-gradient-to-r from-slate-100 to-blue-200 bg-clip-text text-transparent leading-snug">
+                      <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#0072BC]/70 block mb-0.5">Category</span>
+                      <h2 className="text-lg sm:text-xl font-extrabold tracking-tight text-white leading-snug">
                         {domains[activeDomain].name}
                       </h2>
                     </div>
@@ -415,13 +415,13 @@ export default function AssessmentScoringWizard() {
                 {Object.entries(domains[activeDomain].components).map(([compCode, comp]) => (
                 <div key={compCode} className="space-y-4">
                   {/* Component Header Banner */}
-                  <div className="flex items-start gap-3 p-4 rounded-2xl bg-slate-900/50 border-l-[3px] border-l-blue-500/40 border border-slate-900">
-                    <div className="p-2 bg-blue-600/10 rounded-xl border border-blue-500/20 text-blue-400 shrink-0 font-extrabold text-xs tracking-wider">
+                  <div className="flex items-start gap-3 p-4 rounded-2xl bg-[#003366]/50 border-l-[3px] border-l-blue-500/40 border border-white/08">
+                    <div className="p-2 bg-[#0072BC]/10 rounded-xl border border-[#0072BC]/25 text-[#0072BC] shrink-0 font-extrabold text-xs tracking-wider">
                       {compCode}
                     </div>
                     <div>
-                      <span className="text-[9px] font-bold uppercase tracking-[0.15em] text-slate-500 block mb-0.5">Component</span>
-                      <h3 className="text-sm sm:text-base font-bold text-slate-200 leading-snug">{comp.name}</h3>
+                      <span className="text-[9px] font-bold uppercase tracking-[0.15em] text-white/40 block mb-0.5">Component</span>
+                      <h3 className="text-sm sm:text-base font-bold text-white leading-snug">{comp.name}</h3>
                     </div>
                   </div>
 
@@ -435,20 +435,20 @@ export default function AssessmentScoringWizard() {
                       return (
                         <div
                           key={cId}
-                          className="glass-card rounded-3xl p-6 border border-slate-900 hover:border-slate-800/80 relative"
+                          className="glass-card rounded-3xl p-6 border border-white/08 hover:border-white/10 relative"
                         >
                           {/* Top indicator header — Key Criteria */}
                           <div className="flex justify-between items-start gap-4 mb-4">
                             <div className="flex items-start gap-2">
-                              <span className="font-extrabold text-[10px] text-blue-400 bg-blue-600/10 border border-blue-500/20 px-1.5 py-0.5 rounded mt-0.5 shrink-0">{resp.criterion.code}</span>
+                              <span className="font-extrabold text-[10px] text-[#0072BC] bg-[#0072BC]/10 border border-[#0072BC]/25 px-1.5 py-0.5 rounded mt-0.5 shrink-0">{resp.criterion.code}</span>
                               <div>
-                                <span className="text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-500 block mb-0.5">Key Criteria</span>
-                                <h4 className="text-xs sm:text-[13px] font-semibold text-slate-300 leading-snug">{resp.criterion.name}</h4>
+                                <span className="text-[9px] font-semibold uppercase tracking-[0.12em] text-white/40 block mb-0.5">Key Criteria</span>
+                                <h4 className="text-xs sm:text-[13px] font-semibold text-white/70 leading-snug">{resp.criterion.name}</h4>
                               </div>
                             </div>
 
                             {/* Auto save indicator */}
-                            <div className="flex items-center gap-1.5 text-[10px] font-bold text-slate-500 shrink-0">
+                            <div className="flex items-center gap-1.5 text-[10px] font-bold text-white/40 shrink-0">
                               {status === 'saving' && (
                                 <span className="flex items-center gap-1 text-amber-400">
                                   <Loader2 className="animate-spin h-3.5 w-3.5" />
@@ -478,40 +478,40 @@ export default function AssessmentScoringWizard() {
                                     className={`p-3.5 rounded-2xl text-left border transition-all duration-300 flex flex-col justify-between h-full cursor-pointer min-h-[120px] w-full ${
                                       isSelected
                                         ? 'bg-gradient-to-br from-blue-600/30 to-sky-600/20 border-blue-500/50 shadow-md shadow-blue-500/5 ring-1 ring-blue-500/20'
-                                        : 'bg-slate-900/40 border-slate-900 text-slate-400 hover:border-slate-800/80 hover:bg-slate-900/60'
+                                        : 'bg-[#003366]/40 border-white/08 text-white/50 hover:border-white/10 hover:bg-[#003366]/60'
                                     } disabled:cursor-not-allowed`}
                                   >
                                     <div className="flex justify-between items-center w-full mb-2">
                                       <span className={`text-[10px] font-extrabold uppercase px-1.5 py-0.5 rounded tracking-wide ${
-                                        isSelected ? 'bg-blue-500/20 text-blue-300' : 'bg-slate-800 text-slate-400'
+                                        isSelected ? 'bg-blue-500/20 text-[#0072BC]/80' : 'bg-[#003366]/60 text-white/50'
                                       }`}>
                                         Level {levelObj.level}
                                       </span>
                                     </div>
                                     <p className={`text-[11px] leading-relaxed line-clamp-4 ${
-                                      isSelected ? 'text-slate-100 font-medium' : 'text-slate-400'
+                                      isSelected ? 'text-white font-medium' : 'text-white/50'
                                     }`}>
                                       {levelObj.description}
                                     </p>
                                   </button>
                                   {/* Hover tooltip showing full description */}
                                   <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-72 max-h-64 overflow-y-auto opacity-0 invisible group-hover/level:opacity-100 group-hover/level:visible transition-all duration-200 z-50 pointer-events-none group-hover/level:pointer-events-auto">
-                                    <div className="bg-slate-900/98 backdrop-blur-xl border border-slate-700/60 rounded-2xl p-4 shadow-2xl shadow-black/40">
+                                    <div className="bg-[#003366]/98 backdrop-blur-xl border border-white/10/60 rounded-2xl p-4 shadow-2xl shadow-black/40">
                                       <div className="flex items-center gap-2 mb-2">
                                         <span className={`text-[10px] font-extrabold uppercase px-1.5 py-0.5 rounded tracking-wide ${
-                                          isSelected ? 'bg-blue-500/20 text-blue-300' : 'bg-slate-800 text-slate-400'
+                                          isSelected ? 'bg-blue-500/20 text-[#0072BC]/80' : 'bg-[#003366]/60 text-white/50'
                                         }`}>
                                           Level {levelObj.level}
                                         </span>
-                                        <span className="text-[10px] font-bold text-slate-500">{levelObj.label}</span>
+                                        <span className="text-[10px] font-bold text-white/40">{levelObj.label}</span>
                                       </div>
                                       <p className={`text-[11px] leading-relaxed ${
-                                        isSelected ? 'text-slate-100' : 'text-slate-300'
+                                        isSelected ? 'text-white' : 'text-white/70'
                                       }`}>
                                         {levelObj.description}
                                       </p>
                                     </div>
-                                    <div className="w-3 h-3 bg-slate-900/98 border-b border-r border-slate-700/60 rotate-45 absolute -bottom-1.5 left-1/2 -translate-x-1/2" />
+                                    <div className="w-3 h-3 bg-[#003366]/98 border-b border-r border-white/10/60 rotate-45 absolute -bottom-1.5 left-1/2 -translate-x-1/2" />
                                   </div>
                                 </div>
                               );
@@ -519,11 +519,11 @@ export default function AssessmentScoringWizard() {
                           </div>
 
                           {/* Justification Box and Evidence Files split row */}
-                          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 pt-4 border-t border-slate-900/60">
+                          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 pt-4 border-t border-white/08">
                             
                             {/* Justification column */}
                             <div className="lg:col-span-7">
-                              <label className="block text-[10px] font-semibold text-slate-400 uppercase tracking-widest mb-1.5">
+                              <label className="block text-[10px] font-semibold text-white/50 uppercase tracking-widest mb-1.5">
                                 Scoring Justification <span className="text-red-400">*</span>
                               </label>
                               <textarea
@@ -540,7 +540,7 @@ export default function AssessmentScoringWizard() {
                             {/* Evidence files column */}
                             <div className="lg:col-span-5 flex flex-col justify-between">
                               <div>
-                                <label className="block text-[10px] font-semibold text-slate-400 uppercase tracking-widest mb-1.5">
+                                <label className="block text-[10px] font-semibold text-white/50 uppercase tracking-widest mb-1.5">
                                   Evidence Collection
                                 </label>
 
@@ -550,11 +550,11 @@ export default function AssessmentScoringWizard() {
                                     {resp.evidenceFiles.map((file) => (
                                       <div
                                         key={file.id}
-                                        className="flex items-center justify-between p-2 rounded-xl bg-slate-900/60 border border-slate-900/80 text-[10px]"
+                                        className="flex items-center justify-between p-2 rounded-xl bg-[#003366]/60 border border-white/08 text-[10px]"
                                       >
                                         <div className="flex items-center gap-1.5 overflow-hidden pr-2">
-                                          <FileText className="h-3.5 w-3.5 text-blue-400 shrink-0" />
-                                          <span className="text-slate-300 font-medium truncate" title={file.fileName}>
+                                          <FileText className="h-3.5 w-3.5 text-[#0072BC] shrink-0" />
+                                          <span className="text-white/70 font-medium truncate" title={file.fileName}>
                                             {file.fileTitle || file.fileName}
                                           </span>
                                         </div>
@@ -564,7 +564,7 @@ export default function AssessmentScoringWizard() {
                                             href={`${process.env.NEXT_PUBLIC_API_URL?.replace('/api/v1', '') || 'http://localhost:3001'}${file.storageUrl}`}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="p-1 rounded text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-colors"
+                                            className="p-1 rounded text-white/50 hover:text-white hover:bg-[#003366]/60 transition-colors"
                                             title="Download File"
                                           >
                                             <Download className="h-3 w-3" />
@@ -584,7 +584,7 @@ export default function AssessmentScoringWizard() {
                                     ))}
                                   </div>
                                 ) : (
-                                  <p className="text-[10px] text-slate-500 italic mb-3">No files uploaded as evidence.</p>
+                                  <p className="text-[10px] text-white/40 italic mb-3">No files uploaded as evidence.</p>
                                 )}
                               </div>
 
@@ -610,7 +610,7 @@ export default function AssessmentScoringWizard() {
                                     />
                                     <label
                                       htmlFor={`file-upload-${cId}`}
-                                      className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl border border-dashed border-slate-800 hover:border-blue-500/50 hover:bg-blue-600/5 text-[10px] font-bold text-blue-300 transition-all cursor-pointer w-full text-center"
+                                      className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl border border-dashed border-white/10 hover:border-blue-500/50 hover:bg-blue-600/5 text-[10px] font-bold text-[#0072BC]/80 transition-all cursor-pointer w-full text-center"
                                     >
                                       {uploadingFile[cId] ? (
                                         <>
@@ -642,29 +642,29 @@ export default function AssessmentScoringWizard() {
 
         {/* RIGHT COLUMN: Live Scoring Index summary panel */}
         <div className="xl:col-span-4 space-y-6">
-          <div className="glass-card rounded-3xl p-6 border border-slate-900 sticky top-6 z-10">
+          <div className="glass-card rounded-3xl p-6 border border-white/08 sticky top-6 z-10">
             {/* Platform status banner */}
-            <div className="flex justify-between items-center border-b border-slate-900 pb-4 mb-4">
+            <div className="flex justify-between items-center border-b border-white/08 pb-4 mb-4">
               <div>
-                <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider block">Cycle Status</span>
-                <span className="inline-flex items-center gap-1.5 mt-1 text-xs font-extrabold capitalize text-blue-300">
-                  <Clock className="h-3.5 w-3.5 text-blue-400" />
+                <span className="text-[10px] text-white/40 font-bold uppercase tracking-wider block">Cycle Status</span>
+                <span className="inline-flex items-center gap-1.5 mt-1 text-xs font-extrabold capitalize text-[#0072BC]/80">
+                  <Clock className="h-3.5 w-3.5 text-[#0072BC]" />
                   {assessment.status.replace('_', ' ')}
                 </span>
               </div>
               <div className="text-right">
-                <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider block">Scope</span>
-                <span className="block mt-1 text-xs font-bold text-slate-300 capitalize">{assessment.assessmentType}</span>
+                <span className="text-[10px] text-white/40 font-bold uppercase tracking-wider block">Scope</span>
+                <span className="block mt-1 text-xs font-bold text-white/70 capitalize">{assessment.assessmentType}</span>
               </div>
             </div>
 
             {/* Overall Score Gauge Display */}
-            <div className="text-center py-6 bg-slate-900/20 rounded-3xl border border-slate-900/60 mb-6">
-              <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">CHPMI Score</span>
-              <div className="text-4xl font-black bg-gradient-to-r from-blue-200 via-slate-100 to-cyan-200 bg-clip-text text-transparent tracking-tight mt-1.5">
+            <div className="text-center py-6 bg-[#003366]/20 rounded-3xl border border-white/08 mb-6">
+              <span className="text-[10px] text-white/40 font-bold uppercase tracking-widest">CHPMI Score</span>
+              <div className="text-4xl font-black text-white tracking-tight mt-1.5">
                 {Number(assessment.chpmiScore).toFixed(2)}%
               </div>
-              <div className="inline-flex items-center gap-1 mt-2.5 px-3 py-1 rounded-full bg-blue-600/10 border border-blue-500/20 text-xs font-bold text-blue-300">
+              <div className="inline-flex items-center gap-1 mt-2.5 px-3 py-1 rounded-full bg-[#0072BC]/10 border border-[#0072BC]/25 text-xs font-bold text-[#0072BC]/80">
                 <Sparkles className="h-3.5 w-3.5" />
                 {assessment.maturityBand?.label || 'Calculating...'}
               </div>
@@ -673,10 +673,10 @@ export default function AssessmentScoringWizard() {
             {/* Checklist progress bar */}
             <div className="space-y-2 mb-6">
               <div className="flex justify-between text-xs">
-                <span className="text-slate-400 font-semibold">Criteria Scored:</span>
-                <strong className="text-slate-200 font-bold">{completedCriteria} / {totalCriteria}</strong>
+                <span className="text-white/50 font-semibold">Criteria Scored:</span>
+                <strong className="text-white font-bold">{completedCriteria} / {totalCriteria}</strong>
               </div>
-              <div className="w-full bg-slate-900 rounded-full h-2 overflow-hidden border border-slate-800/50">
+              <div className="w-full bg-[#003366] rounded-full h-2 overflow-hidden border border-white/08">
                 <div
                   className="bg-gradient-to-r from-blue-600 to-sky-500 h-2 rounded-full transition-all duration-500"
                   style={{ width: `${progressPercent}%` }}
@@ -685,20 +685,20 @@ export default function AssessmentScoringWizard() {
             </div>
 
             {/* Domain average scores */}
-            <div className="space-y-3.5 border-t border-slate-900 pt-5">
-              <h4 className="text-[10px] font-semibold text-slate-400 uppercase tracking-widest">Domain Averages:</h4>
+            <div className="space-y-3.5 border-t border-white/08 pt-5">
+              <h4 className="text-[10px] font-semibold text-white/50 uppercase tracking-widest">Domain Averages:</h4>
               <div className="space-y-2.5">
                 {Object.entries(domains).map(([code, dom]) => {
                   const score = getDomainScore(code);
                   return (
                     <div key={code} className="flex justify-between items-center text-xs">
                       <div className="flex items-center gap-2 overflow-hidden pr-2">
-                        <span className="text-[10px] font-bold text-blue-400 bg-blue-600/10 border border-blue-500/20 px-1.5 py-0.5 rounded shrink-0">
+                        <span className="text-[10px] font-bold text-[#0072BC] bg-[#0072BC]/10 border border-[#0072BC]/25 px-1.5 py-0.5 rounded shrink-0">
                           {code}
                         </span>
-                        <span className="text-slate-400 font-medium truncate">{dom.name}</span>
+                        <span className="text-white/50 font-medium truncate">{dom.name}</span>
                       </div>
-                      <span className="font-extrabold text-slate-200 text-right shrink-0">
+                      <span className="font-extrabold text-white text-right shrink-0">
                         {score.toFixed(1)}%
                       </span>
                     </div>

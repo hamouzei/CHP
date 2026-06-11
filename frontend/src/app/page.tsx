@@ -25,10 +25,10 @@ export default function Home() {
   }, [isLoading, isAuthenticated, user, router]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-950 text-slate-100">
+    <div className="min-h-screen flex items-center justify-center bg-white text-gray-900">
       <div className="flex flex-col items-center gap-3">
-        <Loader2 className="h-8 w-8 text-blue-500 animate-spin" />
-        <span className="text-sm text-slate-400">Loading CHP Maturity Platform...</span>
+        <Loader2 className="h-8 w-8 text-[#0072BC] animate-spin" />
+        <span className="text-sm text-gray-500">Loading CHP Maturity Platform...</span>
       </div>
     </div>
   );
